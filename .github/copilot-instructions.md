@@ -18,7 +18,8 @@ This is a Next.js 15 (App Router) psychological evaluation system for recruiting
 ```
 components/
 ├── candidate/          # Candidate-facing components
-│   └── candidate-form.tsx  # Main evaluation form (CLB_EstadoCivil, CLB_Genero, etc.)
+│   ├── candidate-form.tsx             # Token-based evaluation form
+│   └── public-application-form.tsx    # Public job application form
 ├── psychologist/       # Psychologist-facing components
 │   ├── create-requirement-dialog.tsx  # Creates requirement, sends token link
 │   ├── requirements-list.tsx          # Dashboard view with status badges
@@ -31,8 +32,16 @@ components/
 **Candidate Form Fields** (see `candidate-form.tsx`):
 - `CLB_EstadoCivil`, `CLB_Genero`, `edad_al_ingresar`, `Barrio`, `Comuna`, `Estrato`, `Hijos`, `edades_de_hijos`, `tallas`
 
+**Public Application Form Fields** (see `public-application-form.tsx`):
+- Contact: `nombre_completo`, `correo_electronico`, `telefono`
+- Same demographic fields as candidate form
+
 **Requirement Model** (see `requirements-list.tsx`):
 - `candidateName`, `candidateEmail`, `candidatePhone`, `status` (pending/completed), `createdAt`, `submittedAt`
+
+**Geographic Data** (see `lib/manizales-data.ts`):
+- Manizales neighborhoods and communes from official GeoJSON data
+- Helper functions: `getComunas()`, `getBarriosByComuna()`, `searchBarrios()`
 
 ## Tech Stack & Patterns
 
@@ -92,12 +101,25 @@ Configuration is in `components.json` (aliases: `@/*`, style: "new-york")
 - Replace `mockRequirements` in `requirements-list.tsx` with API call
 - Replace `mockResponse` in `requirement-details.tsx` with API fetch by requirementId
 
+## Data Structure
+
+### Static Data Organization
+```
+data/
+└── manizales-barrios-comunas.geojson  # Official Manizales geographic data
+
+lib/
+├── utils.ts            # Tailwind cn() utility
+└── manizales-data.ts   # Geographic data helpers (getComunas, getBarriosByComuna, etc.)
+```
+
 ## Project-Specific Conventions
 
 ### Spanish Localization
 - All UI text is in **Spanish** (Colombian context)
 - Field names maintain database format (e.g., `CLB_EstadoCivil`) but display formatted
 - Toast notifications use Spanish messages
+- Geographic data for Manizales neighborhoods and communes
 
 ### TypeScript Strictness
 - `strict: true` in tsconfig, but **build errors are ignored** in `next.config.mjs`
