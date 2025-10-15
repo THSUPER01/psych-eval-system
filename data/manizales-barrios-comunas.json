@@ -1,0 +1,3576 @@
+{
+  "type": "FeatureCollection",
+  "name": "0d4720de-213f-4bbc-a9c0-c8cb9d647427202042-1-1rt4ih0.4wcul",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": null,
+        "ident": null,
+        "barrio": null,
+        "código": null,
+        "nombre": null,
+        "ObjectId": 1
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": 101,
+        "barrio": "Ciudadela la Linda",
+        "codigo": 10100,
+        "nombre": "Ciudadela la Linda",
+        "ObjectId": 2
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10101,
+        "nombre": "La Quinta",
+        "ObjectId": 3
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": 102,
+        "barrio": "Bella Montaña",
+        "codigo": 10200,
+        "nombre": "Bella Montaña",
+        "ObjectId": 4
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10201,
+        "nombre": "Hospital Geriatrico San Isidro",
+        "ObjectId": 5
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10202,
+        "nombre": "Escuela de Trabajo la Linda",
+        "ObjectId": 6
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": 103,
+        "barrio": "Sacatin",
+        "codigo": 10300,
+        "nombre": "Sacatin",
+        "ObjectId": 7
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": 104,
+        "barrio": "Villapilar",
+        "codigo": 10400,
+        "nombre": "Villapilar",
+        "ObjectId": 8
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10401,
+        "nombre": "Villa Pilar II",
+        "ObjectId": 9
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10402,
+        "nombre": "Torres de Avila",
+        "ObjectId": 10
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10403,
+        "nombre": "Venecia",
+        "ObjectId": 11
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10404,
+        "nombre": "San Luis",
+        "ObjectId": 12
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10405,
+        "nombre": "Aquilino Villegas",
+        "ObjectId": 13
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10406,
+        "nombre": "Urb. Atalaya",
+        "ObjectId": 14
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10407,
+        "nombre": "Urb. Bello Horizonte",
+        "ObjectId": 15
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10408,
+        "nombre": "Urb. Santa Mónica",
+        "ObjectId": 16
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": 105,
+        "barrio": "Chipre",
+        "codigo": 10500,
+        "nombre": "Chipre",
+        "ObjectId": 17
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10501,
+        "nombre": "Chipre Viejo",
+        "ObjectId": 18
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10502,
+        "nombre": "Balcones de Chipre",
+        "ObjectId": 19
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10503,
+        "nombre": "Bellavista",
+        "ObjectId": 20
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": 106,
+        "barrio": "Campohermoso",
+        "codigo": 10600,
+        "nombre": "Campohermoso",
+        "ObjectId": 21
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10601,
+        "nombre": "La Chimenea I y II",
+        "ObjectId": 22
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10602,
+        "nombre": "Altos de Castilla",
+        "ObjectId": 23
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10603,
+        "nombre": "Terrazas de Campohermoso",
+        "ObjectId": 24
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10604,
+        "nombre": "Conjunto Campohermoso",
+        "ObjectId": 25
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10605,
+        "nombre": "Universidad de Manizales",
+        "ObjectId": 26
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": 107,
+        "barrio": "Morrogacho",
+        "codigo": 10700,
+        "nombre": "Morrogacho",
+        "ObjectId": 27
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10701,
+        "nombre": "Topacio",
+        "ObjectId": 28
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10702,
+        "nombre": "Montana",
+        "ObjectId": 29
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": 108,
+        "barrio": "La Francia",
+        "codigo": 10800,
+        "nombre": "La Francia",
+        "ObjectId": 30
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10801,
+        "nombre": "Palmar",
+        "ObjectId": 31
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10802,
+        "nombre": "San Francisco",
+        "ObjectId": 32
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10803,
+        "nombre": "Poblado",
+        "ObjectId": 33
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10804,
+        "nombre": "San Remo",
+        "ObjectId": 34
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10805,
+        "nombre": "Candelaria",
+        "ObjectId": 35
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": 109,
+        "barrio": "Los Alcazares",
+        "codigo": 10900,
+        "nombre": "Los Alcazares",
+        "ObjectId": 36
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10901,
+        "nombre": "Portal de los Alcazares",
+        "ObjectId": 37
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10902,
+        "nombre": "Portales",
+        "ObjectId": 38
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10903,
+        "nombre": "Villa Real",
+        "ObjectId": 39
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10904,
+        "nombre": "Quinta Hispania",
+        "ObjectId": 40
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": null,
+        "barrio": null,
+        "codigo": 10905,
+        "nombre": "Asturias",
+        "ObjectId": 41
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Atardeceres",
+        "ident": 110,
+        "barrio": "Arenillo",
+        "codigo": 11000,
+        "nombre": "Arenillo",
+        "ObjectId": 42
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": 201,
+        "barrio": "Asis",
+        "codigo": 20100,
+        "nombre": "Asis",
+        "ObjectId": 43
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": null,
+        "barrio": null,
+        "codigo": 20101,
+        "nombre": "Jazmin",
+        "ObjectId": 44
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": 202,
+        "barrio": "Avanzada",
+        "codigo": 20200,
+        "nombre": "Avanzada",
+        "ObjectId": 45
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": null,
+        "barrio": null,
+        "codigo": 20201,
+        "nombre": "Camino del Medio",
+        "ObjectId": 46
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": null,
+        "barrio": null,
+        "codigo": 20202,
+        "nombre": "Tachuelo",
+        "ObjectId": 47
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": 203,
+        "barrio": "San Ignacio",
+        "codigo": 20300,
+        "nombre": "San Ignacio",
+        "ObjectId": 48
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": 204,
+        "barrio": "Galan",
+        "codigo": 20400,
+        "nombre": "Galan",
+        "ObjectId": 49
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": null,
+        "barrio": null,
+        "codigo": 20401,
+        "nombre": "Alto Galan",
+        "ObjectId": 50
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": null,
+        "barrio": null,
+        "codigo": 20402,
+        "nombre": "Maizal",
+        "ObjectId": 51
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": null,
+        "barrio": null,
+        "codigo": 20403,
+        "nombre": "Holanda",
+        "ObjectId": 52
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": 205,
+        "barrio": "Estrada",
+        "codigo": 20500,
+        "nombre": "Estrada",
+        "ObjectId": 53
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": null,
+        "barrio": null,
+        "codigo": 20501,
+        "nombre": "Sierra Morena",
+        "ObjectId": 54
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": 206,
+        "barrio": "Delicias",
+        "codigo": 20600,
+        "nombre": "Delicias",
+        "ObjectId": 55
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": 207,
+        "barrio": "San Jose",
+        "codigo": 20700,
+        "nombre": "San Jose",
+        "ObjectId": 56
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": null,
+        "barrio": null,
+        "codigo": 20701,
+        "nombre": "San Vicente",
+        "ObjectId": 57
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": 208,
+        "barrio": "Colon",
+        "codigo": 20800,
+        "nombre": "Colon",
+        "ObjectId": 58
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San José",
+        "ident": null,
+        "barrio": null,
+        "codigo": 20801,
+        "nombre": "Galerias",
+        "ObjectId": 59
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Cumanday",
+        "ident": 301,
+        "barrio": "Las Americas",
+        "codigo": 30100,
+        "nombre": "Las Americas",
+        "ObjectId": 60
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": 605,
+        "barrio": "Alta Suiza",
+        "codigo": 60500,
+        "nombre": "Alta Suiza",
+        "ObjectId": 61
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": null,
+        "barrio": null,
+        "codigo": 60501,
+        "nombre": "La Riviera",
+        "ObjectId": 62
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": 606,
+        "barrio": "Residencias Manizales",
+        "codigo": 60600,
+        "nombre": "Residencias Manizales",
+        "ObjectId": 63
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": 607,
+        "barrio": "Colseguros",
+        "codigo": 60700,
+        "nombre": "Colseguros",
+        "ObjectId": 64
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": null,
+        "barrio": null,
+        "codigo": 60701,
+        "nombre": "Torres de Oriente",
+        "ObjectId": 65
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": null,
+        "barrio": null,
+        "codigo": 60702,
+        "nombre": "Agrícola de Seguros",
+        "ObjectId": 66
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": 608,
+        "barrio": "La Toscana",
+        "codigo": 60800,
+        "nombre": "La Toscana",
+        "ObjectId": 67
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": null,
+        "barrio": null,
+        "codigo": 60801,
+        "nombre": "Escuela de Carabineros",
+        "ObjectId": 68
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": 609,
+        "barrio": "La Sultana",
+        "codigo": 60900,
+        "nombre": "La Sultana",
+        "ObjectId": 69
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": 610,
+        "barrio": "Bosques de Niza",
+        "codigo": 61000,
+        "nombre": "Bosques de Niza",
+        "ObjectId": 70
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": null,
+        "barrio": null,
+        "codigo": 61001,
+        "nombre": "Balcones de la Palma",
+        "ObjectId": 71
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": null,
+        "barrio": null,
+        "codigo": 61002,
+        "nombre": "Camino de la Palma",
+        "ObjectId": 72
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": null,
+        "barrio": null,
+        "codigo": 61003,
+        "nombre": "Rincón de la Palma",
+        "ObjectId": 73
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": null,
+        "barrio": null,
+        "codigo": 61004,
+        "nombre": "Cerro de Oro",
+        "ObjectId": 74
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": null,
+        "barrio": null,
+        "codigo": 61005,
+        "nombre": "Mirador de la Sierra",
+        "ObjectId": 75
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": null,
+        "barrio": null,
+        "codigo": 61006,
+        "nombre": "Colinas de San Sebastiâ n",
+        "ObjectId": 76
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": 701,
+        "barrio": "San Marcel",
+        "codigo": 70100,
+        "nombre": "San Marcel",
+        "ObjectId": 77
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70101,
+        "nombre": "El Pinar",
+        "ObjectId": 78
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70102,
+        "nombre": "Arboletes",
+        "ObjectId": 79
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70103,
+        "nombre": "Conjunto Cerrado Santa Ana",
+        "ObjectId": 80
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70104,
+        "nombre": "Chachafruto",
+        "ObjectId": 81
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70105,
+        "nombre": "Bosque Popular",
+        "ObjectId": 82
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": 702,
+        "barrio": "Alhambra",
+        "codigo": 70200,
+        "nombre": "Alhambra",
+        "ObjectId": 83
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70201,
+        "nombre": "El Portal del Bosque",
+        "ObjectId": 84
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70202,
+        "nombre": "Colinas del Viento",
+        "ObjectId": 85
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": 703,
+        "barrio": "Cerros de la Alhambra",
+        "codigo": 70300,
+        "nombre": "Cerros de la Alhambra",
+        "ObjectId": 86
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70301,
+        "nombre": "Valles de la Alhambra",
+        "ObjectId": 87
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": 704,
+        "barrio": "Malteria",
+        "codigo": 70400,
+        "nombre": "Malteria",
+        "ObjectId": 88
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70401,
+        "nombre": "Juanchito",
+        "ObjectId": 89
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": 705,
+        "barrio": "Zona Industrial",
+        "codigo": 70500,
+        "nombre": "Zona Industrial",
+        "ObjectId": 90
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70501,
+        "nombre": "Sena",
+        "ObjectId": 91
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": 706,
+        "barrio": "Caserio la Enea",
+        "codigo": 70600,
+        "nombre": "Caserio la Enea",
+        "ObjectId": 92
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70601,
+        "nombre": "La Capilla",
+        "ObjectId": 93
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70602,
+        "nombre": "Bosques de la Alhambra",
+        "ObjectId": 94
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70603,
+        "nombre": "Villa Fundemos",
+        "ObjectId": 95
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70604,
+        "nombre": "El Cairo",
+        "ObjectId": 96
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": 707,
+        "barrio": "La Enea",
+        "codigo": 70700,
+        "nombre": "La Enea",
+        "ObjectId": 97
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70701,
+        "nombre": "Los Pinos",
+        "ObjectId": 98
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70702,
+        "nombre": "Sector Gallinazo",
+        "ObjectId": 99
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": null,
+        "barrio": null,
+        "codigo": 70703,
+        "nombre": "Aeropuerto",
+        "ObjectId": 100
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Tesorito",
+        "ident": 708,
+        "barrio": "Lusitania",
+        "codigo": 70800,
+        "nombre": "Lusitania",
+        "ObjectId": 101
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": 801,
+        "barrio": "Leonora",
+        "codigo": 80100,
+        "nombre": "Leonora",
+        "ObjectId": 102
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 80101,
+        "nombre": "Baja Leonora",
+        "ObjectId": 103
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": 802,
+        "barrio": "Los Rosales",
+        "codigo": 80200,
+        "nombre": "Los Rosales",
+        "ObjectId": 104
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": 803,
+        "barrio": "La Rambla",
+        "codigo": 80300,
+        "nombre": "La Rambla",
+        "ObjectId": 105
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": 804,
+        "barrio": "Laureles",
+        "codigo": 80400,
+        "nombre": "Laureles",
+        "ObjectId": 106
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": 805,
+        "barrio": "Palogrande",
+        "codigo": 80500,
+        "nombre": "Palogrande",
+        "ObjectId": 107
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 80501,
+        "nombre": "Estadio",
+        "ObjectId": 108
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 80502,
+        "nombre": "Universidad de Caldas",
+        "ObjectId": 109
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 80503,
+        "nombre": "Universidad Nacional",
+        "ObjectId": 110
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": 806,
+        "barrio": "La Estrella",
+        "codigo": 80600,
+        "nombre": "La Estrella",
+        "ObjectId": 111
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": 807,
+        "barrio": "Belen",
+        "codigo": 80700,
+        "nombre": "Belen",
+        "ObjectId": 112
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": 808,
+        "barrio": "Guayacanes",
+        "codigo": 80800,
+        "nombre": "Guayacanes",
+        "ObjectId": 113
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": 809,
+        "barrio": "Arboleda",
+        "codigo": 80900,
+        "nombre": "Arboleda",
+        "ObjectId": 114
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 80901,
+        "nombre": "Conjunto Ibiza",
+        "ObjectId": 115
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": 810,
+        "barrio": "Palermo",
+        "codigo": 81000,
+        "nombre": "Palermo",
+        "ObjectId": 116
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 81001,
+        "nombre": "Los Sauces",
+        "ObjectId": 117
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 81002,
+        "nombre": "Bajo Palermo",
+        "ObjectId": 118
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": 811,
+        "barrio": "Camelia",
+        "codigo": 81100,
+        "nombre": "Camelia",
+        "ObjectId": 119
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 81101,
+        "nombre": "Sector del Batallon",
+        "ObjectId": 120
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": 1013,
+        "barrio": "Nevado",
+        "codigo": 101300,
+        "nombre": "Nevado",
+        "ObjectId": 121
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": null,
+        "barrio": null,
+        "codigo": 101301,
+        "nombre": "Andes",
+        "ObjectId": 122
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": null,
+        "barrio": null,
+        "codigo": 101301,
+        "nombre": "Bajo Nevado",
+        "ObjectId": 123
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": null,
+        "barrio": null,
+        "codigo": 101301,
+        "nombre": "Panamericana",
+        "ObjectId": 124
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": 1014,
+        "barrio": "Marmato",
+        "codigo": 101400,
+        "nombre": "Marmato",
+        "ObjectId": 125
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": null,
+        "barrio": null,
+        "codigo": 101401,
+        "nombre": "La Isla",
+        "ObjectId": 126
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": null,
+        "barrio": null,
+        "codigo": 101402,
+        "nombre": "Solidaridad",
+        "ObjectId": 127
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": 1101,
+        "barrio": "San Antonio",
+        "codigo": 110100,
+        "nombre": "San Antonio",
+        "ObjectId": 128
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": 1102,
+        "barrio": "20 de Julio",
+        "codigo": 110200,
+        "nombre": "20 de Julio",
+        "ObjectId": 129
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 110101,
+        "nombre": "Solidaridad",
+        "ObjectId": 130
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": 1103,
+        "barrio": "El Carmen",
+        "codigo": 110300,
+        "nombre": "El Carmen",
+        "ObjectId": 131
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 110301,
+        "nombre": "Campamento",
+        "ObjectId": 132
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 110302,
+        "nombre": "La Providencia",
+        "ObjectId": 133
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 110303,
+        "nombre": "Albania",
+        "ObjectId": 134
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 110304,
+        "nombre": "El Rocio",
+        "ObjectId": 135
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": 1104,
+        "barrio": "El Bosque",
+        "codigo": 110400,
+        "nombre": "El Bosque",
+        "ObjectId": 136
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 110401,
+        "nombre": "Bosconia",
+        "ObjectId": 137
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": 1105,
+        "barrio": "Castellana",
+        "codigo": 110500,
+        "nombre": "Castellana",
+        "ObjectId": 138
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": 1106,
+        "barrio": "Buena Esperanza",
+        "codigo": 110600,
+        "nombre": "Buena Esperanza",
+        "ObjectId": 139
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": 1107,
+        "barrio": "Nogales",
+        "codigo": 110700,
+        "nombre": "Nogales",
+        "ObjectId": 140
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 110701,
+        "nombre": "Portal de Nogales",
+        "ObjectId": 141
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": 1108,
+        "barrio": "Panorama",
+        "codigo": 110800,
+        "nombre": "Panorama",
+        "ObjectId": 142
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 110801,
+        "nombre": "Nuevo Horizontes",
+        "ObjectId": 143
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 110802,
+        "nombre": "Bella Montaña",
+        "ObjectId": 144
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": 1109,
+        "barrio": "Centenario",
+        "codigo": 110900,
+        "nombre": "Centenario",
+        "ObjectId": 145
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 110901,
+        "nombre": "Villa Kempis (arenillo)",
+        "ObjectId": 146
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 110902,
+        "nombre": "Chapinero",
+        "ObjectId": 147
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": 1110,
+        "barrio": "Estambul",
+        "codigo": 111000,
+        "nombre": "Estambul",
+        "ObjectId": 148
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 111001,
+        "nombre": "Villa Jardín",
+        "ObjectId": 149
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 111002,
+        "nombre": "Torres de  Esponsion",
+        "ObjectId": 150
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 111003,
+        "nombre": "Niño Jesús de Praga",
+        "ObjectId": 151
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 111004,
+        "nombre": "Granjas de Estambul",
+        "ObjectId": 152
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Macarena",
+        "ident": null,
+        "barrio": null,
+        "codigo": 111005,
+        "nombre": "Estación Uribe",
+        "ObjectId": 153
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": 1201,
+        "barrio": "Solferino",
+        "codigo": 120100,
+        "nombre": "Solferino",
+        "ObjectId": 154
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 121001,
+        "nombre": "Samaria",
+        "ObjectId": 155
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 121002,
+        "nombre": "Portón del Guamo",
+        "ObjectId": 156
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": 1202,
+        "barrio": "La Carola",
+        "codigo": 120200,
+        "nombre": "La Carola",
+        "ObjectId": 157
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120201,
+        "nombre": "La Carolita",
+        "ObjectId": 158
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120202,
+        "nombre": "Altos de Granada I y II Etapa",
+        "ObjectId": 159
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120203,
+        "nombre": "Villa Café I y II Etapa",
+        "ObjectId": 160
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120204,
+        "nombre": "Parte del Ecoparque los Yarumos",
+        "ObjectId": 161
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120205,
+        "nombre": "Cjto Cerrado Altos de Granada",
+        "ObjectId": 162
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120206,
+        "nombre": "Mirador de la Carola I y II Etapa",
+        "ObjectId": 163
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120207,
+        "nombre": "Cerros de la Carola",
+        "ObjectId": 164
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120208,
+        "nombre": "Altos de la Carola",
+        "ObjectId": 165
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120209,
+        "nombre": "Rincón de la Daniela",
+        "ObjectId": 166
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120210,
+        "nombre": "Casas de la Colina",
+        "ObjectId": 167
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120211,
+        "nombre": "Reserva del Rio",
+        "ObjectId": 168
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": 1203,
+        "barrio": "Villahermosa",
+        "codigo": 120300,
+        "nombre": "Villahermosa",
+        "ObjectId": 169
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120301,
+        "nombre": "La Daniela",
+        "ObjectId": 170
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120302,
+        "nombre": "Viña del Rio",
+        "ObjectId": 171
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120303,
+        "nombre": "La Playa y la Sonora",
+        "ObjectId": 172
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": 1204,
+        "barrio": "Comuneros",
+        "codigo": 120400,
+        "nombre": "Comuneros",
+        "ObjectId": 173
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": 1205,
+        "barrio": "Porvenir",
+        "codigo": 120500,
+        "nombre": "Porvenir",
+        "ObjectId": 174
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120501,
+        "nombre": "Parte del Ecoparque los Yarumos",
+        "ObjectId": 175
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": 1206,
+        "barrio": "Sinai",
+        "codigo": 120600,
+        "nombre": "Sinai",
+        "ObjectId": 176
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Doce",
+        "ident": null,
+        "barrio": null,
+        "codigo": 120601,
+        "nombre": "Parte del Ecoparque los Yarumos",
+        "ObjectId": 177
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": 812,
+        "barrio": "Sancancio",
+        "codigo": 81200,
+        "nombre": "Sancancio",
+        "ObjectId": 178
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 81201,
+        "nombre": "La Alameda",
+        "ObjectId": 179
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 81202,
+        "nombre": "Villa del Campo",
+        "ObjectId": 180
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 81203,
+        "nombre": "Loma Verde",
+        "ObjectId": 181
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": 813,
+        "barrio": "Milan",
+        "codigo": 81300,
+        "nombre": "Milan",
+        "ObjectId": 182
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 81301,
+        "nombre": "Alto del Perro",
+        "ObjectId": 183
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 81302,
+        "nombre": "Sierra Bonita",
+        "ObjectId": 184
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": 814,
+        "barrio": "El Trebol",
+        "codigo": 81400,
+        "nombre": "El Trebol",
+        "ObjectId": 185
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 81401,
+        "nombre": "Los Guaduales",
+        "ObjectId": 186
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 81402,
+        "nombre": "Rincon de Doña Elvira",
+        "ObjectId": 187
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 81403,
+        "nombre": "Edificio Tejarres del Bosque",
+        "ObjectId": 188
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 81404,
+        "nombre": "Condominio el Tejar",
+        "ObjectId": 189
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 81405,
+        "nombre": "Rincon del Trebol",
+        "ObjectId": 190
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 81406,
+        "nombre": "Bosques del Trebol",
+        "ObjectId": 191
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Palogrande",
+        "ident": null,
+        "barrio": null,
+        "codigo": 81407,
+        "nombre": "San Sebastian de Buena Vista",
+        "ObjectId": 192
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": 901,
+        "barrio": "Betania",
+        "codigo": 90100,
+        "nombre": "Betania",
+        "ObjectId": 193
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": 902,
+        "barrio": "Fatima",
+        "codigo": 90200,
+        "nombre": "Fatima",
+        "ObjectId": 194
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": 903,
+        "barrio": "Vivienda Popular",
+        "codigo": 90300,
+        "nombre": "Vivienda Popular",
+        "ObjectId": 195
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": null,
+        "barrio": null,
+        "codigo": 90301,
+        "nombre": "Granjas y Viviendas",
+        "ObjectId": 196
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": null,
+        "barrio": null,
+        "codigo": 90302,
+        "nombre": "Sector del Aguacate",
+        "ObjectId": 197
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": 904,
+        "barrio": "Pio Xii",
+        "codigo": 90400,
+        "nombre": "Pio Xii",
+        "ObjectId": 198
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": 905,
+        "barrio": "Kennedy",
+        "codigo": 90500,
+        "nombre": "Kennedy",
+        "ObjectId": 199
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": null,
+        "barrio": null,
+        "codigo": 90501,
+        "nombre": "San Luis",
+        "ObjectId": 200
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": null,
+        "barrio": null,
+        "codigo": 90502,
+        "nombre": "Pepe Caceres",
+        "ObjectId": 201
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": null,
+        "barrio": null,
+        "codigo": 90503,
+        "nombre": "Ciudadela del Ciego",
+        "ObjectId": 202
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": null,
+        "barrio": null,
+        "codigo": 90504,
+        "nombre": "Sector Bolivariana",
+        "ObjectId": 203
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": null,
+        "barrio": null,
+        "codigo": 90505,
+        "nombre": "San Fernando",
+        "ObjectId": 204
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": 906,
+        "barrio": "Camilo Torres",
+        "codigo": 90600,
+        "nombre": "Camilo Torres",
+        "ObjectId": 205
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": null,
+        "barrio": null,
+        "codigo": 90601,
+        "nombre": "Santos",
+        "ObjectId": 206
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": null,
+        "barrio": null,
+        "codigo": 90602,
+        "nombre": "Villa Mercedes",
+        "ObjectId": 207
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": 907,
+        "barrio": "Las Colinas",
+        "codigo": 90700,
+        "nombre": "Las Colinas",
+        "ObjectId": 208
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": null,
+        "barrio": null,
+        "codigo": 90701,
+        "nombre": "11 de Noviembre",
+        "ObjectId": 209
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": null,
+        "barrio": null,
+        "codigo": 90702,
+        "nombre": "Castilla",
+        "ObjectId": 210
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": 908,
+        "barrio": "Malhabar",
+        "codigo": 90800,
+        "nombre": "Malhabar",
+        "ObjectId": 211
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": null,
+        "barrio": null,
+        "codigo": 90801,
+        "nombre": "Sector Malhabar II",
+        "ObjectId": 212
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": 909,
+        "barrio": "Aranjuez",
+        "codigo": 90900,
+        "nombre": "Aranjuez",
+        "ObjectId": 213
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": null,
+        "barrio": null,
+        "codigo": 90901,
+        "nombre": "El Encuentro",
+        "ObjectId": 214
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Universitaria",
+        "ident": null,
+        "barrio": null,
+        "codigo": 90902,
+        "nombre": "La Paz",
+        "ObjectId": 215
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": 1001,
+        "barrio": "Uribe",
+        "codigo": 100100,
+        "nombre": "Uribe",
+        "ObjectId": 216
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": null,
+        "barrio": null,
+        "codigo": 100101,
+        "nombre": "Villa Nueva",
+        "ObjectId": 217
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": null,
+        "barrio": null,
+        "codigo": 100102,
+        "nombre": "El Palmar",
+        "ObjectId": 218
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": 1002,
+        "barrio": "Velez",
+        "codigo": 100200,
+        "nombre": "Velez",
+        "ObjectId": 219
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": null,
+        "barrio": null,
+        "codigo": 100201,
+        "nombre": "Los Alamos",
+        "ObjectId": 220
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": 1003,
+        "barrio": "Colombia",
+        "codigo": 100300,
+        "nombre": "Colombia",
+        "ObjectId": 221
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": 1004,
+        "barrio": "El Prado",
+        "codigo": 100400,
+        "nombre": "El Prado",
+        "ObjectId": 222
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": 1005,
+        "barrio": "Bajo Prado",
+        "codigo": 100500,
+        "nombre": "Bajo Prado",
+        "ObjectId": 223
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": 1006,
+        "barrio": "Gonzalez",
+        "codigo": 100600,
+        "nombre": "Gonzalez",
+        "ObjectId": 224
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": 1007,
+        "barrio": "Persia",
+        "codigo": 100700,
+        "nombre": "Persia",
+        "ObjectId": 225
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": null,
+        "barrio": null,
+        "codigo": 100701,
+        "nombre": "Bajo Persia",
+        "ObjectId": 226
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": null,
+        "barrio": null,
+        "codigo": 100702,
+        "nombre": "Isabela",
+        "ObjectId": 227
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": null,
+        "barrio": null,
+        "codigo": 100703,
+        "nombre": "Eucaliptus",
+        "ObjectId": 228
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": null,
+        "barrio": null,
+        "codigo": 100704,
+        "nombre": "Portal Eucaliptus",
+        "ObjectId": 229
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": null,
+        "barrio": null,
+        "codigo": 100705,
+        "nombre": "Portal de San Luis",
+        "ObjectId": 230
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": 1008,
+        "barrio": "Guamal",
+        "codigo": 100800,
+        "nombre": "Guamal",
+        "ObjectId": 231
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": null,
+        "barrio": null,
+        "codigo": 100801,
+        "nombre": "La Fuente",
+        "ObjectId": 232
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": null,
+        "barrio": null,
+        "codigo": 100802,
+        "nombre": "Galicia",
+        "ObjectId": 233
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": 1009,
+        "barrio": "El Paraiso",
+        "codigo": 100900,
+        "nombre": "El Paraiso",
+        "ObjectId": 234
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": 1010,
+        "barrio": "Villacarmenza",
+        "codigo": 101000,
+        "nombre": "Villacarmenza",
+        "ObjectId": 235
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": 1011,
+        "barrio": "Arrayanes",
+        "codigo": 101100,
+        "nombre": "Arrayanes",
+        "ObjectId": 236
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Fuente",
+        "ident": 1012,
+        "barrio": "Cervantes",
+        "codigo": 101200,
+        "nombre": "Cervantes",
+        "ObjectId": 237
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Cumanday",
+        "ident": null,
+        "barrio": null,
+        "codigo": 30101,
+        "nombre": "La Palma",
+        "ObjectId": 238
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Cumanday",
+        "ident": null,
+        "barrio": null,
+        "codigo": 30102,
+        "nombre": "Residencias Caldas",
+        "ObjectId": 239
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Cumanday",
+        "ident": null,
+        "barrio": null,
+        "codigo": 30103,
+        "nombre": "Terminal de Transportes",
+        "ObjectId": 240
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Cumanday",
+        "ident": 302,
+        "barrio": "Los Agustinos",
+        "codigo": 30200,
+        "nombre": "Los Agustinos",
+        "ObjectId": 241
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Cumanday",
+        "ident": 303,
+        "barrio": "Centro",
+        "codigo": 30300,
+        "nombre": "Centro",
+        "ObjectId": 242
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Cumanday",
+        "ident": null,
+        "barrio": null,
+        "codigo": 30301,
+        "nombre": "Valvanera",
+        "ObjectId": 243
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Cumanday",
+        "ident": 304,
+        "barrio": "San Joaquin",
+        "codigo": 30400,
+        "nombre": "San Joaquin",
+        "ObjectId": 244
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Cumanday",
+        "ident": 305,
+        "barrio": "Campoamor",
+        "codigo": 30500,
+        "nombre": "Campoamor",
+        "ObjectId": 245
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Cumanday",
+        "ident": null,
+        "barrio": null,
+        "codigo": 30501,
+        "nombre": "Hoyo Frio",
+        "ObjectId": 246
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Cumanday",
+        "ident": 306,
+        "barrio": "Fundadores",
+        "codigo": 30600,
+        "nombre": "Fundadores",
+        "ObjectId": 247
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": 401,
+        "barrio": "Santa Helena",
+        "codigo": 40100,
+        "nombre": "Santa Helena",
+        "ObjectId": 248
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": null,
+        "barrio": null,
+        "codigo": 40101,
+        "nombre": "Saenz",
+        "ObjectId": 249
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": null,
+        "barrio": null,
+        "codigo": 40102,
+        "nombre": "Conjunto Cerrado Fundadores",
+        "ObjectId": 250
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": null,
+        "barrio": null,
+        "codigo": 40103,
+        "nombre": "Parque Castilla",
+        "ObjectId": 251
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": null,
+        "barrio": null,
+        "codigo": 40104,
+        "nombre": "Universidad Autonoma",
+        "ObjectId": 252
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": null,
+        "barrio": null,
+        "codigo": 40105,
+        "nombre": "Conjunto Cerrado la Estación",
+        "ObjectId": 253
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": 402,
+        "barrio": "Los Cedros",
+        "codigo": 40200,
+        "nombre": "Los Cedros",
+        "ObjectId": 254
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": null,
+        "barrio": null,
+        "codigo": 40201,
+        "nombre": "Urbanizacion el Rio",
+        "ObjectId": 255
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": 403,
+        "barrio": "San Jorge",
+        "codigo": 40300,
+        "nombre": "San Jorge",
+        "ObjectId": 256
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": 404,
+        "barrio": "El Sol",
+        "codigo": 40400,
+        "nombre": "El Sol",
+        "ObjectId": 257
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": null,
+        "barrio": null,
+        "codigo": 40401,
+        "nombre": "La Primavera",
+        "ObjectId": 258
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": null,
+        "barrio": null,
+        "codigo": 40402,
+        "nombre": "Conjunto las Américas",
+        "ObjectId": 259
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": 405,
+        "barrio": "La Argentina",
+        "codigo": 40500,
+        "nombre": "La Argentina",
+        "ObjectId": 260
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": 406,
+        "barrio": "La Asuncion",
+        "codigo": 40600,
+        "nombre": "La Asuncion",
+        "ObjectId": 261
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": null,
+        "barrio": null,
+        "codigo": 40601,
+        "nombre": "Villa del Rio",
+        "ObjectId": 262
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": 407,
+        "barrio": "Versalles",
+        "codigo": 40700,
+        "nombre": "Versalles",
+        "ObjectId": 263
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": null,
+        "barrio": null,
+        "codigo": 40701,
+        "nombre": "Nuevo Versalles",
+        "ObjectId": 264
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": 408,
+        "barrio": "El Campin",
+        "codigo": 40800,
+        "nombre": "El Campin",
+        "ObjectId": 265
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": 409,
+        "barrio": "Lleras",
+        "codigo": 40900,
+        "nombre": "Lleras",
+        "ObjectId": 266
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Estación",
+        "ident": null,
+        "barrio": null,
+        "codigo": 40901,
+        "nombre": "Bavaria",
+        "ObjectId": 267
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": 501,
+        "barrio": "Puerta del Sol ",
+        "codigo": 50100,
+        "nombre": "Puerta del Sol ",
+        "ObjectId": 268
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": 502,
+        "barrio": "Sierra Morena",
+        "codigo": 50200,
+        "nombre": "Sierra Morena",
+        "ObjectId": 269
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": 503,
+        "barrio": "El Caribe",
+        "codigo": 50300,
+        "nombre": "El Caribe",
+        "ObjectId": 270
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": null,
+        "barrio": null,
+        "codigo": 50301,
+        "nombre": "Conjunto Cerrado Piamonte",
+        "ObjectId": 271
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": 504,
+        "barrio": "San Cayetano",
+        "codigo": 50400,
+        "nombre": "San Cayetano",
+        "ObjectId": 272
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": 505,
+        "barrio": "Bosques del Norte",
+        "codigo": 50500,
+        "nombre": "Bosques del Norte",
+        "ObjectId": 273
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": null,
+        "barrio": null,
+        "codigo": 50501,
+        "nombre": "Bengala",
+        "ObjectId": 274
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": null,
+        "barrio": null,
+        "codigo": 50502,
+        "nombre": "Portal de Bengala",
+        "ObjectId": 275
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": null,
+        "barrio": null,
+        "codigo": 50503,
+        "nombre": "Bosques de Bengala",
+        "ObjectId": 276
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": 506,
+        "barrio": "San Sebastian",
+        "codigo": 50600,
+        "nombre": "San Sebastian",
+        "ObjectId": 277
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": null,
+        "barrio": null,
+        "codigo": 50601,
+        "nombre": "San Sebastián I Etapa",
+        "ObjectId": 278
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": null,
+        "barrio": null,
+        "codigo": 50602,
+        "nombre": "San Sebastián II Etapa",
+        "ObjectId": 279
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": null,
+        "barrio": null,
+        "codigo": 50603,
+        "nombre": "San Sebastián III Etapa",
+        "ObjectId": 280
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": null,
+        "barrio": null,
+        "codigo": 50604,
+        "nombre": "San Sebastián IV Etapa",
+        "ObjectId": 281
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": 507,
+        "barrio": "Fanny Gonzalez",
+        "codigo": 50700,
+        "nombre": "Fanny Gonzalez",
+        "ObjectId": 282
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": 508,
+        "barrio": "Altos de Capri",
+        "codigo": 50800,
+        "nombre": "Altos de Capri",
+        "ObjectId": 283
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": null,
+        "barrio": null,
+        "codigo": 50801,
+        "nombre": "Palonegro ",
+        "ObjectId": 284
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": null,
+        "barrio": null,
+        "codigo": 50802,
+        "nombre": " Altos del Encenillo",
+        "ObjectId": 285
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": null,
+        "barrio": null,
+        "codigo": 50803,
+        "nombre": "Villas del Bosque",
+        "ObjectId": 286
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": 509,
+        "barrio": "Villa Julia",
+        "codigo": 50900,
+        "nombre": "Villa Julia",
+        "ObjectId": 287
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": 510,
+        "barrio": "Peralonso",
+        "codigo": 51000,
+        "nombre": "Peralonso",
+        "ObjectId": 288
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ciudadela del Norte",
+        "ident": null,
+        "barrio": null,
+        "codigo": 51001,
+        "nombre": "Piamonte II",
+        "ObjectId": 289
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": 601,
+        "barrio": "Viveros",
+        "codigo": 60100,
+        "nombre": "Viveros",
+        "ObjectId": 290
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": null,
+        "barrio": null,
+        "codigo": 60101,
+        "nombre": "Yarumales I y II",
+        "ObjectId": 291
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": null,
+        "barrio": null,
+        "codigo": 60102,
+        "nombre": "Licorera",
+        "ObjectId": 292
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": null,
+        "barrio": null,
+        "codigo": 60103,
+        "nombre": "Villa Luz",
+        "ObjectId": 293
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": null,
+        "barrio": null,
+        "codigo": 60104,
+        "nombre": "Parte del Ecoparque",
+        "ObjectId": 294
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": 602,
+        "barrio": "La Cumbre",
+        "codigo": 60200,
+        "nombre": "La Cumbre",
+        "ObjectId": 295
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": 603,
+        "barrio": "Minitas",
+        "codigo": 60300,
+        "nombre": "Minitas",
+        "ObjectId": 296
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Ecoturístico Cerro de Oro",
+        "ident": 604,
+        "barrio": "Baja Suiza",
+        "codigo": 60400,
+        "nombre": "Baja Suiza",
+        "ObjectId": 297
+      },
+      "geometry": null
+    }
+  ]
+}
