@@ -1,138 +1,89 @@
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Brain, ClipboardList, Shield, Briefcase } from "lucide-react"
+import Image from "next/image"
+import Footer from "@/components/footer"
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-16">
+    <div className="flex flex-col min-h-screen relative bg-gradient-to-br from-background via-secondary/20 to-background overflow-hidden">
+      {/* Imágenes decorativas */}
+      <Image
+        src="/images/Recurso 1@2x.png"
+        alt=""
+        width={220}
+        height={220}
+        className="absolute left-0 top-0 opacity-30 pointer-events-none select-none hidden md:block"
+      />
+      <Image
+        src="/images/Recurso 2@2x.png"
+        alt=""
+        width={180}
+        height={180}
+        className="absolute right-0 top-10 opacity-20 pointer-events-none select-none hidden md:block"
+      />
+      <Image
+        src="/images/Recurso 3@2x.png"
+        alt=""
+        width={160}
+        height={160}
+        className="absolute left-10 bottom-0 opacity-20 pointer-events-none select-none hidden md:block"
+      />
+      <Image
+        src="/images/Recurso 4@2x.png"
+        alt=""
+        width={120}
+        height={120}
+        className="absolute right-10 bottom-10 opacity-20 pointer-events-none select-none hidden md:block"
+      />
+      <Image
+        src="/images/Recurso 5@2x.png"
+        alt=""
+        width={100}
+        height={100}
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none select-none hidden md:block"
+      />
+      <Image
+        src="/images/Recurso 6@2x.png"
+        alt=""
+        width={80}
+        height={80}
+        className="absolute right-1/3 top-1/3 opacity-10 pointer-events-none select-none hidden md:block"
+      />
+
+      <main className="flex-1 flex flex-col justify-center items-center container mx-auto px-4 py-16 relative z-10">
+        <div className="text-center mb-12">
           <div className="flex justify-center mb-6">
-            <div className="bg-primary/10 p-4 rounded-2xl">
-              <Brain className="w-16 h-16 text-primary" />
+            <div className="bg-white/80 p-4 rounded-2xl shadow-lg flex items-center justify-center">
+              <Image
+                src="/images/Logo.png"
+                alt="Logo Super de Alimentos"
+                width={80}
+                height={80}
+                priority
+              />
             </div>
           </div>
-          <h1 className="text-5xl font-bold mb-4 text-balance">Sistema de Evaluación Psicológica</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
-            Plataforma profesional para gestionar evaluaciones psicológicas y recopilar información de candidatos de
-            manera segura y eficiente
+          <h1 className="text-5xl font-bold mb-4 text-primary drop-shadow-lg">
+            Sistema de Selección
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Aplica a nuestras vacantes y participa en procesos de selección profesional y confidencial.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <Card className="border-2 hover:border-primary/50 transition-colors">
-            <CardHeader>
-              <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                <Shield className="w-6 h-6 text-primary" />
-              </div>
-              <CardTitle className="text-2xl">Portal de Psicólogos</CardTitle>
-              <CardDescription className="text-base">
-                Gestiona requerimientos, visualiza respuestas y mantén un historial completo de cada candidato
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 mb-6 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  Crear y enviar requerimientos
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  Ver respuestas de candidatos
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  Subir documentos y pruebas
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  Historial completo
-                </li>
-              </ul>
-              <Button asChild className="w-full" size="lg">
-                <Link href="/psychologist/login">Acceder al Dashboard</Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="border-2 hover:border-accent/50 transition-colors">
-            <CardHeader>
-              <div className="bg-accent/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                <ClipboardList className="w-6 h-6 text-accent" />
-              </div>
-              <CardTitle className="text-2xl">Portal de Candidatos</CardTitle>
-              <CardDescription className="text-base">
-                Completa tu formulario de evaluación de manera segura y confidencial
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 mb-6 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-                  Formulario guiado paso a paso
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-                  Información confidencial
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-                  Acceso mediante link único
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-                  Proceso simple y rápido
-                </li>
-              </ul>
-              <Button asChild variant="outline" className="w-full bg-transparent" size="lg">
-                <Link href="/candidate/demo">Ver Formulario Demo</Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="border-2 hover:border-emerald-500/50 transition-colors">
-            <CardHeader>
-              <div className="bg-emerald-500/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                <Briefcase className="w-6 h-6 text-emerald-600" />
-              </div>
-              <CardTitle className="text-2xl">Trabaja con Nosotros</CardTitle>
-              <CardDescription className="text-base">
-                ¿Te interesa formar parte de nuestro equipo? Completa tu solicitud de empleo
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 mb-6 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-                  Postulación directa
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-                  Sin necesidad de invitación
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-                  Proceso confidencial
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-                  Respuesta ágil
-                </li>
-              </ul>
-              <Button asChild className="w-full bg-emerald-600 hover:bg-emerald-700" size="lg">
-                <Link href="/aplicar">Aplicar Ahora</Link>
-              </Button>
-            </CardContent>
-          </Card>
+        <div className="flex justify-center">
+          <Link
+            href="/aplicar"
+            className="px-8 py-4 rounded-xl bg-primary text-white text-lg font-semibold shadow-lg hover:bg-primary/90 transition"
+          >
+            Aplicar a una vacante
+          </Link>
         </div>
 
-        <div className="mt-16 text-center">
-          <p className="text-sm text-muted-foreground">
-            Sistema seguro y confidencial para evaluaciones psicológicas profesionales
-          </p>
+        <div className="mt-16 text-center text-sm text-muted-foreground">
+          Tu información será tratada de manera confidencial y segura.
         </div>
-      </div>
+      </main>
+      <Footer />
     </div>
   )
 }
