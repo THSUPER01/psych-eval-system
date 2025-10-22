@@ -12,13 +12,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useAuth } from "@/lib/hooks/useAuth"
 
 export function DashboardHeader() {
   const router = useRouter()
+  const { logout } = useAuth()
 
   const handleLogout = () => {
-    // TODO: Implement actual logout
-    router.push("/")
+    logout()
   }
 
   return (
