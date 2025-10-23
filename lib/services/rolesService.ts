@@ -25,10 +25,33 @@ async function http<T>(path: string, init?: RequestInit): Promise<T> {
   return (await res.json()) as T
 }
 
-import type { PermisosRolResponse } from '@/types/auth.types'
+import type { PermisosRolResponse, RolResponse } from '@/types/auth.types'
+
+interface GetRolesResponse {
+  success: boolean
+  message: string
+  data: Array<{
+    rolIdRol: number
+    rolRol: string
+    rolAplIdAplicacion: number
+    rolDescripcion: string
+    rolEstEstado: number
+    rolUsuarioCreacion: string
+    rolUsuarioModificacion: string
+    rolFechaCreacion: string
+    rolFechaModificacion: string
+  }>
+}
 
 export const rolesService = {
   async getPermisosRol(id: number): Promise<PermisosRolResponse> {
     return http<PermisosRolResponse>(`/permisos/GetPermisosRol/${id}`, { method: 'GET' })
   },
+
+  async getRolById(id: number): Promise<RolResponse> {
+    return http<RolResponse>(`/rol/${id}`, { method: 'GET' })
+  },
+  async getAllRoles(): Promise<GetRolesResponse> {
+    return http<GetRolesResponse>(`/rol/GetRoles`, { method: 'GET' })
+  }
 }

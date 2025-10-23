@@ -47,9 +47,13 @@ export function TokenModal({ documento, idSession, permisos, onClose }: TokenMod
       const authToken = resp.data.token || resp.data.Token || ''
       if (!authToken) throw new Error('Token inválido')
       login(authToken, permisos)
-      toast({ title: 'Sesión iniciada', description: 'Código verificado correctamente.' })
+      toast({
+        title: 'Sesión iniciada',
+        description: 'Código verificado correctamente.',
+        className: 'border-green-600 bg-green-600 text-white',
+      })
       onClose()
-      router.push('/psychologist/dashboard')
+      router.push('/dashboard/selection')
     } catch (err: any) {
       const mensaje = err?.message || 'Código inválido'
       toast({ title: 'Error', description: mensaje, variant: 'destructive' })

@@ -13,15 +13,13 @@ import { Brain, Loader2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { loginApiService } from "@/lib/services/loginApiService"
 import { rolesService } from "@/lib/services/rolesService"
-import { VerificationModal } from "@/components/auth/VerificationModal"
 import { useAuth } from "@/lib/hooks/useAuth"
 
 export function LoginForm() {
   const [documento, setDocumento] = useState("")
   const [errors, setErrors] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [showVerification, setShowVerification] = useState(false)
-  const [userData, setUserData] = useState<any>(null)
+  // Eliminamos modales: flujo será por rutas /psychologist/verify y /psychologist/verify/code
   const router = useRouter()
   const { toast } = useToast()
   const { login } = useAuth()
@@ -46,22 +44,30 @@ export function LoginForm() {
       // 2. Obtener permisos del rol
       const permisosResp = await rolesService.getPermisosRol(validar.rol)
       const permisos = permisosResp.data
-      // 3. Verificar si requiere 2FA
-      const requiere2FA = permisos.some((p) => p.accAccion === 'Requiere doble autenticación')
-      if (requiere2FA) {
-        setUserData({ documento, infoUsuario: validar.data, permisos })
-        setShowVerification(true)
-      } else {
-        const jwtResp = await loginApiService.obtenerJWT(documento, 12)
-        const token = jwtResp.data.token || jwtResp.data.Token
-        if (!token) throw new Error('No se recibió token')
-        login(token, permisos)
-        toast({ title: 'Inicio de sesión exitoso', description: 'Bienvenido al dashboard' })
-        router.push('/psychologist/dashboard')
+
+      // 3. Requerir SIEMPRE 2FA antes de entrar (flujo por ruta)
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem(
+          'pendingAuth',
+          JSON.stringify({ documento, infoUsuario: validar.data, permisos }),
+        )
       }
+      router.push('/psychologist/verify')
+      // Toast de confirmación (verde) - solo validación exitosa
+      toast({
+        title: 'Usuario validado',
+        description: 'Por favor selecciona tu método de verificación.',
+        className: 'border-green-600 bg-green-600 text-white',
+        duration: 3000
+      })
     } catch (err: any) {
-      const mensaje = err?.message || 'Error al iniciar sesión'
-      toast({ title: 'Error', description: mensaje, variant: 'destructive' })
+      const mensaje = err?.message || 'Documento no encontrado'
+      toast({ 
+        title: 'Error de validación', 
+        description: mensaje, 
+        variant: 'destructive',
+        duration: 5000
+      })
     } finally {
       setIsLoading(false)
     }
@@ -69,7 +75,7 @@ export function LoginForm() {
 
   return (
     <>
-      <Card className="w-full max-w-md">
+  <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
             <div className="rounded-xl bg-primary/10 p-3">
@@ -94,6 +100,7 @@ export function LoginForm() {
                   setDocumento(v)
                   setErrors(validateDocumento(v))
                 }}
+                disabled={isLoading}
                 required
               />
               {errors.length > 0 && <p className="text-sm text-red-600">{errors[0]}</p>}
@@ -117,14 +124,7 @@ export function LoginForm() {
         </CardContent>
       </Card>
 
-      {showVerification && userData && (
-        <VerificationModal
-          documento={userData.documento}
-          infoUsuario={userData.infoUsuario}
-          permisos={userData.permisos}
-          onClose={() => setShowVerification(false)}
-        />
-      )}
+      {/* Flujo 2FA ahora se maneja en rutas dedicadas */}
     </>
   )
 }

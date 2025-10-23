@@ -7,10 +7,22 @@ const PERMISOS_KEY = 'appPermisos'
 
 function base64UrlDecode(input: string): string {
   try {
+    // Convertir base64url a base64 estándar
     const base64 = input.replace(/-/g, '+').replace(/_/g, '/')
     const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=')
-    return atob(padded)
-  } catch {
+    
+    // Decodificar base64 y manejar caracteres UTF-8 correctamente
+    const binaryString = atob(padded)
+    const bytes = new Uint8Array(binaryString.length)
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i)
+    }
+    
+    // Usar TextDecoder para manejar correctamente UTF-8 (ñ, acentos, etc.)
+    const decoder = new TextDecoder('utf-8')
+    return decoder.decode(bytes)
+  } catch (error) {
+    console.error('Error decodificando base64:', error)
     return ''
   }
 }
@@ -20,8 +32,10 @@ function decodeJwt(token: string): DecodedToken | null {
     const [, payload] = token.split('.')
     if (!payload) return null
     const json = base64UrlDecode(payload)
+    if (!json) return null
     return JSON.parse(json)
-  } catch {
+  } catch (error) {
+    console.error('Error decodificando JWT:', error)
     return null
   }
 }

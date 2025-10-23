@@ -59,6 +59,7 @@ export function VerificationModal({ documento, infoUsuario, permisos, onClose }:
       toast({
         title: 'Código enviado',
         description: 'Revisa el medio seleccionado para ingresar el código.',
+        className: 'border-green-600 bg-green-600 text-white',
       })
       setShowTokenModal(true)
     } catch (err: any) {

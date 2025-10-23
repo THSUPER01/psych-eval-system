@@ -72,4 +72,35 @@ export const loginApiService = {
       method: 'GET',
     })
   },
+
+  async registrarUsuario(params: {
+    documentoUsuario: string
+    idRol: number
+    usuarioCreacion: string
+  }): Promise<any> {
+    return http<any>('/Usuario/Registrar', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    })
+  },
+
+  async obtenerUsuarios(): Promise<{
+    usuarios: Array<{
+      documento: string
+      nombre: string
+      rol: number
+      estado: number
+    }>
+  }> {
+    return http<{
+      usuarios: Array<{
+        documento: string
+        nombre: string
+        rol: number
+        estado: number
+      }>
+    }>('/Usuario/ListarUsuarios', {
+      method: 'GET',
+    })
+  },
 }

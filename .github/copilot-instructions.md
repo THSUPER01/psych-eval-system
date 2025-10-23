@@ -10,7 +10,7 @@ This is a Next.js 15 (App Router) psychological evaluation system for recruiting
 ## Architecture
 
 ### Two-Portal Structure
-- **Psychologist flow**: `/psychologist/login` → `/psychologist/dashboard` → `/psychologist/requirement/[id]`
+- **Psychologist flow**: `/psychologist/login` → `/psychologist/verify` → `/dashboard/selection` → `/dashboard/selection/requerimientos/[id]`
 - **Candidate flow**: `/candidate/[token]` (tokenized access, no authentication)
 - Routes are organized in `app/` using Next.js 15 App Router conventions
 
@@ -20,11 +20,17 @@ components/
 ├── candidate/          # Candidate-facing components
 │   ├── candidate-form.tsx             # Token-based evaluation form
 │   └── public-application-form.tsx    # Public job application form
-├── psychologist/       # Psychologist-facing components
-│   ├── create-requirement-dialog.tsx  # Creates requirement, sends token link
-│   ├── requirements-list.tsx          # Dashboard view with status badges
-│   ├── requirement-details.tsx        # Tabs: responses + document uploads
-│   └── login-form.tsx                 # Auth placeholder (mock login)
+├── psychologist/       # Psychologist-facing components (Auth only)
+│   └── login-form.tsx                 # Auth with 2FA flow
+├── selection/          # Selection dashboard components (NEW)
+│   ├── SelectionSidebar.tsx           # Dashboard navigation sidebar
+│   ├── SelectionHeader.tsx            # Dashboard header with user menu
+│   ├── CrearRequerimientoDialog.tsx   # Create requirement dialog
+│   ├── CandidatosList.tsx             # Candidates table component
+│   ├── AgregarCandidatoDialog.tsx     # Add candidate dialog
+│   └── EnviarLinkDialog.tsx           # Send candidate link dialog
+├── auth/               # Authentication components
+│   └── ProtectedRoute.tsx             # Client-side route guard
 └── ui/                 # shadcn/ui components (do not modify manually)
 ```
 

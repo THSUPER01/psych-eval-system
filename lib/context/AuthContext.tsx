@@ -3,15 +3,36 @@
 import React, { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { authService } from '@/lib/services/authService'
-import type { AuthContextType, Permiso, User } from '@/types/auth.types'
+import { rolesService } from '@/lib/services/rolesService'
+import type { AuthContextType, Permiso, User, Rol } from '@/types/auth.types'
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [permissions, setPermissions] = useState<number[]>([])
+  const [userRole, setUserRole] = useState<Rol | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
+
+  // Fetch role data when user changes
+  useEffect(() => {
+    const fetchRole = async () => {
+      if (user?.RolApp) {
+        try {
+          const response = await rolesService.getRolById(Number(user.RolApp))
+          if (response.success && response.data) {
+            setUserRole(response.data)
+          }
+        } catch (error) {
+          console.error('Error fetching role:', error)
+        }
+      } else {
+        setUserRole(null)
+      }
+    }
+    fetchRole()
+  }, [user])
 
   useEffect(() => {
     try {
@@ -58,6 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     authService.logout()
     setUser(null)
     setPermissions([])
+    setUserRole(null)
     router.push('/psychologist/login')
   }, [router])
 
@@ -70,13 +92,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     () => ({
       user,
       permissions,
+      userRole,
       isAuthenticated: !!user && !authService.isTokenExpired(),
       isLoading,
       login,
       logout,
       hasPermission,
     }),
-    [user, permissions, isLoading, login, logout, hasPermission],
+    [user, permissions, userRole, isLoading, login, logout, hasPermission],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

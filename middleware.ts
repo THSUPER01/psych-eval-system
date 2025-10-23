@@ -44,6 +44,7 @@ export async function middleware(request: NextRequest) {
   const publicPrefixes = [
     '/',
     '/psychologist/login',
+    '/psychologist/verify',
     '/aplicar',
     '/candidate',
     '/api',
@@ -91,7 +92,7 @@ export async function middleware(request: NextRequest) {
       if (!permisosResponse.ok) throw new Error('Error obteniendo permisos')
       const permisosData = await permisosResponse.json()
 
-      const response = NextResponse.redirect(new URL('/psychologist/dashboard', request.url))
+      const response = NextResponse.redirect(new URL('/dashboard/selection', request.url))
       // Nota: para que el cliente pueda leer y migrar a localStorage, no usamos httpOnly aquí.
       const maxAge = DURACION_HORAS_SSO * 60 * 60
       response.cookies.set('authToken', authToken, {
@@ -115,15 +116,17 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // If coming to protected pages without a valid token, redirect to login
-  const isPsychologistArea = pathname.startsWith('/psychologist') && !pathname.startsWith('/psychologist/login')
-  if (isPsychologistArea && (isTokenExpired(tokenCookie) || !tokenCookie)) {
-    return NextResponse.redirect(new URL('/psychologist/login', request.url))
-  }
-
-  // Allow other public paths
+  // Allow public paths early (including /psychologist/verify*)
   if (isPublic) {
     return NextResponse.next()
+  }
+
+  // If coming to protected pages without a valid token, redirect to login
+  const isPsychologistArea = pathname.startsWith('/psychologist') && !pathname.startsWith('/psychologist/login')
+  const isDashboardArea = pathname.startsWith('/dashboard')
+  
+  if ((isPsychologistArea || isDashboardArea) && (isTokenExpired(tokenCookie) || !tokenCookie)) {
+    return NextResponse.redirect(new URL('/psychologist/login', request.url))
   }
 
   return NextResponse.next()

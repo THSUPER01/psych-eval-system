@@ -77,6 +77,26 @@ export interface PermisosRolResponse {
   mensaje?: string
 }
 
+export interface Rol {
+  rolIdRol: number
+  rolRol: string
+  rolAplIdAplicacion: number
+  rolDescripcion: string
+  rolEstEstado: number
+  rolUsuarioCreacion: string
+  rolUsuarioModificacion: string
+  rolFechaCreacion: string
+  rolFechaModificacion: string
+  groPermisoRols: any[]
+  rolEstEstadoNavigation: any
+}
+
+export interface RolResponse {
+  success: boolean
+  message: string
+  data: Rol
+}
+
 export interface DecodedToken {
   exp: number
   iat: number
@@ -93,6 +113,7 @@ export interface User {
 export interface AuthContextType {
   user: User | null
   permissions: number[]
+  userRole: Rol | null
   isAuthenticated: boolean
   isLoading: boolean
   login: (token: string, permisos: Permiso[]) => void
