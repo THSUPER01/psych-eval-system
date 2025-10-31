@@ -49,6 +49,19 @@ export function SelectionSidebar() {
     return navigation
   }, [isAdmin])
 
+  const activeHref = useMemo(() => {
+    let matched = ""
+    for (const item of allNavigation) {
+      const href = item.href
+      const exactMatch = pathname === href
+      const nestedMatch = pathname.startsWith(`${href}/`)
+      if ((exactMatch || nestedMatch) && href.length > matched.length) {
+        matched = href
+      }
+    }
+    return matched
+  }, [allNavigation, pathname])
+
   return (
     <>
       {/* Mobile menu button */}
@@ -88,7 +101,7 @@ export function SelectionSidebar() {
           {/* Navigation */}
           <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-1">
             {allNavigation.map((item) => {
-              const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
+              const isActive = item.href === activeHref
               return (
                 <Link
                   key={item.name}

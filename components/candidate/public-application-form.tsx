@@ -1,7 +1,8 @@
-"use client"
+﻿"use client"
 
 import type React from "react"
 
+import Image from "next/image"
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -13,6 +14,7 @@ import { useToast } from "@/hooks/use-toast"
 import { getComunas, getBarriosByComuna, type BarrioData } from "@/lib/manizales-data"
 import { getAllBarriosVillamaria, type BarrioVillamariaData } from "@/lib/villamaria-data"
 import { SuccessConfirmation } from "@/components/ui/success-confirmation"
+import { brandLogos } from "@/lib/brandAssets"
 import {
   validateEdad,
   validateTelefono,
@@ -90,11 +92,11 @@ export function PublicApplicationForm() {
   }, [formData.Municipio])
 
   useEffect(() => {
-    // Cargar barrios según el municipio seleccionado
+  // Cargar barrios según el municipio seleccionado
     if (formData.Municipio === "Manizales" && formData.Comuna) {
       const barrios = getBarriosByComuna(formData.Comuna)
       setBarriosDisponibles(barrios)
-    } else if (formData.Municipio === "Villamaría") {
+  } else if (formData.Municipio === "Villamaría") {
       const barrios = getAllBarriosVillamaria()
       setBarriosDisponibles(barrios)
     } else {
@@ -107,7 +109,7 @@ export function PublicApplicationForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    // Validaciones de información de contacto
+  // Validaciones de información de contacto
     const nombreValidation = validateNombreCompleto(formData.nombre_completo)
     if (!nombreValidation.isValid) {
       toast({
@@ -138,7 +140,7 @@ export function PublicApplicationForm() {
       return
     }
 
-    // Validaciones opcionales de información demográfica (si se completó)
+  // Validaciones opcionales de información demográfica (si se completó)
     if (formData.edad_al_ingresar) {
       const edadValidation = validateEdad(formData.edad_al_ingresar)
       if (!edadValidation.isValid) {
@@ -260,14 +262,14 @@ export function PublicApplicationForm() {
     }
 
     setIsLoading(true)
-    console.log('📝 Form validation passed, submitting...')
+  console.log('Form validation passed, submitting...')
 
     // TODO: Implement actual API call to save public application data
     setTimeout(() => {
-      console.log('✅ Setting isSubmitted to TRUE')
+  console.log('Setting isSubmitted to TRUE')
       setIsSubmitted(true)
       setIsLoading(false)
-      console.log('📊 Form submitted successfully, should show SuccessConfirmation now')
+  console.log('Form submitted successfully, should show SuccessConfirmation now')
     }, 1500)
   }
 
@@ -287,22 +289,22 @@ export function PublicApplicationForm() {
     setFormData((prev) => ({ ...prev, numero_hijos: value, edades_de_hijos: newAges }))
   }
 
-  console.log('🔍 PublicApplicationForm render - isSubmitted:', isSubmitted)
+  console.log('PublicApplicationForm render - isSubmitted:', isSubmitted)
 
   if (isSubmitted) {
-    console.log('🎯 Rendering SuccessConfirmation component')
+    console.log('Rendering SuccessConfirmation component')
     return (
       <SuccessConfirmation
-        title="¡Solicitud Enviada!"
+        title="¡Solicitud enviada!"
         description="Gracias por tu interés en trabajar con nosotros. Tu solicitud ha sido recibida correctamente."
-        message="Nuestro equipo de recursos humanos revisará tu información y te contactará pronto."
+        message="Nuestro equipo de recursos humanos revisará tu información y se pondrá en contacto contigo pronto."
         additionalInfo={
           <>
             <p className="text-sm font-medium mb-2">¿Qué sigue?</p>
             <ul className="text-sm text-muted-foreground text-left space-y-2">
-              <li>• Revisaremos tu solicitud en un plazo de 3-5 días hábiles</li>
-              <li>• Te contactaremos por correo o teléfono si tu perfil es seleccionado</li>
-              <li>• Recibirás instrucciones para las evaluaciones psicológicas</li>
+              <li>Revisaremos tu solicitud en un plazo de 3-5 días hábiles</li>
+              <li>Te contactaremos por correo o teléfono si tu perfil es seleccionado</li>
+              <li>Recibirás instrucciones para las evaluaciones psicológicas</li>
             </ul>
           </>
         }
@@ -311,36 +313,62 @@ export function PublicApplicationForm() {
   }
 
   return (
-    <div className="container mx-auto max-w-4xl">
-      <Card>
-        <CardHeader className="text-center pb-8">
-          <div className="flex justify-center mb-4">
-            <div className="bg-primary/10 p-4 rounded-full">
-              <Briefcase className="w-12 h-12 text-primary" />
+    <div className="relative mx-auto max-w-5xl py-6">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-6 top-0 -z-10 h-64 rounded-3xl bg-primary/20 blur-3xl"
+      />
+      <Card className="overflow-hidden border-none bg-white/95 shadow-2xl shadow-primary/10 backdrop-blur">
+        <CardHeader className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-primary/10 to-transparent px-6 py-8 sm:px-10">
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-0 right-0 hidden w-1/2 rounded-l-[160px] bg-primary/20 blur-3xl md:block"
+          />
+          <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-xl space-y-3 text-center md:text-left">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
+                <Briefcase className="h-4 w-4" />
+                Oportunidades laborales
+              </div>
+              <CardTitle className="text-3xl font-bold text-primary">Construye tu futuro con nosotros</CardTitle>
+              <CardDescription className="text-base text-muted-foreground">
+                Comparte tus datos y experiencia para participar en nuestros procesos de selección. Cuidaremos tu
+                información en cada paso.
+              </CardDescription>
+            </div>
+            <div className="grid w-full max-w-sm grid-cols-2 gap-3 sm:max-w-md">
+              {brandLogos.map((logo, index) => (
+                <div
+                  key={logo.src}
+                  className="flex items-center justify-center rounded-xl bg-white/90 px-3 py-2 shadow-sm ring-1 ring-primary/10"
+                >
+                  <Image
+                    src={logo.src}
+                    alt={logo.alt}
+                    width={120}
+                    height={48}
+                    sizes="(min-width: 768px) 120px, 40vw"
+                    priority={index === 0}
+                    className="h-10 w-auto object-contain"
+                  />
+                </div>
+              ))}
             </div>
           </div>
-          <CardTitle className="text-3xl mb-2">Solicitud de Empleo</CardTitle>
-          <CardDescription className="text-base">
-            Super de Alimentos S.A. - Formulario de Postulación
-          </CardDescription>
-          <p className="text-sm text-muted-foreground mt-4">
-            Completa el siguiente formulario para postularte a las oportunidades laborales en nuestra empresa. Toda la
-            información será tratada de manera confidencial.
-          </p>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-6 py-8 sm:px-10 sm:py-10">
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Sección: Información de Contacto */}
             <div className="space-y-4">
               <div className="border-b pb-2">
-                <h3 className="text-lg font-semibold text-primary">Información de Contacto</h3>
+                <h3 className="text-lg font-semibold text-primary">Información de contacto</h3>
                 <p className="text-sm text-muted-foreground">Datos para comunicarnos contigo</p>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="nombre_completo">
-                    Nombre Completo <span className="text-red-500">*</span>
+                    Nombre completo <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="nombre_completo"
@@ -367,7 +395,7 @@ export function PublicApplicationForm() {
 
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="correo_electronico">
-                    Correo Electrónico <span className="text-red-500">*</span>
+                    Correo electrónico <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="correo_electronico"
@@ -384,7 +412,7 @@ export function PublicApplicationForm() {
             {/* Sección: Información Personal */}
             <div className="space-y-4">
               <div className="border-b pb-2">
-                <h3 className="text-lg font-semibold text-primary">Información Personal</h3>
+                <h3 className="text-lg font-semibold text-primary">Información personal</h3>
                 <p className="text-sm text-muted-foreground">Datos demográficos básicos</p>
               </div>
 
@@ -418,7 +446,7 @@ export function PublicApplicationForm() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="CLB_EstadoCivil">Estado Civil</Label>
+                  <Label htmlFor="CLB_EstadoCivil">Estado civil</Label>
                   <Select
                     value={formData.CLB_EstadoCivil}
                     onValueChange={(value) => updateFormData("CLB_EstadoCivil", value)}
@@ -429,7 +457,7 @@ export function PublicApplicationForm() {
                     <SelectContent>
                       <SelectItem value="soltero">Soltero(a)</SelectItem>
                       <SelectItem value="casado">Casado(a)</SelectItem>
-                      <SelectItem value="union_libre">Unión Libre</SelectItem>
+                      <SelectItem value="union_libre">Unión libre</SelectItem>
                       <SelectItem value="divorciado">Divorciado(a)</SelectItem>
                       <SelectItem value="viudo">Viudo(a)</SelectItem>
                     </SelectContent>
@@ -455,7 +483,7 @@ export function PublicApplicationForm() {
                       <Label htmlFor="numero_hijos">Número de hijos</Label>
                       <Select value={formData.numero_hijos} onValueChange={handleNumeroHijosChange}>
                         <SelectTrigger id="numero_hijos">
-                          <SelectValue placeholder="Selecciona cantidad" />
+                          <SelectValue placeholder="selecciona cantidad" />
                         </SelectTrigger>
                         <SelectContent>
                           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
@@ -543,15 +571,15 @@ export function PublicApplicationForm() {
                     disabled={!formData.Municipio || (formData.Municipio === "Manizales" && !formData.Comuna)}
                   >
                     <SelectTrigger id="Barrio">
-                      <SelectValue
-                        placeholder={
-                          !formData.Municipio 
-                            ? "Primero selecciona municipio" 
-                            : formData.Municipio === "Manizales" && !formData.Comuna 
-                            ? "Primero selecciona comuna"
-                            : "Selecciona barrio"
-                        }
-                      />
+                        <SelectValue
+                          placeholder={
+                            !formData.Municipio 
+                              ? "Primero selecciona municipio" 
+                              : formData.Municipio === "Manizales" && !formData.Comuna 
+                              ? "Primero selecciona comuna"
+                              : "Selecciona barrio"
+                          }
+                        />
                     </SelectTrigger>
                     <SelectContent>
                       {barriosDisponibles.map((barrio) => (
@@ -567,7 +595,7 @@ export function PublicApplicationForm() {
                   <Label htmlFor="Estrato">Estrato</Label>
                   <Select value={formData.Estrato} onValueChange={(value) => updateFormData("Estrato", value)}>
                     <SelectTrigger id="Estrato">
-                      <SelectValue placeholder="Selecciona estrato" />
+                      <SelectValue placeholder="selecciona estrato" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="1">1</SelectItem>
@@ -581,7 +609,7 @@ export function PublicApplicationForm() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="Direccion">Direccion</Label>
+                <Label htmlFor="Direccion">Dirección</Label>
                 <Input
                     id="Direccion"
                     type="text"
@@ -595,19 +623,19 @@ export function PublicApplicationForm() {
             {/* Sección: Tallas */}
             <div className="space-y-4">
               <div className="border-b pb-2">
-                <h3 className="text-lg font-semibold text-primary">Tallas de Uniforme</h3>
+                <h3 className="text-lg font-semibold text-primary">Tallas de uniforme</h3>
                 <p className="text-sm text-muted-foreground">Información para dotación laboral</p>
               </div>
 
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="space-y-2">
-                  <Label htmlFor="talla_camisa">Talla de Camisa</Label>
+                  <Label htmlFor="talla_camisa">Talla de camisa</Label>
                   <Select
                     value={formData.talla_camisa}
                     onValueChange={(value) => updateFormData("talla_camisa", value)}
                   >
                     <SelectTrigger id="talla_camisa">
-                      <SelectValue placeholder="Selecciona talla" />
+                      <SelectValue placeholder="selecciona talla" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="XS">XS</SelectItem>
@@ -622,13 +650,13 @@ export function PublicApplicationForm() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="talla_pantalon">Talla de Pantalón</Label>
+                  <Label htmlFor="talla_pantalon">Talla de pantalón</Label>
                   <Select
                     value={formData.talla_pantalon}
                     onValueChange={(value) => updateFormData("talla_pantalon", value)}
                   >
                     <SelectTrigger id="talla_pantalon">
-                      <SelectValue placeholder="Selecciona talla" />
+                      <SelectValue placeholder="selecciona talla" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="28">28</SelectItem>
@@ -645,13 +673,13 @@ export function PublicApplicationForm() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="talla_zapatos">Talla de Zapatos</Label>
+                  <Label htmlFor="talla_zapatos">Talla de zapatos</Label>
                   <Select
                     value={formData.talla_zapatos}
                     onValueChange={(value) => updateFormData("talla_zapatos", value)}
                   >
                     <SelectTrigger id="talla_zapatos">
-                      <SelectValue placeholder="Selecciona talla" />
+                      <SelectValue placeholder="selecciona talla" />
                     </SelectTrigger>
                     <SelectContent>
                       {Array.from({ length: 18 }, (_, i) => i + 34).map((size) => (
@@ -668,7 +696,7 @@ export function PublicApplicationForm() {
             {/* Nota de privacidad */}
             <div className="bg-muted/50 rounded-lg p-4 border">
               <p className="text-xs text-muted-foreground">
-                <strong>Política de Privacidad:</strong> La información proporcionada será utilizada exclusivamente para
+                <strong>Política de privacidad:</strong> La información proporcionada será utilizada exclusivamente para
                 procesos de selección en Super de Alimentos S.A. y será tratada de manera confidencial según la Ley de
                 Protección de Datos Personales.
               </p>
@@ -693,3 +721,6 @@ export function PublicApplicationForm() {
     </div>
   )
 }
+
+
+

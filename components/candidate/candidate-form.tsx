@@ -1,7 +1,8 @@
-"use client"
+﻿"use client"
 
 import type React from "react"
 
+import Image from "next/image"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,6 +15,7 @@ import { useToast } from "@/hooks/use-toast"
 import { getComunas, getBarriosByComuna, type BarrioData } from "@/lib/manizales-data"
 import { getAllBarriosVillamaria, type BarrioVillamariaData } from "@/lib/villamaria-data"
 import { SuccessConfirmation } from "@/components/ui/success-confirmation"
+import { brandLogos } from "@/lib/brandAssets"
 import {
   validateEdad,
   validateDireccion,
@@ -64,7 +66,7 @@ export function CandidateForm({ token }: { token: string }) {
   })
   const { toast } = useToast()
   const router = useRouter()
-
+  
   // Cargar datos geográficos
   const [comunas, setComunas] = useState<string[]>([])
   const [barriosDisponibles, setBarriosDisponibles] = useState<BarrioData[] | BarrioVillamariaData[]>([])
@@ -160,7 +162,7 @@ export function CandidateForm({ token }: { token: string }) {
     }
 
     // Validar hijos si aplica
-    if (formData.Hijos === "Sí") {
+    if (formData.Hijos === "Sí" || formData.Hijos === "Si") {
       const hijosValidation = validateEdadesHijos(formData.numero_hijos, formData.edades_de_hijos)
       if (!hijosValidation.isValid) {
         toast({
@@ -203,15 +205,15 @@ export function CandidateForm({ token }: { token: string }) {
       return
     }
 
-    setIsLoading(true)
-    console.log('📝 Form validation passed, submitting...')
+  setIsLoading(true)
+  console.log('Form validation passed, submitting...')
 
     // TODO: Implement actual API call to save form data
     setTimeout(() => {
-      console.log('✅ Setting isSubmitted to TRUE')
+      console.log('✓ Setting isSubmitted to TRUE')
       setIsSubmitted(true)
       setIsLoading(false)
-      console.log('📊 Form submitted successfully, should show SuccessConfirmation now')
+      console.log('Form submitted successfully, should show SuccessConfirmation now')
     }, 1500)
   }
 
@@ -231,47 +233,77 @@ export function CandidateForm({ token }: { token: string }) {
     setFormData((prev) => ({ ...prev, numero_hijos: value, edades_de_hijos: newAges }))
   }
 
-  console.log('🔍 CandidateForm render - isSubmitted:', isSubmitted)
+  console.log('CandidateForm render - isSubmitted:', isSubmitted)
 
   if (isSubmitted) {
-    console.log('🎯 Rendering SuccessConfirmation component')
+    console.log('Rendering SuccessConfirmation component')
     return (
       <SuccessConfirmation
-        title="¡Formulario Enviado!"
+        title="¡Formulario enviado!"
         description="Gracias por completar el formulario de evaluación. Tu información ha sido guardada de manera segura y confidencial."
         message="El psicólogo a cargo revisará tu información y se pondrá en contacto contigo próximamente."
         onBackToHome={() => router.push("/")}
-        backButtonText="Volver al Inicio"
+        backButtonText="Volver al inicio"
       />
     )
   }
 
   return (
-    <div className="container mx-auto max-w-3xl">
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="bg-accent/10 p-2 rounded-lg">
-              <Brain className="w-8 h-8 text-accent" />
+    <div className="relative mx-auto max-w-4xl py-6">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-4 top-0 -z-10 h-60 rounded-3xl bg-accent/30 blur-3xl"
+      />
+      <Card className="overflow-hidden border-none bg-white/95 shadow-2xl shadow-primary/10 backdrop-blur">
+        <CardHeader className="relative overflow-hidden bg-gradient-to-br from-accent/10 via-primary/10 to-transparent px-6 py-8 sm:px-10">
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-0 right-0 hidden w-1/2 rounded-l-[160px] bg-accent/20 blur-3xl md:block"
+          />
+          <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-lg space-y-3 text-center md:text-left">
+              <div className="inline-flex items-center gap-2 rounded-full bg-accent/15 px-3 py-1 text-sm font-semibold text-accent">
+                <Brain className="h-4 w-4" />
+                Evaluación en curso
+              </div>
+              <CardTitle className="text-3xl font-bold text-primary">Bienvenido a tu proceso</CardTitle>
+              <CardDescription className="text-base text-muted-foreground">
+                Dedica unos minutos a compartir tu información personal y laboral. Este paso nos ayuda a construir
+                rutas de crecimiento acordes con tu perfil.
+              </CardDescription>
             </div>
-            <div>
-              <CardTitle className="text-2xl">Formulario de Evaluación</CardTitle>
-              <CardDescription>Por favor completa todos los campos con tu información</CardDescription>
+            <div className="grid w-full max-w-sm grid-cols-2 gap-3 sm:max-w-md">
+              {brandLogos.map((logo, index) => (
+                <div
+                  key={logo.src}
+                  className="flex items-center justify-center rounded-xl bg-white/90 px-3 py-2 shadow-sm ring-1 ring-primary/10"
+                >
+                  <Image
+                    src={logo.src}
+                    alt={logo.alt}
+                    width={110}
+                    height={44}
+                    sizes="(min-width: 768px) 110px, 40vw"
+                    priority={index === 0}
+                    className="h-9 w-auto object-contain"
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-6 py-8 sm:px-10 sm:py-10">
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Sección: Información Personal */}
+            {/* Sección: Información personal */}
             <div className="space-y-4">
               <div className="border-b pb-2">
-                <h3 className="text-lg font-semibold text-primary">Información Personal</h3>
+                <h3 className="text-lg font-semibold text-primary">Información personal</h3>
                 <p className="text-sm text-muted-foreground">Datos demográficos básicos</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="estado-civil">Estado Civil</Label>
+                  <Label htmlFor="estado-civil">Estado civil</Label>
                   <Select
                     value={formData.CLB_EstadoCivil}
                     onValueChange={(value) => updateFormData("CLB_EstadoCivil", value)}
@@ -283,7 +315,7 @@ export function CandidateForm({ token }: { token: string }) {
                     <SelectContent>
                       <SelectItem value="Soltero/a">Soltero/a</SelectItem>
                       <SelectItem value="Casado/a">Casado/a</SelectItem>
-                      <SelectItem value="Unión Libre">Unión Libre</SelectItem>
+                      <SelectItem value="Unión Libre">Unión libre</SelectItem>
                       <SelectItem value="Divorciado/a">Divorciado/a</SelectItem>
                       <SelectItem value="Viudo/a">Viudo/a</SelectItem>
                     </SelectContent>
@@ -310,21 +342,21 @@ export function CandidateForm({ token }: { token: string }) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="edad">Edad al Ingresar</Label>
-                  <Input
-                    id="edad"
-                    type="number"
-                    min="18"
-                    max="100"
-                    placeholder="28"
-                    value={formData.edad_al_ingresar}
-                    onChange={(e) => updateFormData("edad_al_ingresar", e.target.value)}
-                    required
-                  />
+                  <Label htmlFor="edad">Edad al ingresar</Label>
+                    <Input
+                      id="edad"
+                      type="number"
+                      min="18"
+                      max="100"
+                      placeholder="Ej: 28"
+                      value={formData.edad_al_ingresar}
+                      onChange={(e) => updateFormData("edad_al_ingresar", e.target.value)}
+                      required
+                    />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="hijos">¿Tiene Hijos?</Label>
+                  <Label htmlFor="hijos">¿Tiene hijos?</Label>
                   <Select
                     value={formData.Hijos}
                     onValueChange={(value) => {
@@ -347,7 +379,7 @@ export function CandidateForm({ token }: { token: string }) {
 
                 {formData.Hijos === "Sí" && (
                   <div className="space-y-2">
-                    <Label htmlFor="numero-hijos">¿Cuántos Hijos?</Label>
+                    <Label htmlFor="numero-hijos">¿Cuántos hijos?</Label>
                     <Select value={formData.numero_hijos} onValueChange={handleNumeroHijosChange} required>
                       <SelectTrigger id="numero-hijos">
                         <SelectValue placeholder="Selecciona..." />
@@ -375,7 +407,7 @@ export function CandidateForm({ token }: { token: string }) {
                 <div className="grid md:grid-cols-2 gap-4">
                   {Array.from({ length: parseInt(formData.numero_hijos) }).map((_, index) => (
                     <div key={index} className="space-y-2">
-                      <Label htmlFor={`edad-hijo-${index}`}>Edad del Hijo {index + 1}</Label>
+                      <Label htmlFor={`edad-hijo-${index}`}>Edad del hijo {index + 1}</Label>
                       <Input
                         id={`edad-hijo-${index}`}
                         type="number"
@@ -497,16 +529,16 @@ export function CandidateForm({ token }: { token: string }) {
               </div>
             </div>
 
-            {/* Sección: Tallas de Ropa */}
+            {/* Sección: Tallas de ropa */}
             <div className="space-y-4">
               <div className="border-b pb-2">
-                <h3 className="text-lg font-semibold text-primary">Tallas de Ropa</h3>
+                <h3 className="text-lg font-semibold text-primary">Tallas de ropa</h3>
                 <p className="text-sm text-muted-foreground">Información para dotación laboral</p>
               </div>
 
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="talla-camisa">Talla Camisa</Label>
+                  <Label htmlFor="talla-camisa">Talla camisa</Label>
                   <Select
                     value={formData.talla_camisa}
                     onValueChange={(value) => updateFormData("talla_camisa", value)}
@@ -528,7 +560,7 @@ export function CandidateForm({ token }: { token: string }) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="talla-pantalon">Talla Pantalón</Label>
+                  <Label htmlFor="talla-pantalon">Talla pantalón</Label>
                   <Select
                     value={formData.talla_pantalon}
                     onValueChange={(value) => updateFormData("talla_pantalon", value)}
@@ -552,7 +584,7 @@ export function CandidateForm({ token }: { token: string }) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="talla-zapatos">Talla Zapatos</Label>
+                  <Label htmlFor="talla-zapatos">Talla zapatos</Label>
                   <Select
                     value={formData.talla_zapatos}
                     onValueChange={(value) => updateFormData("talla_zapatos", value)}
@@ -594,3 +626,4 @@ export function CandidateForm({ token }: { token: string }) {
     </div>
   )
 }
+
