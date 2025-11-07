@@ -4,40 +4,61 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated theme for professional psychology evaluation system */
-  --background: oklch(0.99 0.002 264);
-  --foreground: oklch(0.15 0.01 264);
+  /* Mundo Súper - Identidad Visual */
+  /* Azul principal: #0046BE, Azul claro: #00AEEF, Naranja: #F7941D, Morado: #8E2FA0, Verde: #7AC943 */
+  
+  --background: oklch(1 0 0); /* Blanco #FFFFFF */
+  --foreground: oklch(0.2 0.05 264); /* Texto oscuro */
+  
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.01 264);
+  --card-foreground: oklch(0.2 0.05 264);
+  
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.01 264);
-  --primary: oklch(0.42 0.19 264);
-  --primary-foreground: oklch(0.99 0.002 264);
-  --secondary: oklch(0.96 0.01 264);
-  --secondary-foreground: oklch(0.15 0.01 264);
-  --muted: oklch(0.96 0.01 264);
+  --popover-foreground: oklch(0.2 0.05 264);
+  
+  --primary: oklch(0.38 0.19 264); /* Azul principal #0046BE */
+  --primary-foreground: oklch(1 0 0); /* Blanco sobre azul */
+  
+  --secondary: oklch(0.95 0.01 240); /* Azul muy claro */
+  --secondary-foreground: oklch(0.2 0.05 264);
+  
+  --muted: oklch(0.96 0.005 240);
   --muted-foreground: oklch(0.5 0.02 264);
-  --accent: oklch(0.55 0.22 280);
-  --accent-foreground: oklch(0.99 0.002 264);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.99 0.002 264);
-  --border: oklch(0.9 0.01 264);
-  --input: oklch(0.9 0.01 264);
-  --ring: oklch(0.42 0.19 264);
-  --chart-1: oklch(0.55 0.22 280);
-  --chart-2: oklch(0.65 0.2 220);
-  --chart-3: oklch(0.6 0.18 180);
-  --chart-4: oklch(0.7 0.15 140);
-  --chart-5: oklch(0.75 0.18 100);
-  --radius: 0.75rem;
-  --sidebar: oklch(0.99 0.002 264);
-  --sidebar-foreground: oklch(0.15 0.01 264);
-  --sidebar-primary: oklch(0.42 0.19 264);
-  --sidebar-primary-foreground: oklch(0.99 0.002 264);
-  --sidebar-accent: oklch(0.96 0.01 264);
-  --sidebar-accent-foreground: oklch(0.15 0.01 264);
-  --sidebar-border: oklch(0.9 0.01 264);
-  --sidebar-ring: oklch(0.42 0.19 264);
+  
+  --accent: oklch(0.65 0.18 220); /* Azul claro #00AEEF */
+  --accent-foreground: oklch(1 0 0);
+  
+  --destructive: oklch(0.55 0.22 27); /* Rojo/Naranja alerta */
+  --destructive-foreground: oklch(1 0 0);
+  
+  --border: oklch(0.92 0.01 240);
+  --input: oklch(0.96 0.005 240);
+  --ring: oklch(0.38 0.19 264); /* Azul principal */
+  
+  /* Charts con paleta Mundo Súper */
+  --chart-1: oklch(0.65 0.18 220); /* Azul claro */
+  --chart-2: oklch(0.65 0.19 50); /* Naranja #F7941D */
+  --chart-3: oklch(0.55 0.18 310); /* Morado #8E2FA0 */
+  --chart-4: oklch(0.75 0.15 130); /* Verde #7AC943 */
+  --chart-5: oklch(0.38 0.19 264); /* Azul principal */
+  
+  --radius: 1rem; /* Bordes más redondeados */
+  
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.2 0.05 264);
+  --sidebar-primary: oklch(0.38 0.19 264);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.96 0.005 240);
+  --sidebar-accent-foreground: oklch(0.2 0.05 264);
+  --sidebar-border: oklch(0.92 0.01 240);
+  --sidebar-ring: oklch(0.38 0.19 264);
+  
+  /* Colores adicionales Mundo Súper */
+  --mundo-blue: #0046BE;
+  --mundo-light-blue: #00AEEF;
+  --mundo-orange: #F7941D;
+  --mundo-purple: #8E2FA0;
+  --mundo-green: #7AC943;
 }
 
 .dark {
@@ -76,8 +97,7 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-poppins);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

@@ -16,6 +16,8 @@ import { getComunas, getBarriosByComuna, type BarrioData } from "@/lib/manizales
 import { getAllBarriosVillamaria, type BarrioVillamariaData } from "@/lib/villamaria-data"
 import { SuccessConfirmation } from "@/components/ui/success-confirmation"
 import { brandLogos } from "@/lib/brandAssets"
+import { useCandidatoPublico, useCompletarFormulario } from "@/lib/hooks/useCandidatePublic"
+import type { CrearFormularioCandidatoDto } from "@/types/selection.types"
 import {
   validateEdad,
   validateDireccion,
@@ -46,8 +48,16 @@ interface FormData {
 }
 
 export function CandidateForm({ token }: { token: string }) {
-  const [isLoading, setIsLoading] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const { toast } = useToast()
+  const router = useRouter()
+  
+  // Fetch candidato data
+  const { data: candidato, isLoading: isLoadingCandidato, error: candidatoError } = useCandidatoPublico(token)
+  
+  // Mutation para completar formulario
+  const completarFormulario = useCompletarFormulario()
+  
   const [formData, setFormData] = useState<FormData>({
     CLB_EstadoCivil: "",
     CLB_Genero: "",
@@ -64,12 +74,33 @@ export function CandidateForm({ token }: { token: string }) {
     talla_pantalon: "",
     talla_zapatos: "",
   })
-  const { toast } = useToast()
-  const router = useRouter()
   
   // Cargar datos geográficos
   const [comunas, setComunas] = useState<string[]>([])
   const [barriosDisponibles, setBarriosDisponibles] = useState<BarrioData[] | BarrioVillamariaData[]>([])
+
+  // Pre-llenar el formulario si el candidato ya tiene datos
+  useEffect(() => {
+    if (candidato?.formulario) {
+      const formulario = candidato.formulario
+      setFormData({
+        CLB_EstadoCivil: formulario.estadoCivil || "",
+        CLB_Genero: formulario.genero || "",
+        edad_al_ingresar: formulario.edadIngreso?.toString() || "",
+        Municipio: formulario.municipio || "",
+        Barrio: formulario.barrio || "",
+        Comuna: formulario.comuna || "",
+        Estrato: formulario.estrato?.toString() || "",
+        Direccion: formulario.direccion || "",
+        Hijos: formulario.tieneHijo ? "Sí" : "No",
+        numero_hijos: formulario.cantidadHijo?.toString() || "",
+        edades_de_hijos: formulario.edadesHijos?.map(e => e.toString()) || [],
+        talla_camisa: formulario.tallaCamisa || "",
+        talla_pantalon: formulario.tallaPantalon || "",
+        talla_zapatos: formulario.tallaZapato || "",
+      })
+    }
+  }, [candidato])
 
   useEffect(() => {
     // Cargar comunas cuando el municipio es Manizales
@@ -205,16 +236,44 @@ export function CandidateForm({ token }: { token: string }) {
       return
     }
 
-  setIsLoading(true)
-  console.log('Form validation passed, submitting...')
+    try {
+      // Mapear payload al DTO esperado por el backend
+      const edadesHijosNums = (formData.edades_de_hijos || [])
+        .filter((e) => e !== "")
+        .map((e) => parseInt(e, 10))
+        .filter((n) => !Number.isNaN(n))
 
-    // TODO: Implement actual API call to save form data
-    setTimeout(() => {
-      console.log('✓ Setting isSubmitted to TRUE')
+      const dto: CrearFormularioCandidatoDto = {
+        estadoCivil: formData.CLB_EstadoCivil,
+        genero: formData.CLB_Genero,
+        edadIngreso: formData.edad_al_ingresar ? parseInt(formData.edad_al_ingresar, 10) : undefined,
+        municipio: formData.Municipio,
+        comuna: formData.Comuna,
+        barrio: formData.Barrio,
+        direccion: formData.Direccion,
+        estrato: formData.Estrato ? parseInt(formData.Estrato, 10) : undefined,
+        tieneHijo: formData.Hijos === "Sí" || formData.Hijos === "Si",
+        edadesHijos: edadesHijosNums,
+        tallaCamisa: formData.talla_camisa || undefined,
+        tallaPantalon: formData.talla_pantalon || undefined,
+        tallaZapato: formData.talla_zapatos || undefined,
+      }
+
+      await completarFormulario.mutateAsync({ token, datos: dto })
+
+      toast({
+        title: "Formulario enviado",
+        description: "Hemos registrado tu información correctamente.",
+      })
+
       setIsSubmitted(true)
-      setIsLoading(false)
-      console.log('Form submitted successfully, should show SuccessConfirmation now')
-    }, 1500)
+    } catch (err: any) {
+      toast({
+        variant: "destructive",
+        title: "No se pudo enviar",
+        description: err?.message || "Ocurrió un error al enviar el formulario.",
+      })
+    }
   }
 
   const updateFormData = (field: keyof FormData, value: string | string[]) => {
@@ -252,22 +311,24 @@ export function CandidateForm({ token }: { token: string }) {
     <div className="relative mx-auto max-w-4xl py-6">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-4 top-0 -z-10 h-60 rounded-3xl bg-accent/30 blur-3xl"
+        className="pointer-events-none absolute inset-x-4 top-0 -z-10 h-60 rounded-3xl bg-gradient-to-br from-[#00AEEF]/20 to-[#8E2FA0]/10 blur-3xl"
       />
-      <Card className="overflow-hidden border-none bg-white/95 shadow-2xl shadow-primary/10 backdrop-blur">
-        <CardHeader className="relative overflow-hidden bg-gradient-to-br from-accent/10 via-primary/10 to-transparent px-6 py-8 sm:px-10">
+      <Card className="overflow-hidden border-none bg-white shadow-2xl shadow-[#0046BE]/10 backdrop-blur rounded-3xl">
+        <CardHeader className="relative overflow-hidden bg-gradient-to-br from-[#E6F2FF] via-[#F0E6FF] to-white px-6 py-8 sm:px-10">
           <div
             aria-hidden="true"
-            className="absolute inset-y-0 right-0 hidden w-1/2 rounded-l-[160px] bg-accent/20 blur-3xl md:block"
+            className="absolute inset-y-0 right-0 hidden w-1/2 rounded-l-[160px] bg-gradient-to-l from-[#00AEEF]/10 to-transparent blur-2xl md:block"
           />
           <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="max-w-lg space-y-3 text-center md:text-left">
-              <div className="inline-flex items-center gap-2 rounded-full bg-accent/15 px-3 py-1 text-sm font-semibold text-accent">
+              <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#00AEEF]/15 to-[#8E2FA0]/15 px-4 py-2 text-sm font-semibold text-[#0046BE]">
                 <Brain className="h-4 w-4" />
                 Evaluación en curso
               </div>
-              <CardTitle className="text-3xl font-bold text-primary">Bienvenido a tu proceso</CardTitle>
-              <CardDescription className="text-base text-muted-foreground">
+              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-[#0046BE] to-[#8E2FA0] bg-clip-text text-transparent">
+                Bienvenido a tu proceso
+              </CardTitle>
+              <CardDescription className="text-base text-gray-600">
                 Dedica unos minutos a compartir tu información personal y laboral. Este paso nos ayuda a construir
                 rutas de crecimiento acordes con tu perfil.
               </CardDescription>
@@ -276,7 +337,7 @@ export function CandidateForm({ token }: { token: string }) {
               {brandLogos.map((logo, index) => (
                 <div
                   key={logo.src}
-                  className="flex items-center justify-center rounded-xl bg-white/90 px-3 py-2 shadow-sm ring-1 ring-primary/10"
+                  className="flex items-center justify-center rounded-2xl bg-white px-3 py-2 shadow-md ring-2 ring-[#00AEEF]/20 hover:ring-[#0046BE]/40 transition-all"
                 >
                   <Image
                     src={logo.src}
@@ -296,9 +357,9 @@ export function CandidateForm({ token }: { token: string }) {
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Sección: Información personal */}
             <div className="space-y-4">
-              <div className="border-b pb-2">
-                <h3 className="text-lg font-semibold text-primary">Información personal</h3>
-                <p className="text-sm text-muted-foreground">Datos demográficos básicos</p>
+              <div className="border-b-2 border-[#00AEEF]/30 pb-3">
+                <h3 className="text-lg font-bold text-[#0046BE]">Información personal</h3>
+                <p className="text-sm text-gray-600">Datos demográficos básicos</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
@@ -605,9 +666,14 @@ export function CandidateForm({ token }: { token: string }) {
               </div>
             </div>
 
-            <div className="pt-4 border-t">
-              <Button type="submit" size="lg" className="w-full" disabled={isLoading}>
-                {isLoading ? (
+            <div className="pt-6 border-t-2 border-[#00AEEF]/20">
+              <Button 
+                type="submit" 
+                size="lg" 
+                className="w-full rounded-2xl bg-gradient-to-r from-[#0046BE] to-[#00AEEF] hover:from-[#003A9E] hover:to-[#0098D4] text-white font-semibold shadow-lg shadow-[#0046BE]/30 transition-all" 
+                disabled={completarFormulario.isPending}
+              >
+                {completarFormulario.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Enviando Formulario...
@@ -616,7 +682,7 @@ export function CandidateForm({ token }: { token: string }) {
                   "Enviar Formulario"
                 )}
               </Button>
-              <p className="text-xs text-center text-muted-foreground mt-4">
+              <p className="text-xs text-center text-gray-500 mt-4">
                 Tu información será tratada de manera confidencial y segura
               </p>
             </div>

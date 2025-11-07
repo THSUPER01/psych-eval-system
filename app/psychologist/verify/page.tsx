@@ -143,7 +143,11 @@ export default function VerifyPage() {
   const handleSend = async () => {
     if (!pending?.documento || !selected) return
     setIsSubmitting(true)
+    
     try {
+      // Delay inicial para UX
+      await new Promise(resolve => setTimeout(resolve, 300))
+      
       const resp = await loginApiService.enviarToken(pending.documento, Number(selected))
       const idSession = (resp as any)?.data?.idSession || (resp as any)?.data?.idSesion || ""
       if (!idSession) throw new Error("No se recibio la sesion de verificacion")
@@ -161,17 +165,20 @@ export default function VerifyPage() {
         className: "border-green-600 bg-green-600 text-white",
         duration: 4000,
       })
+      
+      // Delay antes de navegar para asegurar que se vea el loading
+      await new Promise(resolve => setTimeout(resolve, 500))
       router.push("/psychologist/verify/code")
     } catch (error: any) {
+      setIsSubmitting(false)
       toast({
         title: "Error al enviar el codigo",
         description: error?.message || "No se pudo enviar el codigo. Intenta nuevamente.",
         variant: "destructive",
         duration: 5000,
       })
-    } finally {
-      setIsSubmitting(false)
     }
+    // No quitar isSubmitting para mantener el loading durante la transición
   }
 
   const showLoader = isChecking || isSubmitting

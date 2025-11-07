@@ -23,10 +23,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useCrearCandidato } from "@/lib/hooks/useSelection"
-import { useToast } from "@/hooks/use-toast"
+import { useModernToast } from "@/lib/toast"
 import { Loader2 } from "lucide-react"
 
 const formSchema = z.object({
+  cedulaCiudadania: z.string().min(6, "La cédula debe tener al menos 6 caracteres").max(20, "La cédula no puede tener más de 20 caracteres"),
   nombreCompleto: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
   email: z.string().email("Email inválido"),
   telefono: z.string().regex(/^[0-9+\-\s()]+$/, "Teléfono inválido").max(50),
@@ -45,12 +46,13 @@ export function AgregarCandidatoDialog({
   onOpenChange,
   requerimientoId,
 }: AgregarCandidatoDialogProps) {
-  const { toast } = useToast()
+  const toast = useModernToast()
   const crearMutation = useCrearCandidato()
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      cedulaCiudadania: "",
       nombreCompleto: "",
       email: "",
       telefono: "",
@@ -61,25 +63,23 @@ export function AgregarCandidatoDialog({
     try {
       await crearMutation.mutateAsync({
         requerimientoId,
+        cedulaCiudadania: values.cedulaCiudadania,
         nombreCompleto: values.nombreCompleto,
         email: values.email,
         telefono: values.telefono,
       })
 
-      toast({
+      toast.success({
         title: "Candidato agregado",
         description: "El candidato ha sido registrado exitosamente. Ahora puedes enviarle el link de registro.",
-        duration: 3000,
       })
 
       form.reset()
       onOpenChange(false)
     } catch (error) {
-      toast({
-        variant: "destructive",
+      toast.error({
         title: "Error",
         description: "No se pudo agregar el candidato. Por favor intenta nuevamente.",
-        duration: 5000,
       })
     }
   }
@@ -96,6 +96,27 @@ export function AgregarCandidatoDialog({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="cedulaCiudadania"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cédula de Ciudadanía</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Ej: 1234567890"
+                      {...field}
+                      disabled={crearMutation.isPending}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Número de cédula del candidato
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="nombreCompleto"

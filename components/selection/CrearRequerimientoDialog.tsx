@@ -25,12 +25,13 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { useCrearRequerimiento } from "@/lib/hooks/useSelection"
+import { selectionApiService } from "@/lib/services/selectionApiService"
 import { useAuth } from "@/lib/hooks/useAuth"
-import { useToast } from "@/hooks/use-toast"
+import { useModernToast } from "@/lib/toast"
 import { Loader2 } from "lucide-react"
 
 const formSchema = z.object({
-  cargoObjetivo: z.string().min(3, "El cargo debe tener al menos 3 caracteres"),
+  rolObjetivo: z.string().min(3, "El rol debe tener al menos 3 caracteres"),
   areaObjetivo: z.string().min(3, "El área debe tener al menos 3 caracteres"),
   perfilBasico: z.string().min(10, "El perfil debe tener al menos 10 caracteres"),
 })
@@ -47,53 +48,60 @@ export function CrearRequerimientoDialog({
   onOpenChange,
 }: CrearRequerimientoDialogProps) {
   const { user } = useAuth()
-  const { toast } = useToast()
+  const toast = useModernToast()
   const crearMutation = useCrearRequerimiento()
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      cargoObjetivo: "",
+      rolObjetivo: "",
       areaObjetivo: "",
       perfilBasico: "",
     },
   })
 
   const onSubmit = async (values: FormValues) => {
-    if (!user?.documento) {
-      toast({
-        variant: "destructive",
+    // Extraer solo el documento desde el JWT
+    const documento = user?.DocumentoColaborador || (user as any)?.documento
+
+    if (!documento) {
+      toast.error({
         title: "Error",
-        description: "No se pudo obtener la información del usuario.",
-        duration: 5000,
+        description: "No se pudo obtener el documento del colaborador desde el token.",
       })
       return
     }
 
+    // Obtener info adicional del colaborador (nombre/email) desde el backend de Talento Humano
+    const col = await selectionApiService.getColaboradorPorDocumento(documento)
+    const nombre = col?.nombreCompleto || (user as any)?.nombreColaborador || ""
+    const email =
+      col?.correoInstitucional ||
+      col?.correoElectronicoPersonal ||
+      (user as any)?.email ||
+      `${documento}@superalimentos.com.co`
+
     try {
       await crearMutation.mutateAsync({
-        psicologoDocumento: user.documento,
-        psicologoNombre: user.nombre || "",
-        psicologoEmail: user.email || "",
-        cargoObjetivo: values.cargoObjetivo,
+        psicologoDocumento: documento,
+        psicologoNombre: nombre,
+        psicologoEmail: email,
+        rolObjetivo: values.rolObjetivo,
         areaObjetivo: values.areaObjetivo,
         perfilBasico: values.perfilBasico,
       })
 
-      toast({
+      toast.success({
         title: "Requerimiento creado",
         description: "El requerimiento ha sido creado exitosamente.",
-        duration: 3000,
       })
 
       form.reset()
       onOpenChange(false)
     } catch (error) {
-      toast({
-        variant: "destructive",
+      toast.error({
         title: "Error",
         description: "No se pudo crear el requerimiento. Por favor intenta nuevamente.",
-        duration: 5000,
       })
     }
   }
@@ -112,10 +120,10 @@ export function CrearRequerimientoDialog({
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="cargoObjetivo"
+              name="rolObjetivo"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cargo Objetivo</FormLabel>
+                  <FormLabel>Rol</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Ej: Analista de Sistemas, Gerente Comercial"
@@ -124,7 +132,7 @@ export function CrearRequerimientoDialog({
                     />
                   </FormControl>
                   <FormDescription>
-                    El cargo para el cual se está reclutando
+                    El rol o cargo para el cual se está reclutando
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -136,7 +144,7 @@ export function CrearRequerimientoDialog({
               name="areaObjetivo"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Área Objetivo</FormLabel>
+                  <FormLabel>Área</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Ej: Tecnología, Ventas, Administración"

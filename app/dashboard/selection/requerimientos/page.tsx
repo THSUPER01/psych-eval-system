@@ -53,7 +53,7 @@ export default function RequerimientosPage() {
   // Filter requerimientos
   const filteredRequerimientos = requerimientos?.filter((req) => {
     const matchesSearch = 
-      req.cargoObjetivo.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      req.rolObjetivo.toLowerCase().includes(searchQuery.toLowerCase()) ||
       req.areaObjetivo.toLowerCase().includes(searchQuery.toLowerCase()) ||
       req.psicologoNombre.toLowerCase().includes(searchQuery.toLowerCase())
     
@@ -202,7 +202,7 @@ export default function RequerimientosPage() {
                       <TableCell className="font-medium">
                         <div className="flex items-center gap-2">
                           <FileText className="h-4 w-4 text-muted-foreground" />
-                          {req.cargoObjetivo}
+                          {req.rolObjetivo}
                         </div>
                       </TableCell>
                       <TableCell>{req.areaObjetivo}</TableCell>

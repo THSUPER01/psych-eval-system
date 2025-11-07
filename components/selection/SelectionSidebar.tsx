@@ -65,8 +65,8 @@ export function SelectionSidebar() {
   return (
     <>
       {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b px-4 py-3 flex items-center justify-between">
-        <h1 className="text-lg font-semibold">Sistema de Selección</h1>
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b px-4 py-3 flex items-center justify-between shadow-sm">
+        <h1 className="text-lg font-semibold text-[#0046BE]">Mundo Súper - Selección</h1>
         <Button
           variant="ghost"
           size="sm"
@@ -79,19 +79,19 @@ export function SelectionSidebar() {
       {/* Sidebar */}
       <div
         className={cn(
-          "fixed inset-y-0 left-0 z-40 w-64 bg-white border-r transform transition-transform duration-300 ease-in-out lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-40 w-64 bg-gradient-to-b from-white to-[#F0F7FF] border-r transform transition-transform duration-300 ease-in-out lg:translate-x-0",
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="h-16 flex items-center px-6 border-b">
+          <div className="h-16 flex items-center px-6 border-b bg-white">
             <Link href="/dashboard/selection" className="flex items-center gap-2">
               <Image
                 src="/images/Logo.png"
-                alt="Logo Super de Alimentos"
-                width={120}
-                height={40}
+                alt="Logo Mundo Súper"
+                width={140}
+                height={48}
                 className="object-contain"
                 priority
               />
@@ -108,10 +108,10 @@ export function SelectionSidebar() {
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={cn(
-                    "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors",
+                    "flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200",
                     isActive
-                      ? "bg-primary text-white"
-                      : "text-gray-700 hover:bg-gray-100"
+                      ? "bg-gradient-to-r from-[#0046BE] to-[#00AEEF] text-white shadow-lg shadow-blue-200"
+                      : "text-gray-700 hover:bg-white hover:shadow-md"
                   )}
                 >
                   <item.icon className="mr-3 h-5 w-5" />
@@ -123,7 +123,7 @@ export function SelectionSidebar() {
 
           {/* Decorative */}
           <div className="px-4 pb-4 hidden lg:block">
-            <div className="rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 p-4 text-center">
+            <div className="rounded-2xl bg-gradient-to-br from-[#E6F2FF] to-[#F0E6FF] p-4 text-center border border-[#00AEEF]/20">
               <div className="flex justify-center mb-2">
                 <Image
                   src="/images/Recurso%209.png"
@@ -133,18 +133,18 @@ export function SelectionSidebar() {
                   className="object-contain"
                 />
               </div>
-              <p className="text-xs font-medium text-gray-700">Explora los módulos</p>
-              <p className="text-xs text-gray-500 mt-1">Pruebas y asignaciones</p>
+              <p className="text-xs font-semibold text-[#0046BE]">Explora los módulos</p>
+              <p className="text-xs text-gray-600 mt-1">Pruebas y asignaciones</p>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="border-t px-4 py-4">
+          <div className="border-t px-4 py-4 bg-white">
             <Link
               href="/dashboard/selection/configuracion"
-              className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex items-center px-4 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gradient-to-r hover:from-[#F7941D]/10 hover:to-[#F7941D]/5 transition-all duration-200"
             >
-              <Settings className="mr-3 h-5 w-5" />
+              <Settings className="mr-3 h-5 w-5 text-[#F7941D]" />
               Configuración
             </Link>
           </div>

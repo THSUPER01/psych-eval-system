@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { useMarcarLinkEnviado } from "@/lib/hooks/useSelection"
-import { useToast } from "@/hooks/use-toast"
+import { useModernToast } from "@/lib/toast"
 import { Check, Copy, Info, Loader2, Mail, MessageSquare } from "lucide-react"
 import type { Candidato } from "@/types/selection.types"
 
@@ -28,18 +28,18 @@ export function EnviarLinkDialog({
   onOpenChange,
   candidato,
 }: EnviarLinkDialogProps) {
-  const { toast } = useToast()
+  const toast = useModernToast()
   const marcarMutation = useMarcarLinkEnviado()
   const [copied, setCopied] = useState(false)
 
   // TODO: Reemplazar con la URL real del frontend público
-  const linkFormulario = `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/candidate/${candidato.tokenAcceso}`
+  const linkFormulario = `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/candidate/${candidato.token}`
 
   const copiarLink = () => {
     navigator.clipboard.writeText(linkFormulario)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
-    toast({
+    toast.info({
       title: "Link copiado",
       description: "El link ha sido copiado al portapapeles.",
       duration: 2000,
@@ -49,18 +49,15 @@ export function EnviarLinkDialog({
   const marcarComoEnviado = async () => {
     try {
       await marcarMutation.mutateAsync(candidato.canId)
-      toast({
+      toast.success({
         title: "Link marcado como enviado",
         description: "El link ha sido marcado como enviado al candidato.",
-        duration: 3000,
       })
       onOpenChange(false)
     } catch (error) {
-      toast({
-        variant: "destructive",
+      toast.error({
         title: "Error",
         description: "No se pudo marcar el link como enviado.",
-        duration: 5000,
       })
     }
   }

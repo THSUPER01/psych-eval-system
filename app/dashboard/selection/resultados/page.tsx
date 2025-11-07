@@ -36,7 +36,7 @@ export default function ResultadosPage() {
 
   const reqMap = useMemo(() => {
     const map = new Map<number, string>()
-    requerimientos?.forEach(r => map.set(r.reqId, r.cargoObjetivo))
+    requerimientos?.forEach(r => map.set(r.reqId, r.rolObjetivo))
     return map
   }, [requerimientos])
 
@@ -119,7 +119,7 @@ export default function ResultadosPage() {
                 <SelectItem value="ALL">Todos los requerimientos</SelectItem>
                 {(requerimientos || []).map((r) => (
                   <SelectItem key={r.reqId} value={String(r.reqId)}>
-                    {r.cargoObjetivo}
+                    {r.rolObjetivo}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -167,7 +167,7 @@ export default function ResultadosPage() {
                       <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
                         <div className="flex items-center gap-1">
                           <FileText className="h-4 w-4" />
-                          {reqMap.get(candidato.requerimientoId) || `Req #${candidato.requerimientoId}`}
+                          {candidato.requerimientoId ? reqMap.get(candidato.requerimientoId) || `Req #${candidato.requerimientoId}` : "Sin requerimiento"}
                         </div>
                         <Badge variant="outline">{candidato.estado.estDescripcion}</Badge>
                         <span>

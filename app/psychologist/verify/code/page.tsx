@@ -114,8 +114,13 @@ export default function VerifyCodePage() {
       })
       return
     }
+    
     setIsSubmitting(true)
+    
     try {
+      // Delay inicial para UX
+      await new Promise(resolve => setTimeout(resolve, 300))
+      
       const resp = await loginApiService.verificarToken({
         documento: pending.documento,
         token: code,
@@ -145,17 +150,19 @@ export default function VerifyCodePage() {
         duration: 3000,
       })
 
+      // Delay antes de navegar para asegurar que se vea el mensaje de éxito
+      await new Promise(resolve => setTimeout(resolve, 600))
       router.push("/dashboard/selection")
     } catch (error: any) {
+      setIsSubmitting(false)
       toast({
         title: "Codigo incorrecto",
         description: error?.message || "El codigo ingresado no es valido. Intenta nuevamente.",
         variant: "destructive",
         duration: 5000,
       })
-    } finally {
-      setIsSubmitting(false)
     }
+    // No quitar isSubmitting para mantener el loading durante la transición
   }
 
   const showLoader = isChecking || isSubmitting

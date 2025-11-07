@@ -43,14 +43,23 @@ const toastVariants = cva(
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
-    VariantProps<typeof toastVariants>
->(({ className, variant, ...props }, ref) => {
+    VariantProps<typeof toastVariants> & {
+      icon?: React.ComponentType<{ className?: string }>
+      iconClassName?: string
+    }
+>(({ className, variant, icon, iconClassName, children, ...props }, ref) => {
+  const Icon = icon
   return (
     <ToastPrimitives.Root
       ref={ref}
       className={cn(toastVariants({ variant }), className)}
       {...props}
-    />
+    >
+      <div className="flex items-start gap-3">
+        {Icon && <Icon className={cn('h-5 w-5 mt-0.5 flex-shrink-0', iconClassName)} />}
+        <div className="flex-1 grid gap-1">{children}</div>
+      </div>
+    </ToastPrimitives.Root>
   )
 })
 Toast.displayName = ToastPrimitives.Root.displayName

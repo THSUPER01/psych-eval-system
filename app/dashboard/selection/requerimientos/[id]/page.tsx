@@ -23,7 +23,7 @@ import {
   useEliminarRequerimiento,
   useActualizarRequerimiento 
 } from "@/lib/hooks/useSelection"
-import { useToast } from "@/hooks/use-toast"
+  import { useModernToast } from "@/lib/toast"
 import { 
   ArrowLeft, 
   Users, 
@@ -50,7 +50,7 @@ import { AgregarCandidatoDialog } from "@/components/selection/AgregarCandidatoD
 export default function RequerimientoDetallePage() {
   const params = useParams()
   const router = useRouter()
-  const { toast } = useToast()
+    const toast = useModernToast()
   const reqId = Number(params.id)
 
   const { data: requerimiento, isLoading } = useRequerimiento(reqId)
@@ -64,18 +64,15 @@ export default function RequerimientoDetallePage() {
   const handleDelete = async () => {
     try {
       await eliminarMutation.mutateAsync(reqId)
-      toast({
+        toast.success({
         title: "Requerimiento eliminado",
         description: "El requerimiento ha sido eliminado exitosamente.",
-        duration: 3000,
       })
       router.push("/dashboard/selection/requerimientos")
     } catch (error) {
-      toast({
-        variant: "destructive",
+        toast.error({
         title: "Error",
         description: "No se pudo eliminar el requerimiento. Por favor intenta nuevamente.",
-        duration: 5000,
       })
     }
   }
@@ -86,17 +83,14 @@ export default function RequerimientoDetallePage() {
         id: reqId,
         dto: { estadoCodigo },
       })
-      toast({
+        toast.success({
         title: "Estado actualizado",
         description: "El estado del requerimiento ha sido actualizado.",
-        duration: 3000,
       })
     } catch (error) {
-      toast({
-        variant: "destructive",
+        toast.error({
         title: "Error",
         description: "No se pudo actualizar el estado.",
-        duration: 5000,
       })
     }
   }
@@ -167,7 +161,7 @@ export default function RequerimientoDetallePage() {
           </Link>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
-              {requerimiento.cargoObjetivo}
+              {requerimiento.rolObjetivo}
             </h1>
             <p className="text-muted-foreground mt-1">
               {requerimiento.areaObjetivo}
@@ -175,7 +169,7 @@ export default function RequerimientoDetallePage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {requerimiento.estado.estCodigo === "ACTIVO" && (
+            {requerimiento.estado?.estCodigo === "ACTIVO" && (
             <Button
               variant="outline"
               onClick={() => handleCambiarEstado("CERRADO")}
@@ -187,7 +181,7 @@ export default function RequerimientoDetallePage() {
               Cerrar Requerimiento
             </Button>
           )}
-          {requerimiento.estado.estCodigo === "CERRADO" && (
+            {requerimiento.estado?.estCodigo === "CERRADO" && (
             <Button
               variant="outline"
               onClick={() => handleCambiarEstado("ACTIVO")}
@@ -211,29 +205,29 @@ export default function RequerimientoDetallePage() {
 
       {/* Estado Banner */}
       <Card className={
-        requerimiento.estado.estCodigo === "ACTIVO" 
+          requerimiento.estado?.estCodigo === "ACTIVO" 
           ? "border-green-200 bg-green-50/50" 
-          : requerimiento.estado.estCodigo === "CERRADO"
+            : requerimiento.estado?.estCodigo === "CERRADO"
           ? "border-gray-200 bg-gray-50/50"
           : "border-red-200 bg-red-50/50"
       }>
         <CardContent className="py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              {getEstadoIcon(requerimiento.estado.estCodigo)}
+                {getEstadoIcon(requerimiento.estado?.estCodigo || "PENDIENTE")}
               <div>
                 <p className="font-semibold">
-                  Estado: {requerimiento.estado.estDescripcion}
+                    Estado: {requerimiento.estado?.estDescripcion || "Desconocido"}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Creado {formatDistanceToNow(new Date(requerimiento.fechaCreacion), {
+                    Creado {requerimiento.fechaCreacion ? formatDistanceToNow(new Date(requerimiento.fechaCreacion), {
                     addSuffix: true,
                     locale: es,
-                  })}
+                    }) : "recientemente"}
                 </p>
               </div>
             </div>
-            <Badge variant={getEstadoVariant(requerimiento.estado.estCodigo)} className="text-base px-4 py-1">
+              <Badge variant={getEstadoVariant(requerimiento.estado?.estCodigo || "PENDIENTE")} className="text-base px-4 py-1">
               {requerimiento.totalCandidatos || 0} Candidatos
             </Badge>
           </div>
@@ -252,9 +246,9 @@ export default function RequerimientoDetallePage() {
           <CardContent className="space-y-4">
             <div>
               <dt className="text-sm font-medium text-muted-foreground mb-1">
-                Cargo Objetivo
+                Rol Objetivo
               </dt>
-              <dd className="text-base font-semibold">{requerimiento.cargoObjetivo}</dd>
+                <dd className="text-base font-semibold">{requerimiento.rolObjetivo || "No especificado"}</dd>
             </div>
             <div>
               <dt className="text-sm font-medium text-muted-foreground mb-1">
@@ -262,7 +256,7 @@ export default function RequerimientoDetallePage() {
               </dt>
               <dd className="text-base font-semibold flex items-center gap-2">
                 <Building2 className="h-4 w-4" />
-                {requerimiento.areaObjetivo}
+                  {requerimiento.areaObjetivo || "No especificada"}
               </dd>
             </div>
             <div>
@@ -270,7 +264,7 @@ export default function RequerimientoDetallePage() {
                 Perfil Básico
               </dt>
               <dd className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">
-                {requerimiento.perfilBasico}
+                  {requerimiento.perfilBasico || "No especificado"}
               </dd>
             </div>
           </CardContent>
@@ -288,7 +282,7 @@ export default function RequerimientoDetallePage() {
               <dt className="text-sm font-medium text-muted-foreground mb-1">
                 Nombre
               </dt>
-              <dd className="text-base font-semibold">{requerimiento.psicologoNombre}</dd>
+                <dd className="text-base font-semibold">{requerimiento.psicologoNombre || "No especificado"}</dd>
             </div>
             <div>
               <dt className="text-sm font-medium text-muted-foreground mb-1">
@@ -296,14 +290,14 @@ export default function RequerimientoDetallePage() {
               </dt>
               <dd className="text-base flex items-center gap-2">
                 <Mail className="h-4 w-4 text-muted-foreground" />
-                {requerimiento.psicologoEmail}
+                  {requerimiento.psicologoEmail || "No especificado"}
               </dd>
             </div>
             <div>
               <dt className="text-sm font-medium text-muted-foreground mb-1">
                 Documento
               </dt>
-              <dd className="text-base">{requerimiento.psicologoDocumento}</dd>
+                <dd className="text-base">{requerimiento.psicologoDocumento || "No especificado"}</dd>
             </div>
             <div>
               <dt className="text-sm font-medium text-muted-foreground mb-1">
@@ -311,11 +305,11 @@ export default function RequerimientoDetallePage() {
               </dt>
               <dd className="text-base flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
-                {new Date(requerimiento.fechaCreacion).toLocaleDateString('es-CO', {
+                  {requerimiento.fechaCreacion ? new Date(requerimiento.fechaCreacion).toLocaleDateString('es-CO', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
-                })}
+                  }) : "No especificada"}
               </dd>
             </div>
           </CardContent>

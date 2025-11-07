@@ -50,23 +50,24 @@ export default function LoadingScreen({
     : inspirationalMessages
 
   useEffect(() => {
-    // Cambiar mensaje cada 2.5 segundos
+    // Cambiar mensaje cada 2 segundos (mejorado para mejor legibilidad)
     const messageInterval = setInterval(() => {
       setCurrentMessage((prev) => (prev + 1) % allMessages.length)
-    }, 1400)
+    }, 2000)
 
     return () => clearInterval(messageInterval)
   }, [allMessages.length])
 
   useEffect(() => {
     if (showProgress) {
-      // Simular progreso de carga
+      // Simular progreso de carga con mejor pacing
       const progressInterval = setInterval(() => {
         setProgress((prev) => {
-          if (prev >= 100) return 100
-          return prev + Math.random() * 15
+          if (prev >= 95) return prev // No llegar a 100 hasta completar
+          const increment = Math.random() * 10 + 5 // Entre 5 y 15
+          return Math.min(prev + increment, 95)
         })
-      }, 300)
+      }, 400)
 
       return () => clearInterval(progressInterval)
     }

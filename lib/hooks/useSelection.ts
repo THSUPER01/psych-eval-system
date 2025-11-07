@@ -8,6 +8,7 @@ import type {
   CrearCandidatoDto,
   AsignacionPrueba,
   CrearAsignacionDto,
+  TipoNormativa,
 } from '@/types/selection.types'
 
 // ==================== REQUERIMIENTOS ====================
@@ -125,6 +126,19 @@ export function useEliminarCandidato() {
   })
 }
 
+export function useRegistrarResultado() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ candidatoId, dto }: { candidatoId: number; dto: import('@/types/selection.types').RegistrarResultadoDto }) =>
+      selectionApiService.registrarResultado(candidatoId, dto),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['candidatos'] })
+      queryClient.invalidateQueries({ queryKey: ['candidato', variables.candidatoId] })
+    },
+  })
+}
+
 // ==================== PRUEBAS Y ASIGNACIONES ====================
 
 export function usePruebasPsicotecnicas() {
@@ -229,5 +243,17 @@ export function useEliminarDocumento() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documentos'] })
     },
+  })
+}
+
+// ============================================
+// HOOKS PARA TIPOS DE NORMATIVA
+// ============================================
+
+export function useTiposNormativa() {
+  return useQuery<TipoNormativa[]>({
+    queryKey: ['tipos-normativa'],
+    queryFn: () => selectionApiService.getTiposNormativa(),
+    staleTime: 1000 * 60 * 60, // Cache por 1 hora (catálogo estático)
   })
 }

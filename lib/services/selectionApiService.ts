@@ -4,6 +4,7 @@ import type {
   ActualizarRequerimientoDto,
   Candidato,
   CrearCandidatoDto,
+  RegistrarResultadoDto,
   PruebaPsicotecnica,
   VersionPrueba,
   PublicacionPrueba,
@@ -12,9 +13,10 @@ import type {
   ResultadoPrueba,
   RespuestaItem,
   Documento,
+  TipoNormativa,
 } from '@/types/selection.types'
 
-const API_URL = process.env.NEXT_PUBLIC_API_SELECCION_URL || 'https://localhost:7162/api'
+const API_URL = process.env.NEXT_PUBLIC_API_SELECCION_URL || 'http://localhost:5208/api'
 const APP_TOKEN = process.env.NEXT_PUBLIC_APP_TOKEN ||
   'B5935F96448CE865F31F7F9C6D4A914FB90EE07461AEEA615B9618B32DB18438'
 
@@ -103,49 +105,76 @@ export const selectionApiService = {
     return http<void>(`/Candidatos/${id}`, { method: 'DELETE' })
   },
 
+  /**
+   * Registra el resultado final del proceso de selección del candidato
+   * Endpoint: PATCH /api/candidatos/{id}/resultado
+   * 
+   * @param candidatoId - ID del candidato
+   * @param dto - Resultado (aprobado/rechazado) y motivo si es rechazado
+   * @returns Candidato actualizado con el resultado
+   * 
+   * @example
+   * ```ts
+   * // Aprobar candidato
+   * await registrarResultado(60, { resultadoSeleccion: true })
+   * 
+   * // Rechazar candidato (motivo es obligatorio)
+   * await registrarResultado(60, {
+   *   resultadoSeleccion: false,
+   *   motivoRechazo: 'No cumple con experiencia mínima requerida'
+   * })
+   * ```
+   */
+  async registrarResultado(candidatoId: number, dto: RegistrarResultadoDto): Promise<Candidato> {
+    return http<Candidato>(`/Candidatos/${candidatoId}/resultado`, {
+      method: 'PATCH',
+      body: JSON.stringify(dto),
+    })
+  },
+
   // ==================== PRUEBAS PSICOTÉCNICAS ====================
 
   async getPruebasPsicotecnicas(): Promise<PruebaPsicotecnica[]> {
-    return http<PruebaPsicotecnica[]>('/pruebas-psicotecnicas', { method: 'GET' })
+    return http<PruebaPsicotecnica[]>('/PruebasPsicotecnicas', { method: 'GET' })
   },
 
   async getVersionesPrueba(pruebaId: number): Promise<VersionPrueba[]> {
-    return http<VersionPrueba[]>(`/pruebas-psicotecnicas/${pruebaId}/versiones`, { method: 'GET' })
+    return http<VersionPrueba[]>(`/PruebasPsicotecnicas/${pruebaId}/versiones`, { method: 'GET' })
   },
 
   async getPublicacionesActivas(): Promise<PublicacionPrueba[]> {
-    return http<PublicacionPrueba[]>('/pruebas-psicotecnicas/publicaciones/activas', { method: 'GET' })
+    return http<PublicacionPrueba[]>('/PruebasPsicotecnicas/publicaciones/activas', { method: 'GET' })
   },
 
   // ==================== ASIGNACIONES ====================
 
   async getAsignaciones(): Promise<AsignacionPrueba[]> {
-    return http<AsignacionPrueba[]>('/asignaciones', { method: 'GET' })
+    return http<AsignacionPrueba[]>('/Asignaciones', { method: 'GET' })
   },
 
   async getAsignacionesPorCandidato(candidatoId: number): Promise<AsignacionPrueba[]> {
-    return http<AsignacionPrueba[]>(`/asignaciones/candidato/${candidatoId}`, { method: 'GET' })
+    return http<AsignacionPrueba[]>(`/Asignaciones/candidato/${candidatoId}`, { method: 'GET' })
   },
 
   async crearAsignacion(dto: CrearAsignacionDto): Promise<AsignacionPrueba> {
-    return http<AsignacionPrueba>('/asignaciones', {
+    return http<AsignacionPrueba>('/Asignaciones', {
       method: 'POST',
       body: JSON.stringify(dto),
     })
   },
 
   async eliminarAsignacion(id: number): Promise<void> {
-    return http<void>(`/asignaciones/${id}`, { method: 'DELETE' })
+    return http<void>(`/Asignaciones/${id}`, { method: 'DELETE' })
   },
 
   // ==================== RESULTADOS ====================
 
   async getResultadosPorCandidato(candidatoId: number): Promise<ResultadoPrueba[]> {
-    return http<ResultadoPrueba[]>(`/resultados/candidato/${candidatoId}`, { method: 'GET' })
+    return http<ResultadoPrueba[]>(`/Resultados/candidato/${candidatoId}`, { method: 'GET' })
   },
 
   async getRespuestasIntento(intentoId: number): Promise<RespuestaItem[]> {
-    return http<RespuestaItem[]>(`/resultados/intento/${intentoId}/respuestas`, { method: 'GET' })
+    return http<RespuestaItem[]>(`/Resultados/intento/${intentoId}/respuestas`, { method: 'GET' })
   },
 
   // ==================== DOCUMENTOS ====================
@@ -155,7 +184,7 @@ export const selectionApiService = {
     formData.append('archivo', file)
     formData.append('tipoDocumento', tipoDocumento)
 
-    const res = await fetch(`${API_URL}/documentos/candidato/${candidatoId}`, {
+    const res = await fetch(`${API_URL}/Documentos/candidato/${candidatoId}`, {
       method: 'POST',
       headers: {
         'App-Token': APP_TOKEN,
@@ -170,10 +199,83 @@ export const selectionApiService = {
   },
 
   async getDocumentosCandidato(candidatoId: number): Promise<Documento[]> {
-    return http<Documento[]>(`/documentos/candidato/${candidatoId}`, { method: 'GET' })
+    return http<Documento[]>(`/Documentos/candidato/${candidatoId}`, { method: 'GET' })
   },
 
   async eliminarDocumento(documentoId: number): Promise<void> {
-    return http<void>(`/documentos/${documentoId}`, { method: 'DELETE' })
+    return http<void>(`/Documentos/${documentoId}`, { method: 'DELETE' })
+  },
+
+  // ==================== TIPOS DE NORMATIVA ====================
+
+  async getTiposNormativa(): Promise<TipoNormativa[]> {
+    return http<TipoNormativa[]>('/TiposNormativa', { method: 'GET' })
+  },
+
+  async getTipoNormativaPorId(id: number): Promise<TipoNormativa> {
+    return http<TipoNormativa>(`/TiposNormativa/${id}`, { method: 'GET' })
+  },
+
+  // ==================== COLABORADORES (TALENTO HUMANO) ====================
+
+  /**
+   * Obtiene información de colaborador por número de documento.
+   * Devuelve null si no existe o si hay error para no bloquear el flujo.
+   */
+  async getColaboradorPorDocumento(documento: string): Promise<any | null> {
+    try {
+      return await http<any>(`/Colaboradores/${encodeURIComponent(documento)}`, { method: 'GET' })
+    } catch (e) {
+      return null
+    }
+  },
+
+  // ==================== FLUJO PÚBLICO (TOKEN) ====================
+
+  /**
+   * Obtiene un candidato por token público
+   */
+  async getPublicoCandidatoPorToken<T = any>(token: string): Promise<T> {
+    return http<T>(`/Publico/candidato/${token}`, { method: 'GET' })
+  },
+
+  /**
+   * Completa el formulario público por token
+   * dto esperado (ejemplo): {
+   *  estadoCivil, genero, edadIngreso, municipio, comuna, barrio, direccion,
+   *  estrato, tieneHijo, edadesHijos?: number[], tallaCamisa?, tallaPantalon?, tallaZapatos?
+   * }
+   */
+  async completarFormularioPublico(token: string, dto: Record<string, any>): Promise<void> {
+    await http<void>(`/Publico/candidato/${token}/formulario`, {
+      method: 'POST',
+      body: JSON.stringify(dto),
+    })
+  },
+
+  /**
+   * Registro público simple: crea candidato y devuelve token
+   */
+  async registroPublico(dto: {
+    cedulaCiudadania: string
+    nombreCompleto: string
+    email: string
+    telefono: string
+  }): Promise<{ token: string } | any> {
+    return http<{ token: string } | any>(`/Publico/registro`, {
+      method: 'POST',
+      body: JSON.stringify(dto),
+    })
+  },
+
+  /**
+   * Registro público completo en una sola petición
+   * Incluye datos del candidato y formulario
+   */
+  async registroPublicoCompleto(dto: Record<string, any>): Promise<{ token: string } | any> {
+    return http<{ token: string } | any>(`/Publico/registro-completo`, {
+      method: 'POST',
+      body: JSON.stringify(dto),
+    })
   },
 }

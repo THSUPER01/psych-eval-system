@@ -12,17 +12,16 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useToast } from "@/hooks/use-toast"
+import { useModernToast } from "@/lib/toast"
 import { loginApiService } from "@/lib/services/loginApiService"
 import { rolesService } from "@/lib/services/rolesService"
 
 const PENDING_TOAST_KEY = "auth:nextToast"
 
 type PendingToastPayload = {
+  type?: 'success' | 'error' | 'warning' | 'info'
   title: string
   description?: string
-  variant?: "default" | "destructive"
-  className?: string
   duration?: number
 }
 
@@ -31,7 +30,7 @@ export function LoginForm() {
   const [errors, setErrors] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-  const { toast } = useToast()
+  const toast = useModernToast()
 
   const validateDocumento = (value: string): string[] => {
     const errs: string[] = []
@@ -53,12 +52,11 @@ export function LoginForm() {
     sessionStorage.removeItem(PENDING_TOAST_KEY)
     try {
       const parsed = JSON.parse(raw) as PendingToastPayload
-      toast({
+      const type = parsed.type || 'success'
+      toast[type]({
         title: parsed.title,
         description: parsed.description,
-        variant: parsed.variant,
-        className: parsed.className,
-        duration: parsed.duration ?? 4000,
+        duration: parsed.duration,
       })
     } catch {
       // ignore malformed payloads
@@ -70,8 +68,13 @@ export function LoginForm() {
     const validationErrors = validateDocumento(documento)
     setErrors(validationErrors)
     if (validationErrors.length) return
+    
     setIsLoading(true)
+    
     try {
+      // Pequeño delay para mostrar el loading screen
+      await new Promise(resolve => setTimeout(resolve, 300))
+      
       const validar = await loginApiService.validarUsuario(documento)
       const permisosResp = await rolesService.getPermisosRol(validar.rol)
       const permisos = permisosResp.data
@@ -82,24 +85,24 @@ export function LoginForm() {
           JSON.stringify({ documento, infoUsuario: validar.data, permisos }),
         )
         persistToast({
+          type: 'success',
           title: "Usuario validado",
           description: "Selecciona tu metodo de verificacion para continuar.",
-          className: "border-green-600 bg-green-600 text-white",
-          duration: 3000,
         })
       }
+      
+      // Delay antes de la navegación para asegurar que se vea el loading
+      await new Promise(resolve => setTimeout(resolve, 400))
       router.push("/psychologist/verify")
     } catch (err: any) {
       const mensaje = err?.message || "Documento no encontrado"
-      toast({
+      setIsLoading(false)
+      toast.error({
         title: "Error de validacion",
         description: mensaje,
-        variant: "destructive",
-        duration: 5000,
       })
-    } finally {
-      setIsLoading(false)
     }
+    // No quitar isLoading aquí para mantener el loading durante la transición
   }
 
   return (

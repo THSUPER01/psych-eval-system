@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useEliminarCandidato } from "@/lib/hooks/useSelection"
-import { useToast } from "@/hooks/use-toast"
+import { useModernToast } from "@/lib/toast"
 import { 
   MoreVertical, 
   Eye, 
@@ -46,7 +46,7 @@ interface CandidatosListProps {
 }
 
 export function CandidatosList({ candidatos, isLoading, requerimientoId }: CandidatosListProps) {
-  const { toast } = useToast()
+  const toast = useModernToast()
   const eliminarMutation = useEliminarCandidato()
   const [selectedCandidato, setSelectedCandidato] = useState<Candidato | null>(null)
   const [showLinkDialog, setShowLinkDialog] = useState(false)
@@ -58,17 +58,14 @@ export function CandidatosList({ candidatos, isLoading, requerimientoId }: Candi
 
     try {
       await eliminarMutation.mutateAsync(canId)
-      toast({
+      toast.success({
         title: "Candidato eliminado",
         description: "El candidato ha sido eliminado exitosamente.",
-        duration: 3000,
       })
     } catch (error) {
-      toast({
-        variant: "destructive",
+      toast.error({
         title: "Error",
         description: "No se pudo eliminar el candidato.",
-        duration: 5000,
       })
     }
   }
@@ -141,6 +138,7 @@ export function CandidatosList({ candidatos, isLoading, requerimientoId }: Candi
           <TableHeader>
             <TableRow>
               <TableHead>Nombre</TableHead>
+              <TableHead>Cédula</TableHead>
               <TableHead>Contacto</TableHead>
               <TableHead>Link</TableHead>
               <TableHead>Formulario</TableHead>
@@ -154,6 +152,9 @@ export function CandidatosList({ candidatos, isLoading, requerimientoId }: Candi
               <TableRow key={candidato.canId}>
                 <TableCell className="font-medium">
                   {candidato.nombreCompleto}
+                </TableCell>
+                <TableCell className="text-sm text-muted-foreground">
+                  {candidato.cedulaCiudadania}
                 </TableCell>
                 <TableCell>
                   <div className="space-y-1">

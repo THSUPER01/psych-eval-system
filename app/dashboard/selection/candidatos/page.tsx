@@ -17,9 +17,27 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { useCandidatos, useRequerimientos } from "@/lib/hooks/useSelection"
-import { Search, Filter, Users, Briefcase, Eye } from "lucide-react"
-import { formatDistanceToNow } from "date-fns"
+import { Search, Filter, Users, Briefcase, Eye, Plus, FileText } from "lucide-react"
+import { parseISO, format, subHours } from "date-fns"
 import { es } from "date-fns/locale"
+import { AgregarCandidatoDialog } from "@/components/selection/AgregarCandidatoDialog"
+import { AsignarPruebaDialog } from "@/components/selection/AsignarPruebaDialog"
+
+// Función helper para formatear fechas UTC a hora de Bogotá (UTC-5)
+const formatearFecha = (fechaUTC: string): string => {
+  try {
+    // 1. Parsear la fecha UTC
+    const fechaUTCParsed = parseISO(fechaUTC)
+    
+    // 2. Restar 5 horas para convertir a hora de Bogotá (UTC-5)
+    const fechaBogota = subHours(fechaUTCParsed, 5)
+    
+    // 3. Formatear como fecha y hora legible
+    return format(fechaBogota, "d 'de' MMM, yyyy 'a las' HH:mm", { locale: es })
+  } catch (error) {
+    return "Fecha inválida"
+  }
+}
 
 export default function CandidatosPage() {
   const { data: candidatos, isLoading: loadingCandidatos } = useCandidatos()
@@ -28,16 +46,24 @@ export default function CandidatosPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [filterReqId, setFilterReqId] = useState<string>("")
   const [filterEstado, setFilterEstado] = useState<string>("")
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
+  const [selectedReqId, setSelectedReqId] = useState<number | null>(null)
+  const [isAsignarPruebaOpen, setIsAsignarPruebaOpen] = useState(false)
+  const [selectedCandidato, setSelectedCandidato] = useState<any>(null)
 
   const estadosDisponibles = useMemo(() => {
     const set = new Set<string>()
-    candidatos?.forEach(c => set.add(c.estado.estCodigo))
+    candidatos?.forEach(c => {
+      if (c?.estado?.estCodigo) {
+        set.add(c.estado.estCodigo)
+      }
+    })
     return Array.from(set)
   }, [candidatos])
 
   const reqMap = useMemo(() => {
     const map = new Map<number, string>()
-    requerimientos?.forEach(r => map.set(r.reqId, r.cargoObjetivo))
+    requerimientos?.forEach(r => map.set(r.reqId, r.rolObjetivo))
     return map
   }, [requerimientos])
 
@@ -46,10 +72,27 @@ export default function CandidatosPage() {
       const matchesSearch = c.nombreCompleto.toLowerCase().includes(searchQuery.toLowerCase()) ||
         c.email.toLowerCase().includes(searchQuery.toLowerCase())
       const matchesReq = filterReqId === "ALL" || !filterReqId || String(c.requerimientoId) === filterReqId
-      const matchesEstado = filterEstado === "ALL" || !filterEstado || c.estado.estCodigo === filterEstado
+      const matchesEstado = filterEstado === "ALL" || !filterEstado || c?.estado?.estCodigo === filterEstado
       return matchesSearch && matchesReq && matchesEstado
     })
   }, [candidatos, searchQuery, filterReqId, filterEstado])
+
+  const handleOpenCreateDialog = () => {
+    // Si hay un requerimiento filtrado, usarlo por defecto
+    if (filterReqId && filterReqId !== "ALL") {
+      setSelectedReqId(Number(filterReqId))
+    } else if (requerimientos && requerimientos.length > 0) {
+      // Si no, usar el primer requerimiento activo
+      const activo = requerimientos.find(r => r?.estado?.estCodigo === "ACTIVO")
+      setSelectedReqId(activo?.reqId || requerimientos[0].reqId)
+    }
+    setIsCreateDialogOpen(true)
+  }
+
+  const handleAsignarPrueba = (candidato: any) => {
+    setSelectedCandidato(candidato)
+    setIsAsignarPruebaOpen(true)
+  }
 
   return (
     <div className="space-y-6">
@@ -58,6 +101,13 @@ export default function CandidatosPage() {
           <h1 className="text-3xl font-bold tracking-tight">Candidatos</h1>
           <p className="text-muted-foreground mt-1">Lista de todos los candidatos</p>
         </div>
+        <Button 
+          onClick={handleOpenCreateDialog}
+          disabled={!requerimientos || requerimientos.length === 0}
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          Nuevo Candidato
+        </Button>
       </div>
 
       <Card>
@@ -81,7 +131,7 @@ export default function CandidatosPage() {
                 <SelectItem value="ALL">Todos</SelectItem>
                 {(requerimientos || []).map((r) => (
                   <SelectItem key={r.reqId} value={String(r.reqId)}>
-                    {r.cargoObjetivo}
+                    {r.rolObjetivo}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -130,23 +180,27 @@ export default function CandidatosPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Nombre</TableHead>
+                    <TableHead>Cédula</TableHead>
                     <TableHead>Requerimiento</TableHead>
                     <TableHead>Contacto</TableHead>
                     <TableHead>Link</TableHead>
                     <TableHead>Formulario</TableHead>
                     <TableHead>Estado</TableHead>
                     <TableHead>Creado</TableHead>
-                    <TableHead className="w-[80px]"></TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filtered.map((c) => (
                     <TableRow key={c.canId}>
                       <TableCell className="font-medium">{c.nombreCompleto}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {c.cedulaCiudadania}
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Briefcase className="h-4 w-4 text-muted-foreground" />
-                          {reqMap.get(c.requerimientoId) || `Req #${c.requerimientoId}`}
+                          {c.requerimientoId ? reqMap.get(c.requerimientoId) || `Req #${c.requerimientoId}` : "Sin requerimiento"}
                         </div>
                       </TableCell>
                       <TableCell>
@@ -163,24 +217,36 @@ export default function CandidatosPage() {
                         )}
                       </TableCell>
                       <TableCell>
-                        {c.formularioCompleto ? (
+                        {c.formularioCompletado ? (
                           <Badge>Completo</Badge>
                         ) : (
                           <Badge variant="secondary">Pendiente</Badge>
                         )}
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">{c.estado.estDescripcion}</Badge>
+                        <Badge variant="outline">{c?.estado?.estDescripcion || "Desconocido"}</Badge>
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
-                        {formatDistanceToNow(new Date(c.fechaCreacion), { addSuffix: true, locale: es })}
+                        {c.fechaCreacion ? formatearFecha(c.fechaCreacion) : "Desconocida"}
                       </TableCell>
                       <TableCell>
-                        <Link href={`/dashboard/selection/candidatos/${c.canId}`}>
-                          <Button variant="ghost" size="icon" aria-label="Ver Detalle">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </Link>
+                        <div className="flex items-center justify-end gap-1">
+                          <Link href={`/dashboard/selection/candidatos/${c.canId}`}>
+                            <Button variant="ghost" size="icon" aria-label="Ver Detalle">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </Link>
+                          {c.formularioCompletado && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label="Asignar Prueba"
+                              onClick={() => handleAsignarPrueba(c)}
+                            >
+                              <FileText className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -190,6 +256,29 @@ export default function CandidatosPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Create Candidato Dialog */}
+      {selectedReqId && (
+        <AgregarCandidatoDialog
+          open={isCreateDialogOpen}
+          onOpenChange={setIsCreateDialogOpen}
+          requerimientoId={selectedReqId}
+        />
+      )}
+
+      {/* Asignar Prueba Dialog */}
+      {selectedCandidato && (
+        <AsignarPruebaDialog
+          open={isAsignarPruebaOpen}
+          onOpenChange={setIsAsignarPruebaOpen}
+          candidato={selectedCandidato}
+          publicacionesPrueba={[]} // TODO: Cargar pruebas disponibles
+          onAsignado={() => {
+            // Refrescar lista si es necesario
+            setIsAsignarPruebaOpen(false)
+          }}
+        />
+      )}
     </div>
   )
 }
