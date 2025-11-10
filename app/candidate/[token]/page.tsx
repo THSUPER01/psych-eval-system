@@ -2,6 +2,7 @@
 
 import { use } from "react"
 import { CandidateForm } from "@/components/candidate/candidate-form"
+import { PruebasAsignadas } from "@/components/candidate/pruebas-asignadas"
 import { useCandidatoPublico } from "@/lib/hooks/useCandidatePublic"
 import { SuccessCard } from "@/components/ui/success-card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -98,40 +99,85 @@ export default function CandidateFormPage({ params }: { params: Promise<{ token:
   // Estado: CAND_EN_EVALUACION
   if (estadoCodigo === EstadosCandidato.CAND_EN_EVALUACION) {
     return (
-      <SuccessCard
-        icon={<Brain className="h-10 w-10" />}
-        title={`Tu proceso está en marcha, ${candidato.nombreCompleto}`}
-        subtitle="Actualmente estamos evaluando tu perfil"
-        description="Hemos recibido tu información y nos encontramos revisando tu perfil en detalle. Te contactaremos pronto con los siguientes pasos del proceso. Mantente atento a tu correo electrónico."
-        headerGradient="from-blue-50 to-indigo-50"
-        iconBgColor="bg-blue-100"
-        iconClassName="text-blue-600"
-        badge={{
-          label: "Estado: En evaluación",
-          variant: "outline",
-          className: "bg-blue-50 text-blue-700 border-blue-200",
-        }}
-      />
+      <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background py-8 px-4 sm:py-12">
+        <div className="mx-auto max-w-4xl space-y-6">
+          {/* Card de estado */}
+          <div className="bg-white rounded-3xl shadow-xl overflow-hidden border-none">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 sm:p-8">
+              <div className="flex items-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
+                  <Brain className="h-8 w-8 text-blue-600" />
+                </div>
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                    Tu proceso está en marcha, {candidato.nombreCompleto}
+                  </h1>
+                  <p className="text-base sm:text-lg text-gray-600 mt-1">
+                    Actualmente estamos evaluando tu perfil
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="p-6 sm:p-8">
+              <p className="text-gray-600 mb-4">
+                Hemos recibido tu información y nos encontramos revisando tu perfil en detalle. 
+                Mantente atento a tu correo electrónico para los siguientes pasos.
+              </p>
+              <div className="flex justify-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                  <Brain className="h-4 w-4" />
+                  <span className="text-sm font-medium">Estado: En evaluación</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Pruebas asignadas */}
+          <PruebasAsignadas token={token} candidatoNombre={candidato.nombreCompleto} />
+        </div>
+      </div>
     )
   }
 
   // Estado: CAND_FORMULARIO_COMPLETO
   if (estadoCodigo === EstadosCandidato.CAND_FORMULARIO_COMPLETO) {
     return (
-      <SuccessCard
-        icon={<CheckCircle2 className="h-10 w-10" />}
-        title={`¡Formulario completado, ${candidato.nombreCompleto}!`}
-        subtitle="Tu información ha sido registrada correctamente"
-        description="Gracias por completar tu formulario demográfico. Nuestro equipo revisará tu información en detalle y se pondrá en contacto contigo próximamente con los siguientes pasos de tu evaluación."
-        headerGradient="from-emerald-50 to-teal-50"
-        iconBgColor="bg-emerald-100"
-        iconClassName="text-emerald-600"
-        badge={{
-          label: "Estado: Formulario completo",
-          variant: "outline",
-          className: "bg-emerald-50 text-emerald-700 border-emerald-200",
-        }}
-      />
+      <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background py-8 px-4 sm:py-12">
+        <div className="mx-auto max-w-4xl space-y-6">
+          {/* Card de éxito */}
+          <div className="bg-white rounded-3xl shadow-xl overflow-hidden border-none">
+            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-6 sm:p-8">
+              <div className="flex items-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
+                  <CheckCircle2 className="h-8 w-8 text-emerald-600" />
+                </div>
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                    ¡Formulario completado, {candidato.nombreCompleto}!
+                  </h1>
+                  <p className="text-base sm:text-lg text-gray-600 mt-1">
+                    Tu información ha sido registrada correctamente
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="p-6 sm:p-8">
+              <p className="text-gray-600 mb-4">
+                Gracias por completar tu formulario demográfico. Nuestro equipo revisará tu información en detalle.
+              </p>
+              <div className="flex justify-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <CheckCircle2 className="h-4 w-4" />
+                  <span className="text-sm font-medium">Estado: Formulario completo</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Pruebas asignadas */}
+          <PruebasAsignadas token={token} candidatoNombre={candidato.nombreCompleto} />
+        </div>
+      </div>
     )
   }
 
