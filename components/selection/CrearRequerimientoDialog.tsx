@@ -153,7 +153,7 @@ export function CrearRequerimientoDialog({
                     />
                   </FormControl>
                   <FormDescription>
-                    El área o departamento al que pertenece el cargo
+                    El área o departamento al que pertenece el rol
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

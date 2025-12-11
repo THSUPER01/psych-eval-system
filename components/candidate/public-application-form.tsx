@@ -15,7 +15,6 @@ import { getComunas, getBarriosByComuna, type BarrioData } from "@/lib/manizales
 import { getAllBarriosVillamaria, type BarrioVillamariaData } from "@/lib/villamaria-data"
 import { SuccessConfirmation } from "@/components/ui/success-confirmation"
 import { brandLogos } from "@/lib/brandAssets"
-import { useRegistroCompleto } from "@/lib/hooks/useCandidatePublic"
 import type { FormularioPublicoDto } from "@/types/selection.types"
 import {
   validateEdad,
@@ -46,19 +45,24 @@ interface FormData {
   Barrio: string
   Comuna: string
   Estrato: string
-  Direccion: string
+  DireccionTipoVia: string
+  DireccionNumero: string
+  DireccionComplemento: string
   Hijos: string
   numero_hijos: string
   edades_de_hijos: string[]
   talla_camisa: string
   talla_pantalon: string
   talla_zapatos: string
+  habilidades: string
 }
 
 export function PublicApplicationForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [registeredToken, setRegisteredToken] = useState<string>("")
+  const [hojaVida, setHojaVida] = useState<File | null>(null)
+  const [archivoError, setArchivoError] = useState<string | null>(null)
   const [formData, setFormData] = useState<FormData>({
     cedula_ciudadania: "",
     nombre_completo: "",
@@ -71,16 +75,18 @@ export function PublicApplicationForm() {
     Barrio: "",
     Comuna: "",
     Estrato: "",
-    Direccion: "",
+    DireccionTipoVia: "",
+    DireccionNumero: "",
+    DireccionComplemento: "",
     Hijos: "",
     numero_hijos: "",
     edades_de_hijos: [],
     talla_camisa: "",
     talla_pantalon: "",
     talla_zapatos: "",
+    habilidades: "",
   })
   const toast = useModernToast()
-  const registroCompleto = useRegistroCompleto()
 
   // Cargar datos geográficos
   const [comunas, setComunas] = useState<string[]>([])
@@ -194,8 +200,19 @@ export function PublicApplicationForm() {
       }
     }
 
-    if (formData.Direccion) {
-      const direccionValidation = validateDireccion(formData.Direccion)
+    // Validación de dirección (opcional): si se diligencia alguno de los campos, exigir tipo y número
+    const tieneAlgunaDireccion = !!(formData.DireccionTipoVia || formData.DireccionNumero || formData.DireccionComplemento)
+    let direccionCompleta: string | undefined = undefined
+    if (tieneAlgunaDireccion) {
+      if (!formData.DireccionTipoVia || !formData.DireccionNumero) {
+        toast.error({
+          title: "Dirección incompleta",
+          description: "Selecciona el tipo de vía e ingresa el número de la dirección.",
+        })
+        return
+      }
+      direccionCompleta = `${formData.DireccionTipoVia} ${formData.DireccionNumero}${formData.DireccionComplemento ? `, ${formData.DireccionComplemento}` : ""}`.trim()
+      const direccionValidation = validateDireccion(direccionCompleta)
       if (!direccionValidation.isValid) {
         toast.error({
           title: "Error de validación",
@@ -264,7 +281,7 @@ export function PublicApplicationForm() {
 
     setIsLoading(true)
     try {
-      // Mapear a DTO para registro público completo
+      // Mapear a FormData para registro público completo con archivo
       const edadesHijosNums = (formData.edades_de_hijos || [])
         .filter((e) => e !== "")
         .map((e) => parseInt(e, 10))
@@ -274,47 +291,80 @@ export function PublicApplicationForm() {
         formData.CLB_Genero === 'masculino' ? 'M' :
         formData.CLB_Genero === 'femenino' ? 'F' : 'O'
 
-      const dto: Partial<FormularioPublicoDto> = {
-        // Datos de candidato (requeridos)
-        cedulaCiudadania: formData.cedula_ciudadania,
-        nombreCompleto: formData.nombre_completo,
-        email: formData.correo_electronico,
-        telefono: formData.telefono,
-        // Formulario (opcional)
-        estadoCivil: formData.CLB_EstadoCivil || undefined,
-        genero: formData.CLB_Genero ? generoCode : undefined,
-        edadIngreso: formData.edad_al_ingresar ? parseInt(formData.edad_al_ingresar, 10) : undefined,
-        municipio: formData.Municipio || undefined,
-        comuna: formData.Comuna || undefined,
-        barrio: formData.Barrio || undefined,
-        direccion: formData.Direccion || undefined,
-        estrato: formData.Estrato ? parseInt(formData.Estrato, 10) : undefined,
-        tieneHijo: formData.Hijos === 'si',
-        edadesHijos: edadesHijosNums.length ? edadesHijosNums : [],
-        tallaCamisa: formData.talla_camisa || undefined,
-        tallaPantalon: formData.talla_pantalon || undefined,
-        tallaZapato: formData.talla_zapatos || undefined,
+      // Construir FormData (multipart/form-data)
+      const formDataToSend = new FormData()
+      
+      // Datos requeridos
+      formDataToSend.append('NombreCompleto', formData.nombre_completo)
+      formDataToSend.append('Email', formData.correo_electronico)
+      formDataToSend.append('Telefono', formData.telefono)
+      formDataToSend.append('CedulaCiudadania', formData.cedula_ciudadania || '')
+      formDataToSend.append('TieneHijo', formData.Hijos === 'si' ? 'true' : 'false')
+      
+      // Datos opcionales del formulario
+      if (formData.CLB_EstadoCivil) formDataToSend.append('EstadoCivil', formData.CLB_EstadoCivil)
+      if (formData.CLB_Genero) formDataToSend.append('Genero', generoCode)
+      if (formData.edad_al_ingresar) formDataToSend.append('EdadIngreso', formData.edad_al_ingresar)
+      if (formData.Municipio) formDataToSend.append('Municipio', formData.Municipio)
+      if (formData.Comuna) formDataToSend.append('Comuna', formData.Comuna)
+      if (formData.Barrio) formDataToSend.append('Barrio', formData.Barrio)
+      if (direccionCompleta) formDataToSend.append('Direccion', direccionCompleta)
+      if (formData.Estrato) formDataToSend.append('Estrato', formData.Estrato)
+      
+      // Enviar EdadesHijos como campos múltiples repetidos (recomendado por backend)
+      if (edadesHijosNums.length) {
+        edadesHijosNums.forEach(edad => {
+          formDataToSend.append('EdadesHijos', edad.toString())
+        })
+      }
+      
+      if (formData.talla_camisa) formDataToSend.append('TallaCamisa', formData.talla_camisa)
+      if (formData.talla_pantalon) formDataToSend.append('TallaPantalon', formData.talla_pantalon)
+      if (formData.talla_zapatos) formDataToSend.append('TallaZapato', formData.talla_zapatos)
+      if (formData.habilidades) formDataToSend.append('Habilidades', formData.habilidades)
+      
+      // Archivo de hoja de vida (opcional)
+      if (hojaVida) {
+        formDataToSend.append('HojaVida', hojaVida)
       }
 
-      // Eliminar campos undefined
-      Object.keys(dto).forEach((k) => {
-        const key = k as keyof typeof dto
-        if (dto[key] === undefined) delete dto[key]
-      })
+      // Llamar al endpoint con-cv usando FormData
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_SELECCION_URL || 'http://localhost:5208/api'}/publico/registro-completo-con-cv`,
+        {
+          method: 'POST',
+          headers: {
+            'App-Token': process.env.NEXT_PUBLIC_APP_TOKEN || 'B5935F96448CE865F31F7F9C6D4A914FB90EE07461AEEA615B9618B32DB18438',
+          },
+          body: formDataToSend,
+        }
+      )
+      
+      if (!response.ok) {
+        const errorText = await response.text()
+        let errorMessage = errorText
+        try {
+          const errorData = JSON.parse(errorText)
+          errorMessage = errorData?.message || errorData?.mensaje || errorMessage
+        } catch {}
+        throw new Error(errorMessage)
+      }
+      
+      const result = await response.json()
 
-      const response = await registroCompleto.mutateAsync(dto as FormularioPublicoDto)
-
-      if (response.success && response.data) {
+      if (result.success && result.data) {
         toast.success({
-          title: 'Solicitud registrada',
-          description: 'Hemos recibido tu información correctamente.',
+          title: '¡Solicitud enviada con éxito!',
+          description: hojaVida 
+            ? 'Tu información y hoja de vida fueron recibidas correctamente.' 
+            : 'Tu información fue recibida correctamente.',
         })
-        setRegisteredToken(response.data.tokenAcceso || response.data.token || "")
+        setRegisteredToken(result.data.tokenAcceso || result.data.token || "")
         setIsSubmitted(true)
       } else {
         toast.error({
           title: 'No se pudo registrar',
-          description: response.message || 'Ocurrió un error al enviar la solicitud.',
+          description: result.message || 'Ocurrió un error al enviar la solicitud.',
         })
       }
     } catch (err: any) {
@@ -343,23 +393,63 @@ export function PublicApplicationForm() {
     setFormData((prev) => ({ ...prev, numero_hijos: value, edades_de_hijos: newAges }))
   }
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    setArchivoError(null)
+    
+    if (!file) {
+      setHojaVida(null)
+      return
+    }
+    
+    // Validar tamaño (5 MB)
+    const maxSize = 5 * 1024 * 1024
+    if (file.size > maxSize) {
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(2)
+      setArchivoError(`El archivo es muy grande (${sizeMB} MB). Máximo permitido: 5 MB`)
+      setHojaVida(null)
+      e.target.value = ''
+      return
+    }
+    
+    // Validar extensión
+    const extensionesPermitidas = ['.pdf', '.doc', '.docx']
+    const extension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase()
+    if (!extensionesPermitidas.includes(extension)) {
+      setArchivoError('Solo se permiten archivos PDF, Word (DOC) o Word (DOCX)')
+      setHojaVida(null)
+      e.target.value = ''
+      return
+    }
+    
+    setHojaVida(file)
+  }
+
   console.log('PublicApplicationForm render - isSubmitted:', isSubmitted)
 
   if (isSubmitted) {
     console.log('Rendering SuccessConfirmation component')
     return (
       <SuccessConfirmation
-        title="¡Solicitud enviada!"
-        description="Gracias por tu interés en trabajar con nosotros. Tu solicitud ha sido recibida correctamente."
+        title="¡Solicitud enviada con éxito!"
+        description={
+          hojaVida 
+            ? "Gracias por tu interés en trabajar con nosotros. Recibimos tu información y tu hoja de vida correctamente." 
+            : "Gracias por tu interés en trabajar con nosotros. Tu solicitud ha sido recibida correctamente."
+        }
         message="Nuestro equipo de recursos humanos revisará tu información y se pondrá en contacto contigo pronto."
         additionalInfo={
           <>
-            <p className="text-sm font-medium mb-2">¿Qué sigue?</p>
+            <p className="text-sm font-medium mb-2">📋 ¿Qué sigue ahora?</p>
             <ul className="text-sm text-muted-foreground text-left space-y-2">
-              <li>Revisaremos tu solicitud en un plazo de 3-5 días hábiles</li>
-              <li>Te contactaremos por correo o teléfono si tu perfil es seleccionado</li>
-              <li>Recibirás instrucciones para las evaluaciones psicológicas</li>
+              <li>✅ Tu información ya está guardada en nuestro sistema</li>
+              <li>📞 Revisaremos tu solicitud en un plazo de 3-5 días hábiles</li>
+              <li>📧 Te contactaremos por correo o teléfono si tu perfil es seleccionado</li>
+              <li>📝 Si eres seleccionado, recibirás instrucciones para las evaluaciones</li>
             </ul>
+            <p className="text-xs text-muted-foreground mt-4 bg-blue-50 p-3 rounded-lg border border-blue-200">
+              💡 <strong>Importante:</strong> Revisa tu correo electrónico (incluyendo la carpeta de spam) en los próximos días.
+            </p>
           </>
         }
       />
@@ -676,16 +766,143 @@ export function PublicApplicationForm() {
                   </Select>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="Direccion">Dirección</Label>
-                <Input
-                    id="Direccion"
-                    type="text"
-                    placeholder="Ej: Calle 123 #45-67"
-                    value={formData.Direccion}
-                    onChange={(e) => updateFormData("Direccion", e.target.value)}
-                  />
+              <div className="space-y-2 md:col-span-3">
+                <Label>Dirección de vivienda</Label>
+                <div className="grid md:grid-cols-3 gap-3">
+                  <div className="space-y-1">
+                    <Label htmlFor="DireccionTipoVia">Tipo de vía</Label>
+                    <Select
+                      value={formData.DireccionTipoVia}
+                      onValueChange={(value) => updateFormData("DireccionTipoVia", value)}
+                    >
+                      <SelectTrigger id="DireccionTipoVia">
+                        <SelectValue placeholder="Selecciona tipo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Calle">Calle</SelectItem>
+                        <SelectItem value="Carrera">Carrera</SelectItem>
+                        <SelectItem value="Avenida">Avenida</SelectItem>
+                        <SelectItem value="Transversal">Transversal</SelectItem>
+                        <SelectItem value="Diagonal">Diagonal</SelectItem>
+                        <SelectItem value="Circular">Circular</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="DireccionNumero">Número</Label>
+                    <Input
+                      id="DireccionNumero"
+                      type="text"
+                      placeholder="Ej: 77 # 21-87"
+                      value={formData.DireccionNumero}
+                      onChange={(e) => updateFormData("DireccionNumero", e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="DireccionComplemento">Complemento</Label>
+                    <Input
+                      id="DireccionComplemento"
+                      type="text"
+                      placeholder="Ej: Conjunto Santa María Casa 8"
+                      value={formData.DireccionComplemento}
+                      onChange={(e) => updateFormData("DireccionComplemento", e.target.value)}
+                    />
+                  </div>
+                </div>
               </div>  
+            </div>
+
+            {/* Sección: Experiencia y Habilidades */}
+            <div className="space-y-4">
+              <div className="border-b-2 border-[#7AC943]/30 pb-3">
+                <h3 className="text-lg font-bold text-[#0046BE]">Cuéntanos sobre ti</h3>
+                <p className="text-sm text-gray-600">Tus habilidades y experiencia (opcional)</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="habilidades" className="text-base">
+                  ¿Qué sabes hacer? ¿En qué has trabajado antes?
+                </Label>
+                <p className="text-xs text-muted-foreground mb-2">
+                  📝 Ejemplo: "He trabajado como cajero 2 años, soy bueno con los números y trato bien a los clientes"
+                </p>
+                <textarea
+                  id="habilidades"
+                  className="w-full min-h-[120px] px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0046BE] focus:border-transparent resize-none"
+                  placeholder="Escribe aquí tus experiencias, habilidades o lo que sabes hacer..."
+                  value={formData.habilidades}
+                  onChange={(e) => updateFormData("habilidades", e.target.value)}
+                  maxLength={2000}
+                />
+                <p className="text-xs text-muted-foreground text-right">
+                  {formData.habilidades.length} / 2000 caracteres
+                </p>
+              </div>
+            </div>
+
+            {/* Sección: Hoja de Vida */}
+            <div className="space-y-4">
+              <div className="border-b-2 border-[#7AC943]/30 pb-3">
+                <h3 className="text-lg font-bold text-[#0046BE]">Adjunta tu hoja de vida</h3>
+                <p className="text-sm text-gray-600">Si tienes una, súbela aquí (opcional)</p>
+              </div>
+
+              <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-6 border-2 border-dashed border-[#00AEEF]/40">
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="bg-[#0046BE] p-2 rounded-lg">
+                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <Label htmlFor="hojaVida" className="text-base font-semibold text-[#0046BE] cursor-pointer">
+                        Selecciona tu hoja de vida
+                      </Label>
+                      <p className="text-sm text-gray-600 mt-1">
+                        📄 Formatos: PDF, Word (DOC, DOCX) • Tamaño máximo: 5 MB
+                      </p>
+                    </div>
+                  </div>
+
+                  <input
+                    id="hojaVida"
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    onChange={handleFileChange}
+                    className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#7AC943] file:text-white hover:file:bg-[#6AB839] file:cursor-pointer cursor-pointer"
+                  />
+
+                  {hojaVida && !archivoError && (
+                    <div className="bg-white rounded-lg p-3 border-2 border-green-200 flex items-center gap-3">
+                      <div className="bg-green-100 p-2 rounded">
+                        <svg className="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray-900">{hojaVida.name}</p>
+                        <p className="text-xs text-gray-600">
+                          {(hojaVida.size / 1024).toFixed(0)} KB
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {archivoError && (
+                    <div className="bg-red-50 border-2 border-red-200 rounded-lg p-3 flex items-start gap-3">
+                      <svg className="h-5 w-5 text-red-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="text-sm text-red-800">{archivoError}</p>
+                    </div>
+                  )}
+
+                  <p className="text-xs text-gray-600 bg-white/50 p-2 rounded">
+                    💡 <strong>Tip:</strong> Si no tienes hoja de vida en el computador, puedes dejar este campo vacío y enviar el formulario de todos modos.
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Sección: Tallas */}
@@ -727,15 +944,12 @@ export function PublicApplicationForm() {
                       <SelectValue placeholder="selecciona talla" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="28">28</SelectItem>
-                      <SelectItem value="30">30</SelectItem>
-                      <SelectItem value="32">32</SelectItem>
-                      <SelectItem value="34">34</SelectItem>
-                      <SelectItem value="36">36</SelectItem>
-                      <SelectItem value="38">38</SelectItem>
-                      <SelectItem value="40">40</SelectItem>
-                      <SelectItem value="42">42</SelectItem>
-                      <SelectItem value="44">44</SelectItem>
+                      <SelectItem value="XS">XS</SelectItem>
+                      <SelectItem value="S">S</SelectItem>
+                      <SelectItem value="M">M</SelectItem>
+                      <SelectItem value="L">L</SelectItem>
+                      <SelectItem value="XL">XL</SelectItem>
+                      <SelectItem value="XXL">XXL</SelectItem>    
                     </SelectContent>
                   </Select>
                 </div>
@@ -750,6 +964,7 @@ export function PublicApplicationForm() {
                       <SelectValue placeholder="selecciona talla" />
                     </SelectTrigger>
                     <SelectContent>
+                      {/* Tallas desde 34 hasta 51 */}
                       {Array.from({ length: 18 }, (_, i) => i + 34).map((size) => (
                         <SelectItem key={size} value={size.toString()}>
                           {size}

@@ -1,4 +1,4 @@
-# Copilot Instructions - Sistema de Evaluación Psicológica
+﻿# Copilot Instructions - Sistema de Evaluación Psicológica
 
 ## Project Overview
 This is a Next.js 15 (App Router) psychological evaluation system for recruiting candidates at "Super de Alimentos S.A." The system has two distinct user portals:
@@ -10,8 +10,8 @@ This is a Next.js 15 (App Router) psychological evaluation system for recruiting
 ## Architecture
 
 ### Two-Portal Structure
-- **Psychologist flow**: `/psychologist/login` → `/psychologist/verify` → `/dashboard/selection` → `/dashboard/selection/requerimientos/[id]`
-- **Candidate flow**: `/candidate/[token]` (tokenized access, no authentication)
+- **Psychologist flow**: `/psicologo/login` → `/psicologo/verify` → `/panel/seleccion` → `/panel/seleccion/requerimientos/[id]`
+- **Candidate flow**: `/candidato/[token]` (tokenized access, no authentication)
 - Routes are organized in `app/` using Next.js 15 App Router conventions
 
 ### Component Organization
@@ -95,13 +95,13 @@ Configuration is in `components.json` (aliases: `@/*`, style: "new-york")
 ## Backend Integration Points (TODO)
 
 **Authentication**: 
-- `components/psychologist/login-form.tsx` line 26 - Replace mock login with actual auth
-- `components/psychologist/dashboard-header.tsx` line 20 - Implement real logout
+- `components/psicologo/login-form.tsx` line 26 - Replace mock login with actual auth
+- `components/psicologo/dashboard-header.tsx` line 20 - Implement real logout
 
 **Data Persistence**:
-- `components/candidate/candidate-form.tsx` line 48 - API call to save candidate responses
-- `components/psychologist/create-requirement-dialog.tsx` line 34 - API to create requirement + send email with token
-- `components/psychologist/requirement-details.tsx` line 56 - File upload to storage (S3/similar)
+- `components/candidato/candidate-form.tsx` line 48 - API call to save candidate responses
+- `components/psicologo/create-requirement-dialog.tsx` line 34 - API to create requirement + send email with token
+- `components/psicologo/requirement-details.tsx` line 56 - File upload to storage (S3/similar)
 
 **Data Fetching**:
 - Replace `mockRequirements` in `requirements-list.tsx` with API call

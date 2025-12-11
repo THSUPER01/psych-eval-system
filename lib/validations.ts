@@ -197,7 +197,7 @@ export function validateTalla(talla: string, tipo: 'camisa' | 'pantalon' | 'zapa
   }
   
   const tallasValidasCamisa = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']
-  const tallasValidasPantalon = ['28', '30', '32', '34', '36', '38', '40', '42', '44']
+  const tallasValidasPantalon = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']
   
   if (tipo === 'camisa' && !tallasValidasCamisa.includes(talla)) {
     return { isValid: false, message: "Talla de camisa inválida" }
@@ -209,8 +209,8 @@ export function validateTalla(talla: string, tipo: 'camisa' | 'pantalon' | 'zapa
   
   if (tipo === 'zapatos') {
     const tallaNum = parseInt(talla)
-    if (isNaN(tallaNum) || tallaNum < 24 || tallaNum > 45) {
-      return { isValid: false, message: "Talla de zapatos debe estar entre 24 y 45" }
+    if (isNaN(tallaNum) || tallaNum < 34 || tallaNum > 45) {
+      return { isValid: false, message: "Talla de zapatos debe estar entre 34 y 45" }
     }
   }
   

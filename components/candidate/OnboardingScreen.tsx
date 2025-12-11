@@ -135,109 +135,109 @@ function CardCMTDemo() {
   )
 }
 
-// Subcomponente: Demostración 16PF
-function Card16PFDemo() {
-  const [selectedOption, setSelectedOption] = useState<number | null>(null)
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0, visible: false })
+// // Subcomponente: Demostración 16PF
+// function Card16PFDemo() {
+//   const [selectedOption, setSelectedOption] = useState<number | null>(null)
+//   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0, visible: false })
 
-  const options = [
-    "Prefiero organizar y tomar el liderazgo del grupo.",
-    "Prefiero cooperar y apoyar al grupo.",
-    "Prefiero trabajar más independiente y concentrado.",
-  ]
+//   const options = [
+//     "Prefiero organizar y tomar el liderazgo del grupo.",
+//     "Prefiero cooperar y apoyar al grupo.",
+//     "Prefiero trabajar más independiente y concentrado.",
+//   ]
 
-  useEffect(() => {
-    const sequence = async () => {
-      await new Promise((res) => setTimeout(res, 500))
-      setCursorPos({ x: 10, y: 10, visible: true })
+//   useEffect(() => {
+//     const sequence = async () => {
+//       await new Promise((res) => setTimeout(res, 500))
+//       setCursorPos({ x: 10, y: 10, visible: true })
 
-      await new Promise((res) => setTimeout(res, 800))
-      // Posición corregida: centrar en el radio button de la opción 2 (índice 1)
-      setCursorPos({ x: 38, y: 105, visible: true })
+//       await new Promise((res) => setTimeout(res, 800))
+//       // Posición corregida: centrar en el radio button de la opción 2 (índice 1)
+//       setCursorPos({ x: 38, y: 105, visible: true })
 
-      await new Promise((res) => setTimeout(res, 600))
-      setSelectedOption(1)
-      setCursorPos({ x: 38, y: 105, visible: false })
+//       await new Promise((res) => setTimeout(res, 600))
+//       setSelectedOption(1)
+//       setCursorPos({ x: 38, y: 105, visible: false })
 
-      await new Promise((res) => setTimeout(res, 3000))
-      setSelectedOption(null)
-      setCursorPos({ x: 10, y: 10, visible: false })
-    }
+//       await new Promise((res) => setTimeout(res, 3000))
+//       setSelectedOption(null)
+//       setCursorPos({ x: 10, y: 10, visible: false })
+//     }
 
-    const interval = setInterval(sequence, 6000)
-    sequence()
+//     const interval = setInterval(sequence, 6000)
+//     sequence()
 
-    return () => clearInterval(interval)
-  }, [])
+//     return () => clearInterval(interval)
+//   }, [])
 
-  return (
-    <Card className="relative overflow-visible">
-      <CardHeader className="bg-gradient-to-r from-green-50 to-green-100">
-        <CardTitle className="text-base font-bold text-gray-800">
-          Cuando trabajo con otras personas yo...
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-6 space-y-3 relative">
-        {options.map((option, index) => {
-          const isSelected = selectedOption === index
+//   return (
+//     <Card className="relative overflow-visible">
+//       <CardHeader className="bg-gradient-to-r from-green-50 to-green-100">
+//         <CardTitle className="text-base font-bold text-gray-800">
+//           Cuando trabajo con otras personas yo...
+//         </CardTitle>
+//       </CardHeader>
+//       <CardContent className="pt-6 space-y-3 relative">
+//         {options.map((option, index) => {
+//           const isSelected = selectedOption === index
 
-          return (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0.8 }}
-              animate={{
-                opacity: 1,
-                scale: isSelected ? [0.98, 1.02, 1] : 1,
-                backgroundColor: isSelected ? "rgb(240, 253, 244)" : "rgb(255, 255, 255)",
-              }}
-              transition={{ duration: 0.4 }}
-              className={`border-2 rounded-lg p-4 flex items-center gap-3 cursor-pointer ${
-                isSelected ? "border-green-500 shadow-lg" : "border-gray-200 hover:border-gray-300"
-              }`}
-            >
-              <div
-                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                  isSelected ? "border-green-500 bg-green-500" : "border-gray-400"
-                }`}
-              >
-                {isSelected && <Check className="h-3 w-3 text-white" />}
-              </div>
-              <span className="text-sm text-gray-700 flex-1">{option}</span>
-            </motion.div>
-          )
-        })}
+//           return (
+//             <motion.div
+//               key={index}
+//               initial={{ opacity: 0.8 }}
+//               animate={{
+//                 opacity: 1,
+//                 scale: isSelected ? [0.98, 1.02, 1] : 1,
+//                 backgroundColor: isSelected ? "rgb(240, 253, 244)" : "rgb(255, 255, 255)",
+//               }}
+//               transition={{ duration: 0.4 }}
+//               className={`border-2 rounded-lg p-4 flex items-center gap-3 cursor-pointer ${
+//                 isSelected ? "border-green-500 shadow-lg" : "border-gray-200 hover:border-gray-300"
+//               }`}
+//             >
+//               <div
+//                 className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+//                   isSelected ? "border-green-500 bg-green-500" : "border-gray-400"
+//                 }`}
+//               >
+//                 {isSelected && <Check className="h-3 w-3 text-white" />}
+//               </div>
+//               <span className="text-sm text-gray-700 flex-1">{option}</span>
+//             </motion.div>
+//           )
+//         })}
 
-        {/* Cursor fantasma */}
-        <AnimatePresence>
-          {cursorPos.visible && (
-            <motion.div
-              initial={{ scale: 0, x: 0, y: 0 }}
-              animate={{
-                scale: [1, 1.2, 1],
-                x: cursorPos.x,
-                y: cursorPos.y,
-              }}
-              exit={{ scale: 0 }}
-              transition={{ duration: 0.5 }}
-              className="absolute w-6 h-6 rounded-full border-4 border-primary pointer-events-none z-10"
-              style={{ left: "0px", top: "0px" }}
-            />
-          )}
-        </AnimatePresence>
+//         {/* Cursor fantasma */}
+//         <AnimatePresence>
+//           {cursorPos.visible && (
+//             <motion.div
+//               initial={{ scale: 0, x: 0, y: 0 }}
+//               animate={{
+//                 scale: [1, 1.2, 1],
+//                 x: cursorPos.x,
+//                 y: cursorPos.y,
+//               }}
+//               exit={{ scale: 0 }}
+//               transition={{ duration: 0.5 }}
+//               className="absolute w-6 h-6 rounded-full border-4 border-primary pointer-events-none z-10"
+//               style={{ left: "0px", top: "0px" }}
+//             />
+//           )}
+//         </AnimatePresence>
 
-        {selectedOption !== null && (
-          <motion.p
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-xs text-green-700 font-medium mt-4 flex items-center gap-1"
-          >
-            <Check className="h-4 w-4" /> Opción seleccionada. ¡Así de fácil!
-          </motion.p>
-        )}
-      </CardContent>
-    </Card>
-  )
-}
+//         {selectedOption !== null && (
+//           <motion.p
+//             initial={{ opacity: 0, y: -6 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             className="text-xs text-green-700 font-medium mt-4 flex items-center gap-1"
+//           >
+//             <Check className="h-4 w-4" /> Opción seleccionada. ¡Así de fácil!
+//           </motion.p>
+//         )}
+//       </CardContent>
+//     </Card>
+//   )
+// }
 
 // Componente principal
 export default function OnboardingScreen({
@@ -324,7 +324,7 @@ export default function OnboardingScreen({
           <div className="space-y-3 text-gray-700 text-sm md:text-base leading-relaxed">
             <p>
               Esto <strong>no es un examen</strong> con respuestas buenas o malas. Queremos conocerte
-              para ubicarte mejor en el cargo. Responde con sinceridad y sin pensarlo demasiado.
+              para ubicarte mejor en el rol. Responde con sinceridad y sin pensarlo demasiado.
             </p>
             <div className="bg-blue-50 border-l-4 border-blue-500 p-3 rounded-r-lg">
               <p className="text-sm text-blue-900">
@@ -467,10 +467,6 @@ export default function OnboardingScreen({
               </div>
             </div>
 
-            {/* Columna 2: Demo - aparece SEGUNDO en móvil, PRIMERO en desktop */}
-            <div className="order-2 md:order-1">
-              <Card16PFDemo />
-            </div>
           </motion.div>
         </div>
       </section>

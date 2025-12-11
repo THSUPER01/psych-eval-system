@@ -53,7 +53,7 @@ export function TokenModal({ documento, idSession, permisos, onClose }: TokenMod
         className: 'border-green-600 bg-green-600 text-white',
       })
       onClose()
-      router.push('/dashboard/selection')
+      router.push('/panel/seleccion')
     } catch (err: any) {
       const mensaje = err?.message || 'Código inválido'
       toast({ title: 'Error', description: mensaje, variant: 'destructive' })

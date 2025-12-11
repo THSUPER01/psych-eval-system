@@ -1,3 +1,16 @@
+/**
+ * Asigna manualmente una prueba CMT a un candidato
+ * Endpoint: POST /api/Candidatos/{id}/asignar-cmt
+ * @param candidatoId - ID del candidato
+ * @param tipoNormativaId - ID del tipo de normativa CMT
+ * @returns AsignacionPrueba creada o null si ya existía
+ */
+export async function asignarCmtManual(candidatoId: number, tipoNormativaId: number): Promise<AsignacionPrueba> {
+  return http<AsignacionPrueba>(`/Candidatos/${candidatoId}/asignar-cmt`, {
+    method: 'POST',
+    body: JSON.stringify({ tipoNormativaId }),
+  })
+}
 import type {
   Requerimiento,
   CrearRequerimientoDto,
@@ -14,6 +27,8 @@ import type {
   RespuestaItem,
   Documento,
   TipoNormativa,
+  CmtResultadoDto,
+  CmtResultadoResponseDto,
 } from '@/types/selection.types'
 
 const API_URL = process.env.NEXT_PUBLIC_API_SELECCION_URL || 'http://localhost:5208/api'
@@ -90,6 +105,10 @@ export const selectionApiService = {
     return http<Candidato[]>(`/Candidatos/requerimiento/${requerimientoId}`, { method: 'GET' })
   },
 
+  async getCandidatosPorPsicologo(documento: string): Promise<Candidato[]> {
+    return http<Candidato[]>(`/Candidatos/psicologo/${documento}`, { method: 'GET' })
+  },
+
   async crearCandidato(dto: CrearCandidatoDto): Promise<Candidato> {
     return http<Candidato>('/Candidatos', {
       method: 'POST',
@@ -103,6 +122,17 @@ export const selectionApiService = {
 
   async eliminarCandidato(id: number): Promise<void> {
     return http<void>(`/Candidatos/${id}`, { method: 'DELETE' })
+  },
+
+  /**
+   * Asigna un candidato a un requerimiento existente
+   * Endpoint esperado: PATCH /api/Candidatos/{id}/asignar-requerimiento
+   */
+  async asignarCandidatoARequerimiento(candidatoId: number, requerimientoId: number): Promise<Candidato> {
+    return http<Candidato>(`/Candidatos/${candidatoId}/asignar-requerimiento`, {
+      method: 'PATCH',
+      body: JSON.stringify({ requerimientoId }),
+    })
   },
 
   /**
@@ -276,6 +306,32 @@ export const selectionApiService = {
     return http<{ token: string } | any>(`/Publico/registro-completo`, {
       method: 'POST',
       body: JSON.stringify(dto),
+    })
+  },
+
+  // ==================== RESULTADOS CMT ====================
+
+  /**
+   * Obtiene el resultado de la prueba CMT de un candidato (para psicólogos)
+   * Endpoint: GET /api/publico/candidato/{token}/cmt/resultado
+   */
+  async getResultadoCMTPorToken(token: string, recalcular = false): Promise<CmtResultadoDto> {
+    const queryParam = recalcular ? '?recalcular=true' : ''
+    // El helper http ya extrae data.data, por lo que retorna directamente CmtResultadoDto
+    return await http<CmtResultadoDto>(
+      `/publico/candidato/${token}/cmt/resultado${queryParam}`,
+      { method: 'GET' }
+    )
+  },
+  /**
+   * Asigna la prueba 16PF al candidato.
+   * Endpoint: POST /api/Candidatos/{id}/asignar-16pf
+   * No requiere body; la normativa se determina automáticamente según género.
+   */
+  async asignar16pf(candidatoId: number): Promise<AsignacionPrueba> {
+    return http<AsignacionPrueba>(`/Candidatos/${candidatoId}/asignar-16pf`, {
+      method: 'POST',
+      body: JSON.stringify({}),
     })
   },
 }

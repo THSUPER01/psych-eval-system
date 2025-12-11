@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -80,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null)
     setPermissions([])
     setUserRole(null)
-    router.push('/psychologist/login')
+    router.push('/psicologo/login')
   }, [router])
 
   const hasPermission = useCallback(

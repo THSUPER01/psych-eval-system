@@ -38,6 +38,7 @@ import { formatDistanceToNow } from "date-fns"
 import { es } from "date-fns/locale"
 import type { Candidato } from "@/types/selection.types"
 import { EnviarLinkDialog } from "./EnviarLinkDialog"
+import { NavigationLink } from "@/components/ui/navigation-link"
 
 interface CandidatosListProps {
   candidatos?: Candidato[]
@@ -187,7 +188,7 @@ export function CandidatosList({ candidatos, isLoading, requerimientoId }: Candi
                   )}
                 </TableCell>
                 <TableCell>
-                  {candidato.formularioCompleto ? (
+                  {candidato.formularioCompletado ? (
                     <Badge variant="default" className="gap-1">
                       <CheckCircle2 className="h-3 w-3" />
                       Completo
@@ -224,10 +225,10 @@ export function CandidatosList({ candidatos, isLoading, requerimientoId }: Candi
                       <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/selection/candidatos/${candidato.canId}`}>
+                        <NavigationLink href={`/panel/seleccion/candidatos/${candidato.canId}`} className="flex items-center cursor-pointer">
                           <Eye className="mr-2 h-4 w-4" />
-                          Ver Detalle
-                        </Link>
+                          Ver Detalles
+                        </NavigationLink>
                       </DropdownMenuItem>
                       {!candidato.linkEnviado && (
                         <DropdownMenuItem onClick={() => handleEnviarLink(candidato)}>

@@ -46,7 +46,7 @@ export default function WelcomeScreen({
           <div className="space-y-3 text-gray-700">
             <p className="text-base leading-relaxed">
               Este <strong>NO es un examen</strong> con respuestas buenas o malas. Queremos conocerte
-              mejor para ubicarte en el cargo que más se ajuste a tu perfil y motivaciones.
+              mejor para ubicarte en el rol que más se ajuste a tu perfil y motivaciones.
             </p>
             <p className="text-base leading-relaxed">
               Te pedimos que respondas con <strong>sinceridad</strong> y{" "}

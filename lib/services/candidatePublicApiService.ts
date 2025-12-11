@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Servicio API Público para Candidatos
  * 
  * Este servicio maneja los endpoints públicos (sin autenticación)
@@ -13,6 +13,10 @@ import type {
   FormularioPublicoDto,
   CrearFormularioCandidatoDto,
   ApiResponse,
+  CmtPreguntasResponseDto,
+  CmtEnviarRespuestasDto,
+  CmtEnviarRespuestasResponseDto,
+  CmtResultadoResponseDto,
 } from '@/types/selection.types'
 
 const API_URL = process.env.NEXT_PUBLIC_API_SELECCION_URL || 'http://localhost:5208/api'
@@ -104,7 +108,7 @@ export const candidatePublicApiService = {
    *   const token = response.data.token
    *   // Guardar token y redirigir a formulario
    *   localStorage.setItem('candidatoToken', token)
-   *   router.push(`/candidate/${token}`)
+   *   router.push(`/candidato/${token}`)
    * }
    * ```
    */
@@ -155,7 +159,7 @@ export const candidatePublicApiService = {
    * 
    * if (response.success) {
    *   // Registro completado, redirigir a confirmación
-   *   router.push(`/candidate/${response.data.token}/confirmacion`)
+   *   router.push(`/candidato/${response.data.token}/confirmacion`)
    * }
    * ```
    */
@@ -213,27 +217,84 @@ export const candidatePublicApiService = {
     })
   },
 
+  // ==================== CMT (PRUEBA MOTIVACIONAL) ====================
+
   /**
-   * Obtener las pruebas asignadas a un candidato
-   * Endpoint: GET /api/publico/candidato/{token}/pruebas
+   * Obtener las preguntas de la prueba CMT
+   * Endpoint: GET /api/publico/candidato/{token}/cmt/preguntas
    * 
    * @param token - Token único del candidato
-   * @returns Lista de pruebas asignadas
+   * @returns 15 preguntas CMT con 5 opciones cada una
    * 
    * @example
    * ```ts
-   * const response = await obtenerPruebas(token)
+   * const response = await obtenerPreguntasCMT(token)
    * if (response.success && response.data) {
-   *   response.data.forEach(prueba => {
-   *     console.log(`Prueba: ${prueba.nombrePrueba}`)
-   *     console.log(`Estado: ${prueba.completado ? 'Completada' : 'Pendiente'}`)
+   *   console.log(`Total preguntas: ${response.data.length}`) // 15
+   * }
+   * ```
+   */
+  async obtenerPreguntasCMT(token: string): Promise<CmtPreguntasResponseDto> {
+    return httpPublic<any>(`/publico/candidato/${token}/cmt/preguntas`, {
+      method: 'GET',
+    }) as Promise<CmtPreguntasResponseDto>
+  },
+
+  /**
+   * Enviar respuestas de la prueba CMT
+   * Endpoint: POST /api/publico/candidato/{token}/cmt/responder
+   * 
+   * @param token - Token único del candidato
+   * @param data - Objeto con array de 15 respuestas (A-E)
+   * @returns Confirmación del envío
+   * 
+   * @example
+   * ```ts
+   * const response = await enviarRespuestasCMT(token, {
+   *   respuestas: [
+   *     { numeroEnunciado: 1, letraSeleccionada: "A", tiempoRespuestaMs: 5000 },
+   *     { numeroEnunciado: 2, letraSeleccionada: "D", tiempoRespuestaMs: 4500 },
+   *     // ... 13 respuestas más
+   *   ]
+   * })
+   * 
+   * if (response.success) {
+   *   console.log('Prueba CMT completada exitosamente')
+   * }
+   * ```
+   */
+  async enviarRespuestasCMT(
+    token: string,
+    data: CmtEnviarRespuestasDto
+  ): Promise<CmtEnviarRespuestasResponseDto> {
+    return httpPublic<any>(`/publico/candidato/${token}/cmt/responder`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }) as Promise<CmtEnviarRespuestasResponseDto>
+  },
+
+  /**
+   * Obtener el resultado de la prueba CMT
+   * Endpoint: GET /api/publico/candidato/{token}/cmt/resultado
+   * 
+   * @param token - Token único del candidato
+   * @param recalcular - Si true, fuerza recálculo del resultado
+   * @returns Resultado con 15 dimensiones y percentiles
+   * 
+   * @example
+   * ```ts
+   * const response = await obtenerResultadoCMT(token)
+   * if (response.success && response.data) {
+   *   response.data.dimensiones.forEach(dim => {
+   *     console.log(`${dim.nombreDimension}: Percentil ${dim.percentil}`)
    *   })
    * }
    * ```
    */
-  async obtenerPruebas(token: string): Promise<ApiResponse<any[]>> {
-    return httpPublic<any[]>(`/publico/candidato/${token}/pruebas`, {
+  async obtenerResultadoCMT(token: string, recalcular = false): Promise<CmtResultadoResponseDto> {
+    const queryParam = recalcular ? '?recalcular=true' : ''
+    return httpPublic<any>(`/publico/candidato/${token}/cmt/resultado${queryParam}`, {
       method: 'GET',
-    })
+    }) as Promise<CmtResultadoResponseDto>
   },
 }

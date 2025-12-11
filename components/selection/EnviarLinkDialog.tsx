@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState } from "react"
 import {
@@ -33,7 +33,7 @@ export function EnviarLinkDialog({
   const [copied, setCopied] = useState(false)
 
   // TODO: Reemplazar con la URL real del frontend público
-  const linkFormulario = `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/candidate/${candidato.token}`
+  const linkFormulario = `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/candidato/${candidato.token}`
 
   const copiarLink = () => {
     navigator.clipboard.writeText(linkFormulario)

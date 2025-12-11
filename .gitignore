@@ -28,6 +28,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# markdown documentation (keep only root README.md)
+components/ui/*.md
+
 # environment files
 .env
 .env.local

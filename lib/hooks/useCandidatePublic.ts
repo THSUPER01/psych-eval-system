@@ -1,4 +1,4 @@
-/**
+﻿/**
  * React Query Hooks para API Pública de Candidatos
  * 
  * Estos hooks manejan el estado y caché de las peticiones a la API pública,
@@ -14,6 +14,7 @@ import type {
   RegistroSimpleDto,
   FormularioPublicoDto,
   CrearFormularioCandidatoDto,
+  CmtResponderPreguntaDto,
 } from '@/types/selection.types'
 
 // ==================== QUERY KEYS ====================
@@ -21,7 +22,8 @@ import type {
 export const candidatePublicKeys = {
   all: ['candidatos-publico'] as const,
   detail: (token: string) => [...candidatePublicKeys.all, 'detail', token] as const,
-  pruebas: (token: string) => [...candidatePublicKeys.all, 'pruebas', token] as const,
+  cmtPreguntas: (token: string) => [...candidatePublicKeys.all, 'cmt', 'preguntas', token] as const,
+  cmtResultado: (token: string) => [...candidatePublicKeys.all, 'cmt', 'resultado', token] as const,
 }
 
 // ==================== QUERIES ====================
@@ -65,47 +67,6 @@ export function useCandidatoPublico(token: string, enabled = true) {
   })
 }
 
-/**
- * Hook para obtener las pruebas asignadas a un candidato
- * 
- * @param token - Token único del candidato
- * 
- * @example
- * ```tsx
- * function MisPruebas({ token }: { token: string }) {
- *   const { data: pruebas, isLoading } = usePruebasCandidato(token)
- *   
- *   if (isLoading) return <div>Cargando pruebas...</div>
- *   if (!pruebas?.length) return <div>No tienes pruebas asignadas</div>
- *   
- *   return (
- *     <div>
- *       {pruebas.map(prueba => (
- *         <div key={prueba.aspId}>
- *           <h3>{prueba.nombrePrueba}</h3>
- *           <p>{prueba.completado ? 'Completada' : 'Pendiente'}</p>
- *         </div>
- *       ))}
- *     </div>
- *   )
- * }
- * ```
- */
-export function usePruebasCandidato(token: string) {
-  return useQuery({
-    queryKey: candidatePublicKeys.pruebas(token),
-    queryFn: async () => {
-      const response = await candidatePublicApiService.obtenerPruebas(token)
-      if (!response.success) {
-        throw new Error(response.message || 'No se pudieron obtener las pruebas')
-      }
-      return response.data || []
-    },
-    enabled: !!token,
-    staleTime: 1000 * 60 * 2, // 2 minutos
-  })
-}
-
 // ==================== MUTATIONS ====================
 
 /**
@@ -130,7 +91,7 @@ export function usePruebasCandidato(token: string) {
  *         description: 'Ahora completa tu información demográfica'
  *       })
  *       
- *       router.push(`/candidate/${token}`)
+ *       router.push(`/candidato/${token}`)
  *     }
  *   }
  *   
@@ -173,7 +134,7 @@ export function useRegistroSimple() {
  *         description: 'Tu información ha sido guardada exitosamente'
  *       })
  *       
- *       router.push(`/candidate/${result.data.token}/confirmacion`)
+ *       router.push(`/candidato/${result.data.token}/confirmacion`)
  *     } else {
  *       toast.error({
  *         title: 'Error en el registro',
@@ -220,7 +181,7 @@ export function useRegistroCompleto() {
  *         description: 'Tu información ha sido guardada correctamente'
  *       })
  *       
- *       router.push(`/candidate/${token}/confirmacion`)
+ *       router.push(`/candidato/${token}/confirmacion`)
  *     } else {
  *       toast.error({
  *         title: 'Error',
@@ -242,10 +203,144 @@ export function useCompletarFormulario() {
     },
     onSuccess: (response, variables) => {
       if (response.success) {
-        // Invalidar el detalle del candidato para refrescar el estado
+        // Invalidar el detalle del candidato para refreschar el estado
         queryClient.invalidateQueries({ queryKey: candidatePublicKeys.detail(variables.token) })
         queryClient.invalidateQueries({ queryKey: candidatePublicKeys.all })
       }
     },
+  })
+}
+
+// ==================== CMT (PRUEBA MOTIVACIONAL) ====================
+
+/**
+ * Hook para obtener las preguntas de la prueba CMT
+ * 
+ * @param token - Token único del candidato
+ * 
+ * @example
+ * ```tsx
+ * function PruebaCMT({ token }: { token: string }) {
+ *   const { data, isLoading, error } = usePreguntasCMT(token)
+ *   
+ *   if (isLoading) return <div>Cargando preguntas...</div>
+ *   if (error) return <div>Error al cargar la prueba</div>
+ *   
+ *   return (
+ *     <div>
+ *       {data?.data.map((pregunta, index) => (
+ *         <PreguntaCMT key={index} pregunta={pregunta} numero={index + 1} />
+ *       ))}
+ *     </div>
+ *   )
+ * }
+ * ```
+ */
+export function usePreguntasCMT(token: string) {
+  return useQuery({
+    queryKey: candidatePublicKeys.cmtPreguntas(token),
+    queryFn: async () => {
+      const response = await candidatePublicApiService.obtenerPreguntasCMT(token)
+      if (!response.success) {
+        throw new Error('No se pudieron obtener las preguntas CMT')
+      }
+      return response
+    },
+    enabled: !!token,
+    staleTime: 1000 * 60 * 60, // 1 hora (las preguntas no cambian)
+  })
+}
+
+/**
+ * Hook para enviar las respuestas de la prueba CMT
+ * 
+ * @example
+ * ```tsx
+ * function FormularioCMT({ token }: { token: string }) {
+ *   const enviarRespuestas = useEnviarRespuestasCMT()
+ *   const toast = useToast()
+ *   const router = useRouter()
+ *   
+ *   const handleSubmit = async (respuestas: any[]) => {
+ *     const result = await enviarRespuestas.mutateAsync({ token, respuestas })
+ *     if (result.success) {
+ *       toast.success({
+ *         title: 'Prueba completada',
+ *         description: 'Tus respuestas han sido guardadas exitosamente'
+ *       })
+ *       router.push(`/candidato/${token}/resultado`)
+ *     } else {
+ *       toast.error({
+ *         title: 'Error',
+ *         description: result.message || 'No se pudieron guardar las respuestas'
+ *       })
+ *     }
+ *   }
+ *   
+ *   return <FormularioCMTUI onSubmit={handleSubmit} />
+ * }
+ * ```
+ */
+export function useEnviarRespuestasCMT() {
+  const queryClient = useQueryClient()
+  
+  return useMutation({
+    mutationFn: async ({ 
+      token, 
+      respuestas 
+    }: { 
+      token: string
+      respuestas: CmtResponderPreguntaDto[] 
+    }) => {
+      return await candidatePublicApiService.enviarRespuestasCMT(token, { respuestas })
+    },
+    onSuccess: (response, variables) => {
+      if (response.success) {
+        // Invalidar caché para refrescar estado del candidato
+        queryClient.invalidateQueries({ queryKey: candidatePublicKeys.detail(variables.token) })
+        queryClient.invalidateQueries({ queryKey: candidatePublicKeys.cmtResultado(variables.token) })
+        queryClient.invalidateQueries({ queryKey: candidatePublicKeys.all })
+      }
+    },
+  })
+}
+
+/**
+ * Hook para obtener el resultado de la prueba CMT
+ * 
+ * @param token - Token único del candidato
+ * @param recalcular - Si true, fuerza recálculo del resultado
+ * 
+ * @example
+ * ```tsx
+ * function ResultadoCMT({ token }: { token: string }) {
+ *   const { data, isLoading, error } = useResultadoCMT(token)
+ *   
+ *   if (isLoading) return <div>Calculando resultado...</div>
+ *   if (error) return <div>Error al obtener resultado</div>
+ *   
+ *   return (
+ *     <div>
+ *       <h2>Resultados de {data?.data.nombreCandidato}</h2>
+ *       {data?.data.dimensiones.map(dim => (
+ *         <DimensionCard key={dim.codigoDimension} dimension={dim} />
+ *       ))}
+ *     </div>
+ *   )
+ * }
+ * ```
+ */
+export function useResultadoCMT(token: string, recalcular = false) {
+  return useQuery({
+    queryKey: candidatePublicKeys.cmtResultado(token),
+    queryFn: async () => {
+      const response = await candidatePublicApiService.obtenerResultadoCMT(token, recalcular)
+      if (!response.success) {
+        throw new Error('No se pudo obtener el resultado CMT')
+      }
+      return response
+    },
+    enabled: !!token,
+    staleTime: recalcular ? 0 : 1000 * 60 * 5, // 5 minutos (o 0 si se recalcula)
   })
 }

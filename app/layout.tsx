@@ -4,6 +4,8 @@ import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from '@/components/ui/toaster'
 import { AuthProvider } from '@/lib/context/AuthContext'
 import { QueryProvider } from '@/components/providers/QueryProvider'
+import { NavigationLoadingSpinner } from '@/components/ui/loading-spinner'
+import { Suspense } from 'react'
 import './globals.css'
 
 const poppins = Poppins({
@@ -29,6 +31,9 @@ export default function RootLayout({
       <body className={`font-sans ${poppins.variable}`}>
         <QueryProvider>
           <AuthProvider>
+            <Suspense fallback={null}>
+              <NavigationLoadingSpinner />
+            </Suspense>
             {children}
           </AuthProvider>
         </QueryProvider>

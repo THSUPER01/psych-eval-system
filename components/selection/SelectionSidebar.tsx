@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState, useMemo } from "react"
 import Link from "next/link"
@@ -9,8 +9,6 @@ import { cn } from "@/lib/utils"
 import {
   LayoutDashboard,
   Users,
-  ClipboardList,
-  FileText,
   BarChart3,
   Settings,
   Menu,
@@ -19,18 +17,17 @@ import {
   Shield,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { NavigationLink } from "@/components/ui/navigation-link"
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard/selection", icon: LayoutDashboard },
-  { name: "Requerimientos", href: "/dashboard/selection/requerimientos", icon: FolderKanban },
-  { name: "Candidatos", href: "/dashboard/selection/candidatos", icon: Users },
-  { name: "Pruebas", href: "/dashboard/selection/pruebas", icon: ClipboardList },
-  { name: "Asignaciones", href: "/dashboard/selection/asignaciones", icon: FileText },
-  { name: "Resultados", href: "/dashboard/selection/resultados", icon: BarChart3 },
+  { name: "Dashboard", href: "/panel/seleccion", icon: LayoutDashboard },
+  { name: "Requerimientos", href: "/panel/seleccion/requerimientos", icon: FolderKanban },
+  { name: "Candidatos", href: "/panel/seleccion/candidatos", icon: Users },
+  { name: "Resultados", href: "/panel/seleccion/resultados", icon: BarChart3 },
 ]
 
 const adminNavigation = [
-  { name: "Gestión de Usuarios", href: "/dashboard/selection/admin/usuarios", icon: Shield, adminOnly: true },
+  { name: "Gestión de Usuarios", href: "/panel/seleccion/admin/usuarios", icon: Shield, adminOnly: true },
 ]
 
 export function SelectionSidebar() {
@@ -86,7 +83,7 @@ export function SelectionSidebar() {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="h-16 flex items-center px-6 border-b bg-white">
-            <Link href="/dashboard/selection" className="flex items-center gap-2">
+            <Link href="/panel/seleccion" className="flex items-center gap-2">
               <Image
                 src="/images/Logo.png"
                 alt="Logo Mundo Súper"
@@ -103,7 +100,7 @@ export function SelectionSidebar() {
             {allNavigation.map((item) => {
               const isActive = item.href === activeHref
               return (
-                <Link
+                <NavigationLink
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -116,7 +113,7 @@ export function SelectionSidebar() {
                 >
                   <item.icon className="mr-3 h-5 w-5" />
                   {item.name}
-                </Link>
+                </NavigationLink>
               )
             })}
           </nav>
@@ -134,19 +131,19 @@ export function SelectionSidebar() {
                 />
               </div>
               <p className="text-xs font-semibold text-[#0046BE]">Explora los módulos</p>
-              <p className="text-xs text-gray-600 mt-1">Pruebas y asignaciones</p>
+              <p className="text-xs text-gray-600 mt-1">Gestión de candidatos</p>
             </div>
           </div>
 
           {/* Footer */}
           <div className="border-t px-4 py-4 bg-white">
-            <Link
-              href="/dashboard/selection/configuracion"
+            <NavigationLink
+              href="/panel/seleccion/configuracion"
               className="flex items-center px-4 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gradient-to-r hover:from-[#F7941D]/10 hover:to-[#F7941D]/5 transition-all duration-200"
             >
               <Settings className="mr-3 h-5 w-5 text-[#F7941D]" />
               Configuración
-            </Link>
+            </NavigationLink>
           </div>
         </div>
       </div>

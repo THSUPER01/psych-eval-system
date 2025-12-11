@@ -43,10 +43,11 @@ export async function middleware(request: NextRequest) {
   // Public paths that should not be blocked
   const publicPrefixes = [
     '/',
-    '/psychologist/login',
-    '/psychologist/verify',
+    '/psicologo/login',
+    '/psicologo/verify',
     '/aplicar',
-    '/candidate',
+    '/candidato',
+    '/prueba',
     '/api',
     '/_next',
     '/images',
@@ -92,7 +93,7 @@ export async function middleware(request: NextRequest) {
       if (!permisosResponse.ok) throw new Error('Error obteniendo permisos')
       const permisosData = await permisosResponse.json()
 
-      const response = NextResponse.redirect(new URL('/dashboard/selection', request.url))
+      const response = NextResponse.redirect(new URL('/panel/seleccion', request.url))
       // Nota: para que el cliente pueda leer y migrar a localStorage, no usamos httpOnly aquí.
       const maxAge = DURACION_HORAS_SSO * 60 * 60
       response.cookies.set('authToken', authToken, {
@@ -112,21 +113,21 @@ export async function middleware(request: NextRequest) {
       return response
     } catch (e) {
       // En caso de falla SSO, continuar al login manual
-      return NextResponse.redirect(new URL('/psychologist/login', request.url))
+      return NextResponse.redirect(new URL('/psicologo/login', request.url))
     }
   }
 
-  // Allow public paths early (including /psychologist/verify*)
+  // Allow public paths early (including /psicologo/verify*)
   if (isPublic) {
     return NextResponse.next()
   }
 
   // If coming to protected pages without a valid token, redirect to login
-  const isPsychologistArea = pathname.startsWith('/psychologist') && !pathname.startsWith('/psychologist/login')
-  const isDashboardArea = pathname.startsWith('/dashboard')
+  const isPsychologistArea = pathname.startsWith('/psicologo') && !pathname.startsWith('/psicologo/login')
+  const isDashboardArea = pathname.startsWith('/panel')
   
   if ((isPsychologistArea || isDashboardArea) && (isTokenExpired(tokenCookie) || !tokenCookie)) {
-    return NextResponse.redirect(new URL('/psychologist/login', request.url))
+    return NextResponse.redirect(new URL('/psicologo/login', request.url))
   }
 
   return NextResponse.next()

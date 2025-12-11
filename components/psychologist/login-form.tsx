@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import type React from "react"
 
@@ -93,7 +93,7 @@ export function LoginForm() {
       
       // Delay antes de la navegación para asegurar que se vea el loading
       await new Promise(resolve => setTimeout(resolve, 400))
-      router.push("/psychologist/verify")
+      router.push("/psicologo/verify")
     } catch (err: any) {
       const mensaje = err?.message || "Documento no encontrado"
       setIsLoading(false)

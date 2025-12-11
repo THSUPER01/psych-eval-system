@@ -1,5 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { selectionApiService } from '@/lib/services/selectionApiService'
+import { selectionApiService, asignarCmtManual } from '@/lib/services/selectionApiService'
+import { test16pfService } from '@/lib/services/test16pfService'
+import { useAuth } from './useAuth'
 import type {
   Requerimiento,
   CrearRequerimientoDto,
@@ -11,12 +13,60 @@ import type {
   TipoNormativa,
 } from '@/types/selection.types'
 
+// ==================== ASIGNACIÓN MANUAL CMT ====================
+export function useAsignarCmtManual() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ candidatoId, tipoNormativaId }: { candidatoId: number; tipoNormativaId: number }) =>
+      asignarCmtManual(candidatoId, tipoNormativaId),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['candidatos'] })
+      queryClient.invalidateQueries({ queryKey: ['candidato', variables.candidatoId] })
+      // Podrías invalidar asignaciones si es necesario
+      queryClient.invalidateQueries({ queryKey: ['asignaciones'] })
+      queryClient.invalidateQueries({ queryKey: ['asignaciones', 'candidato', variables.candidatoId] })
+    },
+  })
+}
+// ==================== ASIGNACIÓN 16PF ====================
+export function useAsignar16pf() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (candidatoId: number) => selectionApiService.asignar16pf(candidatoId),
+    onSuccess: (_data, candidatoId) => {
+      queryClient.invalidateQueries({ queryKey: ['candidatos'] })
+      queryClient.invalidateQueries({ queryKey: ['candidato', candidatoId] })
+      queryClient.invalidateQueries({ queryKey: ['asignaciones'] })
+      queryClient.invalidateQueries({ queryKey: ['asignaciones', 'candidato', candidatoId] })
+      // Si ya existiera algún resultado cacheado por token relacionado se podría invalidar aquí
+    },
+  })
+}
+
 // ==================== REQUERIMIENTOS ====================
 
 export function useRequerimientos() {
+  const { user, userRole, isLoading: authLoading } = useAuth()
+
   return useQuery<Requerimiento[]>({
-    queryKey: ['requerimientos'],
-    queryFn: () => selectionApiService.getRequerimientos(),
+    queryKey: ['requerimientos', user?.documento],
+    queryFn: async () => {
+      // Si aún cargando auth, esperar o retornar vacío (controlado por enabled)
+      if (authLoading) return []
+
+      // Lógica de roles: Si es Admin/Jefe ve todo, si no, filtra por su documento
+      // Ajusta los nombres de roles según tu base de datos
+      const esAdmin = userRole?.rolRol?.toUpperCase().includes('ADMIN') || 
+                      userRole?.rolRol?.toUpperCase().includes('JEFE') ||
+                      userRole?.rolRol?.toUpperCase().includes('GERENTE')
+
+      if (esAdmin || !user?.documento) {
+        return selectionApiService.getRequerimientos()
+      }
+
+      return selectionApiService.getRequerimientosPorPsicologo(user.documento)
+    },
+    enabled: !authLoading && !!user, // Solo ejecutar cuando hay usuario autenticado
   })
 }
 
@@ -74,12 +124,31 @@ export function useEliminarRequerimiento() {
 // ==================== CANDIDATOS ====================
 
 export function useCandidatos(requerimientoId?: number) {
+  const { user, userRole, isLoading: authLoading } = useAuth()
+
   return useQuery<Candidato[]>({
-    queryKey: requerimientoId ? ['candidatos', 'requerimiento', requerimientoId] : ['candidatos'],
-    queryFn: () =>
-      requerimientoId
-        ? selectionApiService.getCandidatosPorRequerimiento(requerimientoId)
-        : selectionApiService.getCandidatos(),
+    queryKey: requerimientoId 
+      ? ['candidatos', 'requerimiento', requerimientoId] 
+      : ['candidatos', 'general', user?.documento],
+    queryFn: async () => {
+      // 1. Si hay requerimiento específico, tiene prioridad
+      if (requerimientoId) {
+        return selectionApiService.getCandidatosPorRequerimiento(requerimientoId)
+      }
+
+      // 2. Si es Admin o no hay usuario, traer todo (comportamiento default)
+      const esAdmin = userRole?.rolRol?.toUpperCase().includes('ADMIN') || 
+                      userRole?.rolRol?.toUpperCase().includes('JEFE') ||
+                      userRole?.rolRol?.toUpperCase().includes('GERENTE')
+
+      if (esAdmin || !user?.documento) {
+        return selectionApiService.getCandidatos()
+      }
+
+      // 3. Si es Psicólogo, usar endpoint específico
+      return selectionApiService.getCandidatosPorPsicologo(user.documento)
+    },
+    enabled: !authLoading && !!user,
   })
 }
 
@@ -122,6 +191,24 @@ export function useEliminarCandidato() {
     mutationFn: (id: number) => selectionApiService.eliminarCandidato(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['candidatos'] })
+    },
+  })
+}
+
+export function useAsignarCandidatoARequerimiento() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ candidatoId, requerimientoId }: { candidatoId: number; requerimientoId: number }) =>
+      selectionApiService.asignarCandidatoARequerimiento(candidatoId, requerimientoId),
+    onSuccess: (data, variables) => {
+      // Refrescar listas y detalles relacionados
+      queryClient.invalidateQueries({ queryKey: ['candidatos'] })
+      queryClient.invalidateQueries({ queryKey: ['candidato', variables.candidatoId] })
+      if (variables.requerimientoId) {
+        queryClient.invalidateQueries({ queryKey: ['requerimiento', variables.requerimientoId] })
+      }
+      queryClient.invalidateQueries({ queryKey: ['requerimientos'] })
     },
   })
 }
@@ -255,5 +342,34 @@ export function useTiposNormativa() {
     queryKey: ['tipos-normativa'],
     queryFn: () => selectionApiService.getTiposNormativa(),
     staleTime: 1000 * 60 * 60, // Cache por 1 hora (catálogo estático)
+  })
+}
+
+// ============================================
+// HOOKS PARA RESULTADOS CMT
+// ============================================
+
+/**
+ * Hook para obtener el resultado CMT de un candidato específico
+ * (Acceso desde dashboard de psicólogo usando token)
+ */
+export function useResultadoCMTPorCandidato(token: string | null | undefined, recalcular = false) {
+  return useQuery({
+    queryKey: ['cmt-resultado', 'token', token, recalcular],
+    queryFn: () => selectionApiService.getResultadoCMTPorToken(token!, recalcular),
+    enabled: !!token && token.length > 0,
+    staleTime: recalcular ? 0 : 1000 * 60 * 5, // 5 minutos (o 0 si se fuerza recálculo)
+  })
+}
+
+// ============================================
+// HOOK RESULTADO 16PF (por token de candidato)
+// ============================================
+export function useResultado16PFPorCandidato(token: string | null | undefined) {
+  return useQuery({
+    queryKey: ['16pf-resultado', 'token', token],
+    queryFn: () => test16pfService.getResultado(token!),
+    enabled: !!token && token.length > 0,
+    staleTime: 1000 * 60 * 5,
   })
 }

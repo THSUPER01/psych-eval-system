@@ -38,7 +38,9 @@ interface FormData {
   Barrio: string
   Comuna: string
   Estrato: string
-  Direccion: string
+  DireccionTipoVia: string
+  DireccionNumero: string
+  DireccionComplemento: string
   Hijos: string
   numero_hijos: string
   edades_de_hijos: string[]
@@ -66,7 +68,9 @@ export function CandidateForm({ token }: { token: string }) {
     Barrio: "",
     Comuna: "",
     Estrato: "",
-    Direccion: "",
+    DireccionTipoVia: "",
+    DireccionNumero: "",
+    DireccionComplemento: "",
     Hijos: "",
     numero_hijos: "",
     edades_de_hijos: [],
@@ -83,6 +87,30 @@ export function CandidateForm({ token }: { token: string }) {
   useEffect(() => {
     if (candidato?.formulario) {
       const formulario = candidato.formulario
+      // Intentar pre-parsear la dirección en partes (tipo, número, complemento)
+      const fullDir = formulario.direccion || ""
+      const tiposVia = ["Calle", "Carrera", "Avenida", "Transversal", "Diagonal", "Circular"]
+      let DireccionTipoVia = ""
+      let DireccionNumero = ""
+      let DireccionComplemento = ""
+
+      if (fullDir) {
+        const match = fullDir.match(/^(Calle|Carrera|Avenida|Transversal|Diagonal|Circular)\s+(.*)$/i)
+        if (match) {
+          DireccionTipoVia = match[1]
+          const resto = match[2]
+          const comaIdx = resto.indexOf(",")
+          if (comaIdx >= 0) {
+            DireccionNumero = resto.substring(0, comaIdx).trim()
+            DireccionComplemento = resto.substring(comaIdx + 1).trim()
+          } else {
+            DireccionNumero = resto.trim()
+          }
+        } else {
+          // No se pudo identificar tipo de vía, dejar todo en número
+          DireccionNumero = fullDir
+        }
+      }
       setFormData({
         CLB_EstadoCivil: formulario.estadoCivil || "",
         CLB_Genero: formulario.genero || "",
@@ -91,7 +119,9 @@ export function CandidateForm({ token }: { token: string }) {
         Barrio: formulario.barrio || "",
         Comuna: formulario.comuna || "",
         Estrato: formulario.estrato?.toString() || "",
-        Direccion: formulario.direccion || "",
+        DireccionTipoVia,
+        DireccionNumero,
+        DireccionComplemento,
         Hijos: formulario.tieneHijo ? "Sí" : "No",
         numero_hijos: formulario.cantidadHijo?.toString() || "",
         edades_de_hijos: formulario.edadesHijos?.map(e => e.toString()) || [],
@@ -172,7 +202,8 @@ export function CandidateForm({ token }: { token: string }) {
       return
     }
 
-    const direccionValidation = validateDireccion(formData.Direccion)
+    const direccionCompleta = `${formData.DireccionTipoVia} ${formData.DireccionNumero}${formData.DireccionComplemento ? `, ${formData.DireccionComplemento}` : ""}`.trim()
+    const direccionValidation = validateDireccion(direccionCompleta)
     if (!direccionValidation.isValid) {
       toast({
         title: "Error de validación",
@@ -250,7 +281,7 @@ export function CandidateForm({ token }: { token: string }) {
         municipio: formData.Municipio,
         comuna: formData.Comuna,
         barrio: formData.Barrio,
-        direccion: formData.Direccion,
+        direccion: direccionCompleta,
         estrato: formData.Estrato ? parseInt(formData.Estrato, 10) : undefined,
         tieneHijo: formData.Hijos === "Sí" || formData.Hijos === "Si",
         edadesHijos: edadesHijosNums,
@@ -559,16 +590,51 @@ export function CandidateForm({ token }: { token: string }) {
                   </Select>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="direccion">Dirección</Label>
-                  <Input
-                    id="direccion"
-                    type="text"
-                    placeholder="Ej: Calle 123 #45-67"
-                    value={formData.Direccion}
-                    onChange={(e) => updateFormData("Direccion", e.target.value)}
-                    required
-                  />
+                <div className="space-y-2 md:col-span-2">
+                  <Label>Dirección de vivienda</Label>
+                  <div className="grid md:grid-cols-3 gap-3">
+                    <div className="space-y-1">
+                      <Label htmlFor="direccion-tipo">Tipo de vía</Label>
+                      <Select
+                        value={formData.DireccionTipoVia}
+                        onValueChange={(value) => updateFormData("DireccionTipoVia", value)}
+                        required
+                      >
+                        <SelectTrigger id="direccion-tipo">
+                          <SelectValue placeholder="Selecciona tipo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Calle">Calle</SelectItem>
+                          <SelectItem value="Carrera">Carrera</SelectItem>
+                          <SelectItem value="Avenida">Avenida</SelectItem>
+                          <SelectItem value="Transversal">Transversal</SelectItem>
+                          <SelectItem value="Diagonal">Diagonal</SelectItem>
+                          <SelectItem value="Circular">Circular</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="direccion-numero">Número</Label>
+                      <Input
+                        id="direccion-numero"
+                        type="text"
+                        placeholder="Ej: 77 # 21-87"
+                        value={formData.DireccionNumero}
+                        onChange={(e) => updateFormData("DireccionNumero", e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="direccion-comp">Complemento</Label>
+                      <Input
+                        id="direccion-comp"
+                        type="text"
+                        placeholder="Ej: Conjunto Santa María Casa 8"
+                        value={formData.DireccionComplemento}
+                        onChange={(e) => updateFormData("DireccionComplemento", e.target.value)}
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -614,8 +680,7 @@ export function CandidateForm({ token }: { token: string }) {
                       <SelectItem value="M">M</SelectItem>
                       <SelectItem value="L">L</SelectItem>
                       <SelectItem value="XL">XL</SelectItem>
-                      <SelectItem value="XXL">XXL</SelectItem>
-                      <SelectItem value="XXXL">XXXL</SelectItem>
+                      <SelectItem value="XXL">XXL</SelectItem>                      
                     </SelectContent>
                   </Select>
                 </div>
@@ -631,15 +696,12 @@ export function CandidateForm({ token }: { token: string }) {
                       <SelectValue placeholder="Selecciona..." />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="28">28</SelectItem>
-                      <SelectItem value="30">30</SelectItem>
-                      <SelectItem value="32">32</SelectItem>
-                      <SelectItem value="34">34</SelectItem>
-                      <SelectItem value="36">36</SelectItem>
-                      <SelectItem value="38">38</SelectItem>
-                      <SelectItem value="40">40</SelectItem>
-                      <SelectItem value="42">42</SelectItem>
-                      <SelectItem value="44">44</SelectItem>
+                      <SelectItem value="XS">XS</SelectItem>
+                      <SelectItem value="S">S</SelectItem>
+                      <SelectItem value="M">M</SelectItem>
+                      <SelectItem value="L">L</SelectItem>
+                      <SelectItem value="XL">XL</SelectItem>
+                      <SelectItem value="XXL">XXL</SelectItem>                      
                     </SelectContent>
                   </Select>
                 </div>
@@ -655,13 +717,47 @@ export function CandidateForm({ token }: { token: string }) {
                       <SelectValue placeholder="Selecciona..." />
                     </SelectTrigger>
                     <SelectContent>
-                      {Array.from({ length: 20 }, (_, i) => i + 24).map((size) => (
+                      {Array.from({ length: 20 }, (_, i) => i + 27).map((size) => (
                         <SelectItem key={size} value={String(size)}>
                           {size}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+              </div>
+            </div>
+
+            {/* Nota de privacidad - Política Completa */}
+            <div className="bg-gradient-to-r from-[#E6F2FF] to-[#F0E6FF] rounded-2xl p-6 border-2 border-[#00AEEF]/20 space-y-4 max-h-96 overflow-y-auto">
+              <div className="space-y-3 text-xs text-gray-800 leading-relaxed">
+                <div>
+                  <p className="font-bold text-[#0046BE] mb-2">AUTORIZACIÓN DE TRATAMIENTO DE DATOS PERSONALES</p>
+                  <p className="text-justify">
+                    Autorizo de manera voluntaria, previa, expresa e inequívoca a <strong>MUNDO SUPER S.A.S</strong> y sus empresas aliadas, en calidad de titular de mis Datos Personales, a que directamente, o a través de un tercero, recolecte, almacene, circule y utilice mis Datos Personales, para todas las finalidades contenidas en la <strong>Política de Privacidad y Protección de Datos Personales</strong> publicada en la página web <strong>http://www.super.com.co</strong>, la cual declaro conocer y entender, y como tal, forma parte integral de la presente autorización, y en especial para que se guarden registros documentales de mi asistencia a este evento o capacitación, tales como listas de asistencia, fotografías, grabaciones de voz y/o videos, con finalidades históricas, indicadores internos y publicaciones tanto internas como externas.
+                  </p>
+                </div>
+
+                <div className="border-t border-[#0046BE]/20 pt-3">
+                  <p className="font-bold text-[#0046BE] mb-2">DERECHOS DEL TITULAR</p>
+                  <p className="text-justify">
+                    Declaro soy el Titular de los datos y/o su representante, que los datos suministrados son exactos, veraces y completos y que me fueron señalados mis derechos de:
+                  </p>
+                  <ul className="list-disc list-inside ml-2 mt-1 space-y-1">
+                    <li>Consultar la información aquí suministrada</li>
+                    <li>Actualizar y rectificar la información suministrada</li>
+                    <li>Suprimir o revocar la autorización otorgada para el tratamiento</li>
+                  </ul>
+                  <p className="text-justify mt-2">
+                    Todos estos derechos pueden ser ejercidos a través del correo electrónico <strong>habeas.data@super.com.co</strong>, la página web <strong>www.super.com.co</strong>, o directamente en las instalaciones del Responsable del Tratamiento ubicadas en el <strong>Km 10 vía al Magdalena</strong>.
+                  </p>
+                </div>
+
+                <div className="border-t border-[#0046BE]/20 pt-3 bg-white/50 p-2 rounded-lg">
+                  <p className="font-bold text-[#00AEEF] mb-1">⚠️ NOTA IMPORTANTE</p>
+                  <p className="text-justify">
+                    <strong>MUNDO SUPER S.A.S.</strong> y sus empresas aliadas utilizarán tus datos personales únicamente para procesos de selección y evaluación. Tu información será protegida conforme a la ley colombiana de protección de datos (Ley 1581 de 2012).
+                  </p>
                 </div>
               </div>
             </div>

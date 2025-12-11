@@ -70,12 +70,21 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-6">
           <Link
             href="/aplicar"
             className="px-8 py-4 rounded-xl bg-primary text-white text-lg font-semibold shadow-lg hover:bg-primary/90 transition"
           >
             Aplicar a una vacante
+          </Link>
+          
+          <div className="text-muted-foreground">o</div>
+          
+          <Link
+            href="/candidato/acceso"
+            className="px-8 py-4 rounded-xl border-2 border-primary text-primary text-lg font-semibold hover:bg-primary/5 transition"
+          >
+            Ingresar con mi token
           </Link>
         </div>
 

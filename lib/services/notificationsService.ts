@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_MS_NOTIFICATIONS_URL
+﻿const API_URL = process.env.NEXT_PUBLIC_MS_NOTIFICATIONS_URL
   || '' // If empty, we'll use localStorage mock
 
 export type NotificationType = 'info' | 'warning' | 'success' | 'error'
@@ -32,7 +32,7 @@ function seedFor(userDoc: string): AppNotification[] {
       type: 'info',
       createdAt: new Date(now.getTime() - 1000 * 60 * 15).toISOString(),
       read: false,
-      link: '/dashboard/selection/requerimientos',
+      link: '/panel/seleccion/requerimientos',
     },
     {
       id: `${userDoc}-2`,
@@ -41,7 +41,7 @@ function seedFor(userDoc: string): AppNotification[] {
       type: 'success',
       createdAt: new Date(now.getTime() - 1000 * 60 * 45).toISOString(),
       read: true,
-      link: '/dashboard/selection/candidatos',
+      link: '/panel/seleccion/candidatos',
     },
   ]
 }
