@@ -36,8 +36,8 @@ function seedFor(userDoc: string): AppNotification[] {
     },
     {
       id: `${userDoc}-2`,
-      titulo: 'Candidato completó formulario',
-      descripcion: 'Juan Pérez finalizó el formulario',
+      titulo: 'Candidato complet formulario',
+      descripcion: 'Juan Prez finaliz el formulario',
       type: 'success',
       createdAt: new Date(now.getTime() - 1000 * 60 * 45).toISOString(),
       read: true,

@@ -757,9 +757,9 @@
       "properties": {
         "comuna": "Ecoturístico Cerro de Oro",
         "ident": 606,
-        "barrio": "Residencias Manizales",
+        "barrio": "residencias Manizales",
         "codigo": 60600,
-        "nombre": "Residencias Manizales",
+        "nombre": "residencias Manizales",
         "ObjectId": 63
       },
       "geometry": null

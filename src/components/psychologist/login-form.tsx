@@ -69,7 +69,7 @@ export function LoginForm() {
     setIsLoading(true)
     
     try {
-      // Peque�o delay para mostrar el loading screen
+      // pequeño delay para mostrar el loading screen
       await new Promise(resolve => setTimeout(resolve, 300))
       
       const validar = await loginApiService.validarUsuario(documento)
@@ -88,7 +88,7 @@ export function LoginForm() {
         })
       }
       
-      // Delay antes de la navegaci�n para asegurar que se vea el loading
+      // Delay antes de la navegación para asegurar que se vea el loading
       await new Promise(resolve => setTimeout(resolve, 400))
       navigate("/psicologo/verify")
     } catch (err: any) {
@@ -99,7 +99,7 @@ export function LoginForm() {
         description: mensaje,
       })
     }
-    // No quitar isLoading aqu� para mantener el loading durante la transici�n
+    // No quitar isLoading aquí para mantener el loading durante la transición
   }
 
   return (

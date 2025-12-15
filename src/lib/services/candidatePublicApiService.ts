@@ -1,8 +1,8 @@
 /**
- * Servicio API Público para Candidatos
+ * Servicio API Pblico para Candidatos
  * 
- * Este servicio maneja los endpoints públicos (sin autenticación)
- * para el registro y gestión de candidatos mediante tokens.
+ * Este servicio maneja los endpoints pblicos (sin autenticacin)
+ * para el registro y gestin de candidatos mediante tokens.
  * 
  * @see GUIA_INTEGRACION_FRONTEND_CANDIDATOS.md
  */
@@ -22,8 +22,8 @@ import type {
 const API_URL = import.meta.env.VITE_API_SELECCION_URL || 'http://localhost:5208/api'
 
 /**
- * Helper para realizar peticiones HTTP a la API pública
- * No requiere autenticación - acceso público mediante token
+ * Helper para realizar peticiones HTTP a la API pblica
+ * No requiere autenticacin - acceso pblico mediante token
  */
 async function httpPublic<T>(path: string, init?: RequestInit): Promise<ApiResponse<T>> {
   try {
@@ -54,7 +54,7 @@ async function httpPublic<T>(path: string, init?: RequestInit): Promise<ApiRespo
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Error de conexión',
+      message: error instanceof Error ? error.message : 'Error de conexin',
       errors: [String(error)],
     }
   }
@@ -62,10 +62,10 @@ async function httpPublic<T>(path: string, init?: RequestInit): Promise<ApiRespo
 
 export const candidatePublicApiService = {
   /**
-   * Consulta los datos del candidato por su token único
+   * Consulta los datos del candidato por su token nico
    * Endpoint: GET /api/publico/candidato/{token}
    * 
-   * @param token - Token único de 32 caracteres del candidato
+   * @param token - Token nico de 32 caracteres del candidato
    * @returns Datos completos del candidato o null si no existe
    * 
    * @example
@@ -84,22 +84,22 @@ export const candidatePublicApiService = {
   },
 
   /**
-   * Registro simple de candidato (solo datos básicos)
+   * Registro simple de candidato (solo datos bsicos)
    * Endpoint: POST /api/publico/registro
    * 
    * El backend:
-   * - Genera un token único automáticamente
-   * - Envía email con el link de acceso
+   * - Genera un token nico automticamente
+   * - EnvÃ­a email con el link de acceso
    * - Estado inicial: CAND_REGISTRADO
    * 
-   * @param dto - Datos básicos del candidato
+   * @param dto - Datos bsicos del candidato
    * @returns Candidato creado con su token
    * 
    * @example
    * ```ts
    * const response = await registroSimple({
    *   cedulaCiudadania: '1234567890',
-   *   nombreCompleto: 'María González',
+   *   nombreCompleto: 'Mara Gonzlez',
    *   email: 'maria@email.com',
    *   telefono: '3009876543'
    * })
@@ -120,14 +120,14 @@ export const candidatePublicApiService = {
   },
 
   /**
-   * Registro completo de candidato (datos básicos + formulario demográfico)
+   * Registro completo de candidato (datos bsicos + formulario demogrfico)
    * Endpoint: POST /api/publico/registro-completo
    * 
-   * Todo en una sola petición:
+   * Todo en una sola peticin:
    * - Crea el candidato
-   * - Completa el formulario demográfico
+   * - Completa el formulario demogrfico
    * - Genera token
-   * - Envía email
+   * - EnvÃ­a email
    * - Estado final: CAND_FORMULARIO_COMPLETO
    * 
    * @param dto - Datos completos del candidato y formulario
@@ -137,7 +137,7 @@ export const candidatePublicApiService = {
    * ```ts
    * const response = await registroCompleto({
    *   // Datos del candidato
-   *   nombreCompleto: 'Pedro Ramírez',
+   *   nombreCompleto: 'Pedro Ramrez',
    *   email: 'pedro@email.com',
    *   telefono: '3201234567',
    *   
@@ -158,7 +158,7 @@ export const candidatePublicApiService = {
    * })
    * 
    * if (response.success) {
-   *   // Registro completado, redirigir a confirmación
+   *   // Registro completado, redirigir a confirmacin
    *   router.push(`/candidato/${response.data.token}/confirmacion`)
    * }
    * ```
@@ -171,14 +171,14 @@ export const candidatePublicApiService = {
   },
 
   /**
-   * Completar formulario demográfico de candidato existente
+   * Completar formulario demogrfico de candidato existente
    * Endpoint: POST /api/publico/candidato/{token}/formulario
    * 
-   * El candidato debe haber sido creado previamente (registro simple o por psicólogo).
+   * El candidato debe haber sido creado previamente (registro simple o por psicÃ³logo).
    * Cambia el estado a: CAND_FORMULARIO_COMPLETO
    * 
-   * @param token - Token único del candidato
-   * @param dto - Datos del formulario demográfico
+   * @param token - Token nico del candidato
+   * @param dto - Datos del formulario demogrfico
    * @returns Formulario completado
    * 
    * @example
@@ -187,7 +187,7 @@ export const candidatePublicApiService = {
    *   estadoCivil: 'Soltero',
    *   genero: 'Femenino',
    *   edadIngreso: 28,
-   *   municipio: 'Medellín',
+   *   municipio: 'Medelln',
    *   comuna: 'El Poblado',
    *   barrio: 'Manila',
    *   direccion: 'Calle 10 # 43A-30 Apt 501',
@@ -202,7 +202,7 @@ export const candidatePublicApiService = {
    * if (response.success) {
    *   toast.success({
    *     title: 'Formulario completado',
-   *     description: 'Tu información ha sido guardada exitosamente'
+   *     description: 'Tu informaciÃ³n ha sido guardada exitosamente'
    *   })
    * }
    * ```
@@ -223,7 +223,7 @@ export const candidatePublicApiService = {
    * Obtener las preguntas de la prueba CMT
    * Endpoint: GET /api/publico/candidato/{token}/cmt/preguntas
    * 
-   * @param token - Token único del candidato
+   * @param token - Token nico del candidato
    * @returns 15 preguntas CMT con 5 opciones cada una
    * 
    * @example
@@ -244,9 +244,9 @@ export const candidatePublicApiService = {
    * Enviar respuestas de la prueba CMT
    * Endpoint: POST /api/publico/candidato/{token}/cmt/responder
    * 
-   * @param token - Token único del candidato
+   * @param token - Token nico del candidato
    * @param data - Objeto con array de 15 respuestas (A-E)
-   * @returns Confirmación del envío
+   * @returns Confirmacin del envo
    * 
    * @example
    * ```ts
@@ -254,7 +254,7 @@ export const candidatePublicApiService = {
    *   respuestas: [
    *     { numeroEnunciado: 1, letraSeleccionada: "A", tiempoRespuestaMs: 5000 },
    *     { numeroEnunciado: 2, letraSeleccionada: "D", tiempoRespuestaMs: 4500 },
-   *     // ... 13 respuestas más
+   *     // ... 13 respuestas ms
    *   ]
    * })
    * 
@@ -277,8 +277,8 @@ export const candidatePublicApiService = {
    * Obtener el resultado de la prueba CMT
    * Endpoint: GET /api/publico/candidato/{token}/cmt/resultado
    * 
-   * @param token - Token único del candidato
-   * @param recalcular - Si true, fuerza recálculo del resultado
+   * @param token - Token nico del candidato
+   * @param recalcular - Si true, fuerza reclculo del resultado
    * @returns Resultado con 15 dimensiones y percentiles
    * 
    * @example

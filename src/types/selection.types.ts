@@ -85,6 +85,7 @@ export interface FormularioCandidatoDto {
   tallaCamisa: string | null
   tallaPantalon: string | null
   tallaZapato: string | null
+  tituloAcademico: string | null // BACHILLER, PROFESIONAL, TECNICO, TECNOLOGO, SIN_TITULO
   habilidades?: string | null // Habilidades del candidato (solo candidatos públicos)
   urlHojaVida?: string | null // URL de la hoja de vida en S3 (solo candidatos públicos)
 }
@@ -107,6 +108,7 @@ export interface CrearFormularioCandidatoDto {
   tallaCamisa?: string
   tallaPantalon?: string
   tallaZapato?: string
+  tituloAcademico?: string // BACHILLER, PROFESIONAL, TECNICO, TECNOLOGO, SIN_TITULO
 }
 
 /**
@@ -134,6 +136,7 @@ export interface FormularioPublicoDto {
   tallaCamisa?: string
   tallaPantalon?: string
   tallaZapato?: string
+  tituloAcademico?: string // BACHILLER, PROFESIONAL, TECNICO, TECNOLOGO, SIN_TITULO
 }
 
 /**

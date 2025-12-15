@@ -44,6 +44,7 @@ interface FormData {
   talla_camisa: string
   talla_pantalon: string
   talla_zapatos: string
+  titulo_academico: string
 }
 
 export function CandidateForm({ token }: { token: string }) {
@@ -74,9 +75,10 @@ export function CandidateForm({ token }: { token: string }) {
     talla_camisa: "",
     talla_pantalon: "",
     talla_zapatos: "",
+    titulo_academico: "",
   })
   
-  // Cargar datos geogr�ficos
+  // Cargar datos geográficos
   const [comunas, setComunas] = useState<string[]>([])
   const [barriosDisponibles, setBarriosDisponibles] = useState<BarrioData[] | BarrioVillamariaData[]>([])
 
@@ -84,7 +86,7 @@ export function CandidateForm({ token }: { token: string }) {
   useEffect(() => {
     if (candidato?.formulario) {
       const formulario = candidato.formulario
-      // Intentar pre-parsear la direcci�n en partes (tipo, n�mero, complemento)
+      // Intentar pre-parsear la dirección en partes (tipo, número, complemento)
       const fullDir = formulario.direccion || ""
       const tiposVia = ["Calle", "Carrera", "Avenida", "Transversal", "Diagonal", "Circular"]
       let DireccionTipoVia = ""
@@ -104,7 +106,7 @@ export function CandidateForm({ token }: { token: string }) {
             DireccionNumero = resto.trim()
           }
         } else {
-          // No se pudo identificar tipo de v�a, dejar todo en n�mero
+          // No se pudo identificar tipo de vía, dejar todo en número
           DireccionNumero = fullDir
         }
       }
@@ -119,13 +121,12 @@ export function CandidateForm({ token }: { token: string }) {
         DireccionTipoVia,
         DireccionNumero,
         DireccionComplemento,
-        Hijos: formulario.tieneHijo ? "S�" : "No",
+        Hijos: formulario.tieneHijo ? "Sí" : "No",
         numero_hijos: formulario.cantidadHijo?.toString() || "",
         edades_de_hijos: formulario.edadesHijos?.map(e => e.toString()) || [],
         talla_camisa: formulario.tallaCamisa || "",
         talla_pantalon: formulario.tallaPantalon || "",
-        talla_zapatos: formulario.tallaZapato || "",
-      })
+        talla_zapatos: formulario.tallaZapato || "",        titulo_academico: formulario.tituloAcademico || "",      })
     }
   }, [candidato])
 
@@ -141,11 +142,11 @@ export function CandidateForm({ token }: { token: string }) {
   }, [formData.Municipio])
 
   useEffect(() => {
-    // Cargar barrios seg�n el municipio seleccionado
+    // Cargar barrios según el municipio seleccionado
     if (formData.Municipio === "Manizales" && formData.Comuna) {
       const barrios = getBarriosByComuna(formData.Comuna)
       setBarriosDisponibles(barrios)
-    } else if (formData.Municipio === "Villamar�a") {
+    } else if (formData.Municipio === "Villamaría") {
       const barrios = getAllBarriosVillamaria()
       setBarriosDisponibles(barrios)
     } else {
@@ -162,7 +163,7 @@ export function CandidateForm({ token }: { token: string }) {
     const edadValidation = validateEdad(formData.edad_al_ingresar)
     if (!edadValidation.isValid) {
       toast({
-        title: "Error de validaci�n",
+        title: "Error de validación",
         description: edadValidation.message,
         variant: "destructive",
       })
@@ -172,7 +173,7 @@ export function CandidateForm({ token }: { token: string }) {
     const municipioValidation = validateMunicipio(formData.Municipio)
     if (!municipioValidation.isValid) {
       toast({
-        title: "Error de validaci�n",
+        title: "Error de validación",
         description: municipioValidation.message,
         variant: "destructive",
       })
@@ -182,7 +183,7 @@ export function CandidateForm({ token }: { token: string }) {
     const comunaValidation = validateComuna(formData.Municipio, formData.Comuna)
     if (!comunaValidation.isValid) {
       toast({
-        title: "Error de validaci�n",
+        title: "Error de validación",
         description: comunaValidation.message,
         variant: "destructive",
       })
@@ -192,7 +193,7 @@ export function CandidateForm({ token }: { token: string }) {
     const barrioValidation = validateBarrio(formData.Barrio)
     if (!barrioValidation.isValid) {
       toast({
-        title: "Error de validaci�n",
+        title: "Error de validación",
         description: barrioValidation.message,
         variant: "destructive",
       })
@@ -203,7 +204,7 @@ export function CandidateForm({ token }: { token: string }) {
     const direccionValidation = validateDireccion(direccionCompleta)
     if (!direccionValidation.isValid) {
       toast({
-        title: "Error de validaci�n",
+        title: "Error de validación",
         description: direccionValidation.message,
         variant: "destructive",
       })
@@ -213,7 +214,7 @@ export function CandidateForm({ token }: { token: string }) {
     const estratoValidation = validateEstrato(formData.Estrato)
     if (!estratoValidation.isValid) {
       toast({
-        title: "Error de validaci�n",
+        title: "Error de validación",
         description: estratoValidation.message,
         variant: "destructive",
       })
@@ -221,11 +222,11 @@ export function CandidateForm({ token }: { token: string }) {
     }
 
     // Validar hijos si aplica
-    if (formData.Hijos === "S�" || formData.Hijos === "Si") {
+    if (formData.Hijos === "Sí" || formData.Hijos === "Si") {
       const hijosValidation = validateEdadesHijos(formData.numero_hijos, formData.edades_de_hijos)
       if (!hijosValidation.isValid) {
         toast({
-          title: "Error de validaci�n",
+          title: "Error de validación",
           description: hijosValidation.message,
           variant: "destructive",
         })
@@ -237,7 +238,7 @@ export function CandidateForm({ token }: { token: string }) {
     const tallaCamisaValidation = validateTalla(formData.talla_camisa, 'camisa')
     if (!tallaCamisaValidation.isValid) {
       toast({
-        title: "Error de validaci�n",
+        title: "Error de validación",
         description: tallaCamisaValidation.message,
         variant: "destructive",
       })
@@ -247,7 +248,7 @@ export function CandidateForm({ token }: { token: string }) {
     const tallaPantalonValidation = validateTalla(formData.talla_pantalon, 'pantalon')
     if (!tallaPantalonValidation.isValid) {
       toast({
-        title: "Error de validaci�n",
+        title: "Error de validación",
         description: tallaPantalonValidation.message,
         variant: "destructive",
       })
@@ -257,7 +258,7 @@ export function CandidateForm({ token }: { token: string }) {
     const tallaZapatosValidation = validateTalla(formData.talla_zapatos, 'zapatos')
     if (!tallaZapatosValidation.isValid) {
       toast({
-        title: "Error de validaci�n",
+        title: "Error de validación",
         description: tallaZapatosValidation.message,
         variant: "destructive",
       })
@@ -280,18 +281,17 @@ export function CandidateForm({ token }: { token: string }) {
         barrio: formData.Barrio,
         direccion: direccionCompleta,
         estrato: formData.Estrato ? parseInt(formData.Estrato, 10) : undefined,
-        tieneHijo: formData.Hijos === "S�" || formData.Hijos === "Si",
+        tieneHijo: formData.Hijos === "Sí" || formData.Hijos === "Si",
         edadesHijos: edadesHijosNums,
         tallaCamisa: formData.talla_camisa || undefined,
         tallaPantalon: formData.talla_pantalon || undefined,
-        tallaZapato: formData.talla_zapatos || undefined,
-      }
+        tallaZapato: formData.talla_zapatos || undefined,        tituloAcademico: formData.titulo_academico || undefined,      }
 
       await completarFormulario.mutateAsync({ token, datos: dto })
 
       toast({
         title: "Formulario enviado",
-        description: "Hemos registrado tu informaci�n correctamente.",
+        description: "Hemos registrado tu información correctamente.",
       })
 
       setIsSubmitted(true)
@@ -299,7 +299,7 @@ export function CandidateForm({ token }: { token: string }) {
       toast({
         variant: "destructive",
         title: "No se pudo enviar",
-        description: err?.message || "Ocurri� un error al enviar el formulario.",
+        description: err?.message || "Ocurri un error al enviar el formulario.",
       })
     }
   }
@@ -326,9 +326,9 @@ export function CandidateForm({ token }: { token: string }) {
     console.log('Rendering SuccessConfirmation component')
     return (
       <SuccessConfirmation
-        title="�Formulario enviado!"
-        description="Gracias por completar el formulario de evaluaci�n. Tu informaci�n ha sido guardada de manera segura y confidencial."
-        message="El psic�logo a cargo revisar� tu informaci�n y se pondr� en contacto contigo pr�ximamente."
+        title="Formulario enviado!"
+        description="Gracias por completar el formulario de evaluación. Tu información ha sido guardada de manera segura y confidencial."
+        message="El psicólogo a cargo revisará tu información y se pondrá en contacto contigo próximamente."
         onBackToHome={() => navigate("/")}
         backButtonText="Volver al inicio"
       />
@@ -351,14 +351,14 @@ export function CandidateForm({ token }: { token: string }) {
             <div className="max-w-lg space-y-3 text-center md:text-left">
               <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#00AEEF]/15 to-[#8E2FA0]/15 px-4 py-2 text-sm font-semibold text-[#0046BE]">
                 <Brain className="h-4 w-4" />
-                Evaluaci�n en curso
+                Evaluación en curso
               </div>
               <CardTitle className="text-3xl font-bold bg-gradient-to-r from-[#0046BE] to-[#8E2FA0] bg-clip-text text-transparent">
                 Bienvenido a tu proceso
               </CardTitle>
               <CardDescription className="text-base text-gray-600">
-                Dedica unos minutos a compartir tu informaci�n personal y laboral. Este paso nos ayuda a construir
-                rutas de crecimiento acordes con tu perfil.
+                Dedica unos minutos a compartir tu información personal y laboral. Este paso nos ayuda a construir
+                Rutas de crecimiento acordes con tu perfil.
               </CardDescription>
             </div>
             <div className="grid w-full max-w-sm grid-cols-2 gap-3 sm:max-w-md">
@@ -378,11 +378,11 @@ export function CandidateForm({ token }: { token: string }) {
         </CardHeader>
         <CardContent className="px-6 py-8 sm:px-10 sm:py-10">
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Secci�n: Informaci�n personal */}
+            {/* Sección: información personal */}
             <div className="space-y-4">
               <div className="border-b-2 border-[#00AEEF]/30 pb-3">
-                <h3 className="text-lg font-bold text-[#0046BE]">Informaci�n personal</h3>
-                <p className="text-sm text-gray-600">Datos demogr�ficos b�sicos</p>
+                <h3 className="text-lg font-bold text-[#0046BE]">Información personal</h3>
+                <p className="text-sm text-gray-600">Datos demográficos básicos</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
@@ -399,7 +399,7 @@ export function CandidateForm({ token }: { token: string }) {
                     <SelectContent>
                       <SelectItem value="Soltero/a">Soltero/a</SelectItem>
                       <SelectItem value="Casado/a">Casado/a</SelectItem>
-                      <SelectItem value="Uni�n Libre">Uni�n libre</SelectItem>
+                      <SelectItem value="Unión Libre">Unión libre</SelectItem>
                       <SelectItem value="Divorciado/a">Divorciado/a</SelectItem>
                       <SelectItem value="Viudo/a">Viudo/a</SelectItem>
                     </SelectContent>
@@ -407,7 +407,7 @@ export function CandidateForm({ token }: { token: string }) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="genero">G�nero</Label>
+                  <Label htmlFor="genero">Género</Label>
                   <Select
                     value={formData.CLB_Genero}
                     onValueChange={(value) => updateFormData("CLB_Genero", value)}
@@ -421,6 +421,26 @@ export function CandidateForm({ token }: { token: string }) {
                       <SelectItem value="Femenino">Femenino</SelectItem>
                       <SelectItem value="Otro">Otro</SelectItem>
                       <SelectItem value="Prefiero no decir">Prefiero no decir</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="titulo-academico">Título académico</Label>
+                  <Select
+                    value={formData.titulo_academico}
+                    onValueChange={(value) => updateFormData("titulo_academico", value)}
+                    required
+                  >
+                    <SelectTrigger id="titulo-academico">
+                      <SelectValue placeholder="Selecciona..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="BACHILLER">Bachiller</SelectItem>
+                      <SelectItem value="TECNICO">Técnico</SelectItem>
+                      <SelectItem value="TECNOLOGO">Tecnólogo</SelectItem>
+                      <SelectItem value="PROFESIONAL">Profesional</SelectItem>
+                      <SelectItem value="SIN_TITULO">Sin título</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -440,7 +460,7 @@ export function CandidateForm({ token }: { token: string }) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="hijos">�Tiene hijos?</Label>
+                  <Label htmlFor="hijos">¿Tiene hijos?</Label>
                   <Select
                     value={formData.Hijos}
                     onValueChange={(value) => {
@@ -455,15 +475,15 @@ export function CandidateForm({ token }: { token: string }) {
                       <SelectValue placeholder="Selecciona..." />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="S�">S�</SelectItem>
+                      <SelectItem value="Sí">Sí</SelectItem>
                       <SelectItem value="No">No</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                {formData.Hijos === "S�" && (
+                {formData.Hijos === "Sí" && (
                   <div className="space-y-2">
-                    <Label htmlFor="numero-hijos">�Cu�ntos hijos?</Label>
+                    <Label htmlFor="numero-hijos">¿Cuántos hijos?</Label>
                     <Select value={formData.numero_hijos} onValueChange={handleNumeroHijosChange} required>
                       <SelectTrigger id="numero-hijos">
                         <SelectValue placeholder="Selecciona..." />
@@ -481,11 +501,11 @@ export function CandidateForm({ token }: { token: string }) {
               </div>
             </div>
 
-            {formData.Hijos === "S�" && formData.numero_hijos && (
+            {formData.Hijos === "Sí" && formData.numero_hijos && (
               <div className="space-y-4">
                 <div className="border-b pb-2">
                   <h3 className="text-lg font-semibold text-primary">Edades de los Hijos</h3>
-                  <p className="text-sm text-muted-foreground">Informaci�n sobre las edades de tus hijos</p>
+                  <p className="text-sm text-muted-foreground">Información sobre las edades de tus hijos</p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
@@ -508,11 +528,11 @@ export function CandidateForm({ token }: { token: string }) {
               </div>
             )}
 
-            {/* Secci�n: Ubicaci�n */}
+            {/* Sección: Ubicación */}
             <div className="space-y-4">
               <div className="border-b pb-2">
-                <h3 className="text-lg font-semibold text-primary">Ubicaci�n</h3>
-                <p className="text-sm text-muted-foreground">Informaci�n de residencia</p>
+                <h3 className="text-lg font-semibold text-primary">Ubicación</h3>
+                <p className="text-sm text-muted-foreground">información de residencia</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
@@ -528,7 +548,7 @@ export function CandidateForm({ token }: { token: string }) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Manizales">Manizales</SelectItem>
-                      <SelectItem value="Villamar�a">Villamar�a</SelectItem>
+                      <SelectItem value="Villamaría">Villamaría</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -583,10 +603,10 @@ export function CandidateForm({ token }: { token: string }) {
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <Label>Direcci�n de vivienda</Label>
+                  <Label>Dirección de vivienda</Label>
                   <div className="grid md:grid-cols-3 gap-3">
                     <div className="space-y-1">
-                      <Label htmlFor="direccion-tipo">Tipo de v�a</Label>
+                      <Label htmlFor="direccion-tipo">Tipo de vía</Label>
                       <Select
                         value={formData.DireccionTipoVia}
                         onValueChange={(value) => updateFormData("DireccionTipoVia", value)}
@@ -606,7 +626,7 @@ export function CandidateForm({ token }: { token: string }) {
                       </Select>
                     </div>
                     <div className="space-y-1">
-                      <Label htmlFor="direccion-numero">N�mero</Label>
+                      <Label htmlFor="direccion-numero">Número</Label>
                       <Input
                         id="direccion-numero"
                         type="text"
@@ -621,7 +641,7 @@ export function CandidateForm({ token }: { token: string }) {
                       <Input
                         id="direccion-comp"
                         type="text"
-                        placeholder="Ej: Conjunto Santa Mar�a Casa 8"
+                        placeholder="Ej: Conjunto Santa Mara Casa 8"
                         value={formData.DireccionComplemento}
                         onChange={(e) => updateFormData("DireccionComplemento", e.target.value)}
                       />
@@ -648,11 +668,11 @@ export function CandidateForm({ token }: { token: string }) {
               </div>
             </div>
 
-            {/* Secci�n: Tallas de ropa */}
+            {/* Sección: Tallas de ropa */}
             <div className="space-y-4">
               <div className="border-b pb-2">
                 <h3 className="text-lg font-semibold text-primary">Tallas de ropa</h3>
-                <p className="text-sm text-muted-foreground">Informaci�n para dotaci�n laboral</p>
+                <p className="text-sm text-muted-foreground">información para dotación laboral</p>
               </div>
 
               <div className="grid md:grid-cols-3 gap-4">
@@ -678,7 +698,7 @@ export function CandidateForm({ token }: { token: string }) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="talla-pantalon">Talla pantal�n</Label>
+                  <Label htmlFor="talla-pantalon">Talla pantalón</Label>
                   <Select
                     value={formData.talla_pantalon}
                     onValueChange={(value) => updateFormData("talla_pantalon", value)}
@@ -720,35 +740,35 @@ export function CandidateForm({ token }: { token: string }) {
               </div>
             </div>
 
-            {/* Nota de privacidad - Pol�tica Completa */}
+            {/* Nota de privacidad - Política Completa */}
             <div className="bg-gradient-to-r from-[#E6F2FF] to-[#F0E6FF] rounded-2xl p-6 border-2 border-[#00AEEF]/20 space-y-4 max-h-96 overflow-y-auto">
               <div className="space-y-3 text-xs text-gray-800 leading-relaxed">
                 <div>
-                  <p className="font-bold text-[#0046BE] mb-2">AUTORIZACI�N DE TRATAMIENTO DE DATOS PERSONALES</p>
+                  <p className="font-bold text-[#0046BE] mb-2">AUTORIZACIÓN DE TRATAMIENTO DE DATOS PERSONALES</p>
                   <p className="text-justify">
-                    Autorizo de manera voluntaria, previa, expresa e inequ�voca a <strong>MUNDO SUPER S.A.S</strong> y sus empresas aliadas, en calidad de titular de mis Datos Personales, a que directamente, o a trav�s de un tercero, recolecte, almacene, circule y utilice mis Datos Personales, para todas las finalidades contenidas en la <strong>Pol�tica de Privacidad y Protecci�n de Datos Personales</strong> publicada en la p�gina web <strong>http://www.super.com.co</strong>, la cual declaro conocer y entender, y como tal, forma parte integral de la presente autorizaci�n, y en especial para que se guarden registros documentales de mi asistencia a este evento o capacitaci�n, tales como listas de asistencia, fotograf�as, grabaciones de voz y/o videos, con finalidades hist�ricas, indicadores internos y publicaciones tanto internas como externas.
+                    Autorizo de manera voluntaria, previa, expresa e inequívoca a <strong>MUNDO SUPER S.A.S</strong> y sus empresas aliadas, en calidad de titular de mis Datos Personales, a que directamente, o a través de un tercero, recolecte, almacene, circule y utilice mis Datos Personales, para todas las finalidades contenidas en la <strong>Política de Privacidad y Proteccin de Datos Personales</strong> publicada en la página web <strong>http://www.super.com.co</strong>, la cual declaro conocer y entender, y como tal, forma parte integral de la presente AUTORIZACIÓN, y en especial para que se guarden registros documentales de mi asistencia a este evento o capacitacin, tales como listas de asistencia, fotografías, grabaciones de voz y/o videos, con finalidades históricas, indicadores internos y publicaciones tanto internas como externas.
                   </p>
                 </div>
 
                 <div className="border-t border-[#0046BE]/20 pt-3">
                   <p className="font-bold text-[#0046BE] mb-2">DERECHOS DEL TITULAR</p>
                   <p className="text-justify">
-                    Declaro soy el Titular de los datos y/o su representante, que los datos suministrados son exactos, veraces y completos y que me fueron se�alados mis derechos de:
+                    Declaro soy el Titular de los datos y/o su representante, que los datos suministrados son exactos, veraces y completos y que me fueron señalados mis derechos de:
                   </p>
                   <ul className="list-disc list-inside ml-2 mt-1 space-y-1">
-                    <li>Consultar la informaci�n aqu� suministrada</li>
-                    <li>Actualizar y rectificar la informaci�n suministrada</li>
-                    <li>Suprimir o revocar la autorizaci�n otorgada para el tratamiento</li>
+                    <li>Consultar la información aquí suministrada</li>
+                    <li>Actualizar y rectificar la información suministrada</li>
+                    <li>Suprimir o revocar la AUTORIZACIÓN otorgada para el tratamiento</li>
                   </ul>
                   <p className="text-justify mt-2">
-                    Todos estos derechos pueden ser ejercidos a trav�s del correo electr�nico <strong>habeas.data@super.com.co</strong>, la p�gina web <strong>www.super.com.co</strong>, o directamente en las instalaciones del Responsable del Tratamiento ubicadas en el <strong>Km 10 v�a al Magdalena</strong>.
+                    Todos estos derechos pueden ser ejercidos a través del correo electrónico <strong>habeas.data@super.com.co</strong>, la página web <strong>www.super.com.co</strong>, o directamente en las instalaciones del Responsable del Tratamiento ubicadas en el <strong>Km 10 vía al Magdalena</strong>.
                   </p>
                 </div>
 
                 <div className="border-t border-[#0046BE]/20 pt-3 bg-white/50 p-2 rounded-lg">
-                  <p className="font-bold text-[#00AEEF] mb-1">?? NOTA IMPORTANTE</p>
+                  <p className="font-bold text-[#00AEEF] mb-1">NOTA IMPORTANTE</p>
                   <p className="text-justify">
-                    <strong>MUNDO SUPER S.A.S.</strong> y sus empresas aliadas utilizar�n tus datos personales �nicamente para procesos de selecci�n y evaluaci�n. Tu informaci�n ser� protegida conforme a la ley colombiana de protecci�n de datos (Ley 1581 de 2012).
+                    <strong>MUNDO SUPER S.A.S.</strong> y sus empresas aliadas utilizarn tus datos personales únicamente para procesos de selección y evaluación. Tu información será protegida conforme a la ley colombiana de proteccin de datos (Ley 1581 de 2012).
                   </p>
                 </div>
               </div>
@@ -771,7 +791,7 @@ export function CandidateForm({ token }: { token: string }) {
                 )}
               </Button>
               <p className="text-xs text-center text-gray-500 mt-4">
-                Tu informaci�n ser� tratada de manera confidencial y segura
+                Tu información será tratada de manera confidencial y segura
               </p>
             </div>
           </form>
