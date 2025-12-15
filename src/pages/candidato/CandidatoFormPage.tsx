@@ -4,8 +4,9 @@ import { useCandidatoPublico, useResultadoCMT } from "@/lib/hooks/useCandidatePu
 import { SuccessCard } from "@/components/ui/success-card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
-import { CheckCircle2, AlertCircle, XCircle, TrendingUp, Brain } from "lucide-react"
+import { CheckCircle2, AlertCircle, XCircle, TrendingUp, Brain, Beaker } from "lucide-react"
 import { EstadosCandidato } from "@/types/selection.types"
+import PruebasAsignadas from "@/components/candidate/PruebasAsignadas"
 
 // Componente auxiliar para mostrar preview de resultados CMT
 function ResultadoCMTPreview({ token }: { token: string }) {
@@ -121,6 +122,12 @@ export default function CandidateFormPage() {
 
   // Success states based on candidate status
   const estadoCodigo = candidato.estado.estCodigo
+  const formularioCompletado = candidato.formularioCompletado || candidato.formularioCompleto || false
+  const tieneAsignaciones = Boolean(candidato.asignacionCmt || candidato.asignacion16pf)
+  const hayPruebasPendientes = (
+    (candidato.asignacionCmt && !candidato.asignacionCmt.pruebaCompletada) ||
+    (candidato.asignacion16pf && !candidato.asignacion16pf.pruebaCompletada)
+  )
 
   // Estado: CAND_APROBADO
   if (estadoCodigo === EstadosCandidato.CAND_APROBADO) {
@@ -170,8 +177,12 @@ export default function CandidateFormPage() {
     )
   }
 
-  // Estado: CAND_EN_EVALUACION - Mostrar estado del proceso
-  if (estadoCodigo === EstadosCandidato.CAND_EN_EVALUACION) {
+  // Estado: CAND_EN_EVALUACION o CAND_FORMULARIO_COMPLETO - Mostrar pruebas asignadas si las hay
+  if (
+    estadoCodigo === EstadosCandidato.CAND_EN_EVALUACION ||
+    estadoCodigo === EstadosCandidato.CAND_FORMULARIO_COMPLETO ||
+    (formularioCompletado && tieneAsignaciones)
+  ) {
     const cmtCompletada = candidato.asignacionCmt?.pruebaCompletada || false
     const test16pfCompletado = candidato.asignacion16pf?.pruebaCompletada || false
     
@@ -187,10 +198,12 @@ export default function CandidateFormPage() {
                 </div>
                 <div>
                   <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                    Tu proceso está en marcha, {candidato.nombreCompleto}
+                    {hayPruebasPendientes ? 'Tienes pruebas asignadas' : 'Tu proceso está en marcha'}, {candidato.nombreCompleto}
                   </h1>
                   <p className="text-base sm:text-lg text-gray-600 mt-1">
-                    Actualmente estamos evaluando tu perfil
+                    {hayPruebasPendientes
+                      ? 'Por favor completa las pruebas asignadas para continuar con tu proceso.'
+                      : 'Actualmente estamos evaluando tu perfil'}
                   </p>
                 </div>
               </div>
@@ -220,6 +233,15 @@ export default function CandidateFormPage() {
             </div>
           </div>
 
+          {/* Pruebas asignadas */}
+          {hayPruebasPendientes && (
+            <PruebasAsignadas
+              token={token!}
+              asignacionCmt={candidato.asignacionCmt}
+              asignacion16pf={candidato.asignacion16pf}
+            />
+          )}
+
           {/* Vista previa de resultados CMT si está disponible */}
           {cmtCompletada && <ResultadoCMTPreview token={token!} />}
         </div>
@@ -227,6 +249,25 @@ export default function CandidateFormPage() {
     )
   }
 
-  // Por defecto: mostrar formulario
-  return <CandidateForm token={token!} />
+  // Si aún no ha completado el formulario o el estado es CAND_REGISTRADO, mostrar formulario
+  if (!formularioCompletado || estadoCodigo === EstadosCandidato.CAND_REGISTRADO) {
+    return <CandidateForm token={token!} />
+  }
+
+  // Fallback seguro: estado desconocido pero con formulario completo
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background py-8 px-4 sm:py-12">
+      <div className="mx-auto max-w-4xl space-y-6">
+        <div className="bg-white rounded-3xl shadow-xl overflow-hidden border-none p-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Gracias por completar tu información</h1>
+          <p className="text-gray-700">Estamos validando tu información. Si tienes pruebas asignadas, aparecerán aquí.</p>
+        </div>
+        <PruebasAsignadas
+          token={token!}
+          asignacionCmt={candidato.asignacionCmt}
+          asignacion16pf={candidato.asignacion16pf}
+        />
+      </div>
+    </div>
+  )
 }
