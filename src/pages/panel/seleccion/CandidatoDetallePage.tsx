@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import PredictWidget from "@/components/PredictWidget"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -355,6 +356,20 @@ export default function CandidatoDetallePage() {
         </CardContent>
       </Card>
 
+      {/* Predicción de permanencia (modelo Python) */}
+      <PredictWidget
+        values={{
+          CLB_EstadoCivil: candidato.formulario?.estadoCivil || undefined,
+          CLB_Genero: candidato.formulario?.genero || undefined,
+          edad_al_ingresar: candidato.formulario?.edadIngreso ?? undefined,
+          Barrio: candidato.formulario?.barrio || undefined,
+          Comuna: candidato.formulario?.comuna || undefined,
+          Estrato: candidato.formulario?.estrato ?? undefined,
+          hijos: candidato.formulario?.cantidadHijo ?? (candidato.formulario?.tieneHijo ? 1 : 0),
+          titulo_obtenido: candidato.formulario?.tituloAcademico || undefined,
+          direccion: candidato.formulario?.direccion || undefined,
+        }}
+      />
       {/* Información Demográfica */}
       {candidato.formularioCompletado && candidato.formulario && (
         <Card>
