@@ -7,6 +7,7 @@ import { CheckCircle2, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router-dom'
 import type { Resultado16PFDto } from '@/types/test16pf.types'
+import { parseUtcDate } from '@/lib/date'
 
 function VolverButton({ token }: { token?: string }) {
   const navigate = useNavigate()
@@ -110,7 +111,9 @@ export default function Test16PFExitoPage() {
               </div>
               <div>
                 <dt className="text-slate-500">Fecha de aplicación:</dt>
-                <dd className="font-medium">{new Date(resultado.fechaAplicacion).toLocaleDateString('es-CO')}</dd>
+                <dd className="font-medium">
+                  {parseUtcDate(resultado.fechaAplicacion)?.toLocaleDateString('es-CO') || 'Fecha invalida'}
+                </dd>
               </div>
               <div>
                 <dt className="text-slate-500">Total de respuestas:</dt>

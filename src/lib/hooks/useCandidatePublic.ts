@@ -23,6 +23,7 @@ export const candidatePublicKeys = {
   all: ['candidatos-publico'] as const,
   detail: (token: string) => [...candidatePublicKeys.all, 'detail', token] as const,
   cmtPreguntas: (token: string) => [...candidatePublicKeys.all, 'cmt', 'preguntas', token] as const,
+  cmtEstado: (token: string) => [...candidatePublicKeys.all, 'cmt', 'estado', token] as const,
   cmtResultado: (token: string) => [...candidatePublicKeys.all, 'cmt', 'resultado', token] as const,
 }
 
@@ -236,7 +237,7 @@ export function useCompletarFormulario() {
  * }
  * ```
  */
-export function usePreguntasCMT(token: string) {
+export function usePreguntasCMT(token: string, enabled = true) {
   return useQuery({
     queryKey: candidatePublicKeys.cmtPreguntas(token),
     queryFn: async () => {
@@ -246,8 +247,44 @@ export function usePreguntasCMT(token: string) {
       }
       return response
     },
-    enabled: !!token,
+    enabled: enabled && !!token,
     staleTime: 1000 * 60 * 60, // 1 hora (las preguntas no cambian)
+  })
+}
+
+export function useEstadoCMT(token: string, enabled = true) {
+  return useQuery({
+    queryKey: candidatePublicKeys.cmtEstado(token),
+    queryFn: async () => {
+      const response = await candidatePublicApiService.obtenerEstadoCMT(token)
+      if (!response.success || !response.data) {
+        throw new Error(response.message || 'No se pudo obtener el estado CMT')
+      }
+      return response.data
+    },
+    enabled: enabled && !!token,
+    refetchInterval: 1000 * 30,
+    refetchOnWindowFocus: true,
+  })
+}
+
+export function useAutosaveCMT() {
+  return useMutation({
+    mutationFn: async ({
+      token,
+      respuesta,
+      segundosConsumidosCliente,
+    }: {
+      token: string
+      respuesta: CmtResponderPreguntaDto
+      segundosConsumidosCliente: number
+    }) => {
+      const response = await candidatePublicApiService.autosaveCMT(token, { respuesta, segundosConsumidosCliente })
+      if (!response.success) {
+        throw new Error(response.message || 'No se pudo guardar el progreso')
+      }
+      return response
+    },
   })
 }
 

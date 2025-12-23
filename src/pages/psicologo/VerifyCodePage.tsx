@@ -126,7 +126,7 @@ export default function VerifyCodePage() {
       const token = (resp as any)?.data?.token || (resp as any)?.data?.Token
       if (!token) throw new Error("No se recibio el token de sesion")
 
-      login(token, pending.permisos)
+      login(token, pending.permisos, pending.documento)
 
       if (typeof document !== "undefined") {
         const maxAge = (keepActive ? 12 : 6) * 60 * 60

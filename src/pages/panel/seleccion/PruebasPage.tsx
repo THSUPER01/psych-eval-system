@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { usePruebasPsicotecnicas } from "@/lib/hooks/useSelection"
 import { Plus, Search, FileText, Calendar, CheckCircle2, XCircle } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
+import { parseUtcDate } from "@/lib/date"
 import { es } from "date-fns/locale"
 import { Link } from "react-router-dom"
 
@@ -99,10 +100,13 @@ export default function PruebasPage() {
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
                         <span>
-                          Creada {formatDistanceToNow(new Date(prueba.fechaCreacion), { 
-                            addSuffix: true, 
-                            locale: es 
-                          })}
+                          Creada {(() => {
+                            const createdAt = parseUtcDate(prueba.fechaCreacion)
+                            return createdAt ? formatDistanceToNow(createdAt, {
+                              addSuffix: true,
+                              locale: es
+                            }) : "Fecha invalida"
+                          })()}
                         </span>
                       </div>
                     </div>

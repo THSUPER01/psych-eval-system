@@ -36,6 +36,7 @@ import { formatDistanceToNow } from "date-fns"
 import { es } from "date-fns/locale"
 import type { Candidato } from "@/types/selection.types"
 import { EnviarLinkDialog } from "./EnviarLinkDialog"
+import { parseUtcDate } from "@/lib/date"
 
 interface CandidatosListProps {
   candidatos?: Candidato[]
@@ -146,8 +147,10 @@ export function CandidatosList({ candidatos, isLoading, requerimientoId }: Candi
             </TableRow>
           </TableHeader>
           <TableBody>
-            {candidatos.map((candidato) => (
-              <TableRow key={candidato.canId}>
+            {candidatos.map((candidato) => {
+              const createdAt = parseUtcDate(candidato.fechaCreacion)
+              return (
+                <TableRow key={candidato.canId}>
                 <TableCell className="font-medium">
                   {candidato.nombreCompleto}
                 </TableCell>
@@ -206,10 +209,10 @@ export function CandidatosList({ candidatos, isLoading, requerimientoId }: Candi
                   </div>
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
-                  {formatDistanceToNow(new Date(candidato.fechaCreacion), {
+                  {createdAt ? formatDistanceToNow(createdAt, {
                     addSuffix: true,
                     locale: es,
-                  })}
+                  }) : "Fecha invalida"}
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
@@ -245,8 +248,9 @@ export function CandidatosList({ candidatos, isLoading, requerimientoId }: Candi
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
-              </TableRow>
-            ))}
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
       </div>

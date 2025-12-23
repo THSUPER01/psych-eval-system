@@ -13,6 +13,7 @@ import ChartDataLabels from "chartjs-plugin-datalabels"
 import type { CmtResultadoDimensionDto } from "@/types/selection.types"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { parseUtcDate } from "@/lib/date"
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend, ChartDataLabels)
 
@@ -28,11 +29,15 @@ const RANGOS = [
 interface CategoriaChartProps {
   dimensiones: CmtResultadoDimensionDto[]
   categoria: string
+  compact?: boolean
 }
 
-function CategoriaChart({ dimensiones, categoria }: CategoriaChartProps) {
+function CategoriaChart({ dimensiones, categoria, compact }: CategoriaChartProps) {
   const labels = dimensiones.map((d) => d.nombreDimension)
   const dataBarra = dimensiones.map((d) => d.puntajeDirecto)
+  const chartHeight = compact
+    ? Math.max(240, dimensiones.length * 55)
+    : Math.max(300, dimensiones.length * 80)
 
   // Plugin para dibujar rangos de fondo y marcadores
   const backgroundPlugin: Plugin<"bar"> = useMemo(
@@ -174,7 +179,7 @@ function CategoriaChart({ dimensiones, categoria }: CategoriaChartProps) {
         <CardDescription>{dimensiones.length} dimensiones evaluadas</CardDescription>
       </CardHeader>
       <CardContent>
-        <div style={{ height: `${Math.max(300, dimensiones.length * 80)}px` }}>
+        <div style={{ height: `${chartHeight}px` }}>
           <Bar data={{ labels, datasets }} options={options} plugins={[backgroundPlugin]} />
         </div>
         
@@ -226,6 +231,7 @@ interface CmtResultadoChartProps {
   nombreCandidato?: string
   fechaResultado?: string
   tipoNormativa?: string
+  compact?: boolean
 }
 
 export function CmtResultadoChart({
@@ -233,6 +239,7 @@ export function CmtResultadoChart({
   nombreCandidato,
   fechaResultado,
   tipoNormativa,
+  compact,
 }: CmtResultadoChartProps) {
   // Agrupar dimensiones por categoría
   const grupos = useMemo(() => {
@@ -267,11 +274,11 @@ export function CmtResultadoChart({
             {tipoNormativa && <span className="block">Normativa: {tipoNormativa}</span>}
             {fechaResultado && (
               <span className="block">
-                Fecha: {new Date(fechaResultado).toLocaleDateString("es-CO", {
+                Fecha: {parseUtcDate(fechaResultado)?.toLocaleDateString("es-CO", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
-                })}
+                }) || "Fecha invalida"}
               </span>
             )}
           </CardDescription>
@@ -286,7 +293,7 @@ export function CmtResultadoChart({
 
       {/* Gráficas por categoría */}
       {grupos.map(([categoria, dims]) => (
-        <CategoriaChart key={categoria} categoria={categoria} dimensiones={dims} />
+        <CategoriaChart key={categoria} categoria={categoria} dimensiones={dims} compact={compact} />
       ))}
     </div>
   )

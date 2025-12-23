@@ -1,15 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { ChevronLeft, ChevronRight, Clock, AlertCircle, Check, ChevronDown } from 'lucide-react'
-import { usePreguntasCMT, useEnviarRespuestasCMT } from '@/lib/hooks/useCandidatePublic'
-import { crearRelojSesion } from '@/lib/cmt-session'
+import { usePreguntasCMT, useEnviarRespuestasCMT, useEstadoCMT, useAutosaveCMT } from '@/lib/hooks/useCandidatePublic'
 import { useToast } from '@/hooks/use-toast'
 import LoadingScreen from '@/components/ui/loading-screen'
 import type { CmtResponderPreguntaDto } from '@/types/selection.types'
+import { useQuery } from '@tanstack/react-query'
+import { candidatePublicApiService } from '@/lib/services/candidatePublicApiService'
+import type { PruebaEstadoDto } from '@/types/pruebasEstado.types'
 
 // Componente de Instructivo
 function InstructivoCMT({ onStart }: { onStart: () => void }) {
@@ -185,6 +187,16 @@ function InstructivoCMT({ onStart }: { onStart: () => void }) {
   )
 }
 
+function formatSeconds(total: number | null | undefined) {
+  if (total === null || total === undefined) return '--:--'
+  const totalSec = Math.max(0, Math.floor(total))
+  const hh = Math.floor(totalSec / 3600)
+  const mm = Math.floor((totalSec % 3600) / 60)
+  const ss = totalSec % 60
+  if (hh > 0) return `${hh}:${mm.toString().padStart(2, '0')}:${ss.toString().padStart(2, '0')}`
+  return `${mm}:${ss.toString().padStart(2, '0')}`
+}
+
 export default function TestCMTPage() {
   const { token } = useParams<{ token: string }>()
   const navigate = useNavigate()
@@ -195,9 +207,11 @@ export default function TestCMTPage() {
   const [preguntaActual, setPreguntaActual] = useState(0)
   const [respuestas, setRespuestas] = useState<Map<number, CmtResponderPreguntaDto>>(new Map())
   const [rankingTemporal, setRankingTemporal] = useState<Record<string, number>>({})
+  const [localRespuestasLoaded, setLocalRespuestasLoaded] = useState(false)
   const [tiempoInicio, setTiempoInicio] = useState<number>(Date.now())
   const [tiempoTotal, setTiempoTotal] = useState(0)
   const [enviandoRespuestas, setEnviandoRespuestas] = useState(false)
+  const didRestorePositionRef = useRef(false)
 
   // Sesión CMT (tiempo límite y anti‑fraude)
   const [sesionLabel, setSesionLabel] = useState<string>('--:--')
@@ -205,10 +219,47 @@ export default function TestCMTPage() {
   const [estadoAsignacion, setEstadoAsignacion] = useState<'PENDIENTE' | 'INICIADA' | 'COMPLETADA' | 'EXPIRADA'>(
     'PENDIENTE'
   )
+  const [segundosRestantesUi, setSegundosRestantesUi] = useState<number | null>(null)
+  const [segundosConsumidosCliente, setSegundosConsumidosCliente] = useState(0)
+  const segundosConsumidosRef = useRef(0)
+  const [lastAutosaveAt, setLastAutosaveAt] = useState<number | null>(null)
+  const [autosaveError, setAutosaveError] = useState<string | null>(null)
+  const lastAutosavedRankingRef = useRef<Map<number, string>>(new Map())
 
   // Hooks de API
-  const { data: preguntasData, isLoading, error } = usePreguntasCMT(token!)
+  const { data: estadoPreview } = useQuery<PruebaEstadoDto | null>({
+    queryKey: ['cmt-estado-preview', token],
+    queryFn: async () => {
+      if (!token) return null
+      try {
+        const res = await candidatePublicApiService.obtenerEstadoCMT(token)
+        return res.success ? (res.data ?? null) : null
+      } catch {
+        return null
+      }
+    },
+    enabled: !!token && mostrarInstructivo,
+    retry: false,
+    refetchOnWindowFocus: false,
+    staleTime: 0,
+  })
+  const { data: preguntasData, isLoading, error } = usePreguntasCMT(token!, !mostrarInstructivo)
+  const { data: estadoCmt, isLoading: loadingEstadoCmt } = useEstadoCMT(token!, !mostrarInstructivo && !!preguntasData)
   const enviarRespuestas = useEnviarRespuestasCMT()
+  const autosave = useAutosaveCMT()
+
+  // Si ya existe sesión INICIADA y tiempo vigente, saltar instructivo
+  useEffect(() => {
+    if (!token || !mostrarInstructivo || !estadoPreview) return
+    if (estadoPreview.estado !== 'INICIADA') return
+    if (estadoPreview.bloqueada) return
+    if ((estadoPreview.segundosRestantes ?? 0) <= 0) return
+    setMostrarInstructivo(false)
+  }, [estadoPreview, mostrarInstructivo, token])
+
+  useEffect(() => {
+    segundosConsumidosRef.current = segundosConsumidosCliente
+  }, [segundosConsumidosCliente])
 
   // Timer para tracking de tiempo total
   useEffect(() => {
@@ -240,7 +291,32 @@ export default function TestCMTPage() {
         console.error('Error al cargar respuestas guardadas:', e)
       }
     }
+    setLocalRespuestasLoaded(true)
   }, [token, preguntaActual])
+
+  // Reanudar en la *última* pregunta contestada
+  useEffect(() => {
+    if (didRestorePositionRef.current) return
+    if (mostrarInstructivo) return
+    if (!localRespuestasLoaded) return
+
+    const totalPreguntas = 15
+    let lastNum: number | null = null
+
+    if (respuestas.size > 0) {
+      lastNum = Math.max(...Array.from(respuestas.keys()))
+    } else if ((estadoCmt?.preguntasRespondidas ?? 0) > 0) {
+      lastNum = Math.min(totalPreguntas, estadoCmt?.preguntasRespondidas ?? 1)
+    }
+
+    if (lastNum && lastNum > 0) {
+      setPreguntaActual(lastNum - 1)
+      const resp = respuestas.get(lastNum)
+      if (resp) setRankingTemporal(resp.ranking)
+    }
+
+    didRestorePositionRef.current = true
+  }, [estadoCmt?.preguntasRespondidas, localRespuestasLoaded, mostrarInstructivo, respuestas])
 
   // Guardar respuestas en localStorage cuando cambien
   useEffect(() => {
@@ -251,40 +327,38 @@ export default function TestCMTPage() {
   }, [respuestas, token])
 
   // Reloj de sesión basado en hora del servidor
+  // Sincronizar cronómetro y estado con el servidor
   useEffect(() => {
-    if (!preguntasData?.asignacion) return
+    if (!estadoCmt) return
+    setEstadoAsignacion(estadoCmt.estado)
+    setSegundosRestantesUi(estadoCmt.segundosRestantes)
+    setSegundosConsumidosCliente(estadoCmt.segundosConsumidos)
 
-    const asign = preguntasData.asignacion as any
-    const fechaLimiteUtc: string | null = asign.fechaLimiteUtc ?? asign.fechaLimite ?? null
-    const estado: typeof estadoAsignacion = asign.estado ?? (fechaLimiteUtc ? 'INICIADA' : 'PENDIENTE')
-    const tiempoMaxMinutos: number = asign.tiempoMaxMinutos ?? 35
-    const serverNowUtc: string = asign.serverNowUtc ?? new Date().toISOString()
+    const bloqueada =
+      Boolean(estadoCmt.bloqueada) || estadoCmt.estado === 'EXPIRADA' || (estadoCmt.segundosRestantes ?? 0) <= 0
+    setSesionExpirada(bloqueada)
+  }, [estadoCmt])
 
-    setEstadoAsignacion(estado)
-
-    if (!fechaLimiteUtc) return
-
-    const getTime = crearRelojSesion({
-      estado,
-      serverNowUtc,
-      fechaLimiteUtc,
-      tiempoMaxMinutos,
-    })
-
-    const first = getTime()
-    setSesionLabel(first.label)
-    setSesionExpirada(first.remainingMs === 0)
-
-    const id = setInterval(() => {
-      const t = getTime()
-      setSesionLabel(t.label)
-      if (t.remainingMs === 0) {
-        setSesionExpirada(true)
-      }
+  // Reloj cliente (solo visible): respeta "tiempo consumido" y se corta por estado del servidor
+  useEffect(() => {
+    if (mostrarInstructivo || sesionExpirada) return
+    const id = window.setInterval(() => {
+      if (document.visibilityState !== 'visible') return
+      setSegundosRestantesUi((s) => {
+        if (s === null) return s
+        return Math.max(0, s - 1)
+      })
+      setSegundosConsumidosCliente((s) => s + 1)
     }, 1000)
+    return () => window.clearInterval(id)
+  }, [mostrarInstructivo, sesionExpirada])
 
-    return () => clearInterval(id)
-  }, [preguntasData])
+  useEffect(() => {
+    setSesionLabel(formatSeconds(segundosRestantesUi))
+    if (segundosRestantesUi !== null && segundosRestantesUi <= 0) {
+      setSesionExpirada(true)
+    }
+  }, [segundosRestantesUi])
 
   // Señales anti‑fraude (no pausan tiempo): beforeunload y visibilitychange
   useEffect(() => {
@@ -309,6 +383,16 @@ export default function TestCMTPage() {
   }, [estadoAsignacion])
 
   // Manejar selección de valor para una opción
+  const serializeRanking = (ranking: Record<string, number>) =>
+    JSON.stringify(
+      Object.keys(ranking)
+        .sort()
+        .reduce((acc, key) => {
+          acc[key] = ranking[key]
+          return acc
+        }, {} as Record<string, number>)
+    )
+
   const handleSeleccionarValor = (letra: string, valor: number) => {
     if (sesionExpirada) {
       toast({
@@ -338,15 +422,32 @@ export default function TestCMTPage() {
     const numeroEnunciado = preguntaActual + 1
     if (validarRanking(nuevoRanking)) {
       const tiempoRespuesta = Date.now() - tiempoInicio
+      const respuesta: CmtResponderPreguntaDto = {
+        numeroEnunciado,
+        ranking: nuevoRanking,
+        tiempoRespuestaMs: tiempoRespuesta,
+      }
       setRespuestas((prev) => {
         const nueva = new Map(prev)
-        nueva.set(numeroEnunciado, {
-          numeroEnunciado,
-          ranking: nuevoRanking,
-          tiempoRespuestaMs: tiempoRespuesta,
-        })
+        nueva.set(numeroEnunciado, respuesta)
         return nueva
       })
+
+      if (token) {
+        const serialized = serializeRanking(nuevoRanking)
+        const prev = lastAutosavedRankingRef.current.get(numeroEnunciado)
+        if (prev !== serialized) {
+          lastAutosavedRankingRef.current.set(numeroEnunciado, serialized)
+          setAutosaveError(null)
+          autosave.mutate(
+            { token, respuesta, segundosConsumidosCliente: segundosConsumidosRef.current },
+            {
+              onSuccess: () => setLastAutosaveAt(Date.now()),
+              onError: (e: any) => setAutosaveError(e?.message || 'No se pudo guardar el progreso'),
+            }
+          )
+        }
+      }
     } else {
       setRespuestas((prev) => {
         const nueva = new Map(prev)
@@ -380,16 +481,33 @@ export default function TestCMTPage() {
     if (validarRanking(rankingTemporal)) {
       const numeroEnunciado = preguntaActual + 1
       const tiempoRespuesta = Date.now() - tiempoInicio
+      const respuesta: CmtResponderPreguntaDto = {
+        numeroEnunciado,
+        ranking: rankingTemporal,
+        tiempoRespuestaMs: tiempoRespuesta,
+      }
 
       setRespuestas((prev) => {
         const nueva = new Map(prev)
-        nueva.set(numeroEnunciado, {
-          numeroEnunciado,
-          ranking: rankingTemporal,
-          tiempoRespuestaMs: tiempoRespuesta,
-        })
+        nueva.set(numeroEnunciado, respuesta)
         return nueva
       })
+
+      if (token) {
+        const serialized = serializeRanking(rankingTemporal)
+        const prev = lastAutosavedRankingRef.current.get(numeroEnunciado)
+        if (prev !== serialized) {
+          lastAutosavedRankingRef.current.set(numeroEnunciado, serialized)
+          setAutosaveError(null)
+          autosave.mutate(
+            { token, respuesta, segundosConsumidosCliente: segundosConsumidosRef.current },
+            {
+              onSuccess: () => setLastAutosaveAt(Date.now()),
+              onError: (e: any) => setAutosaveError(e?.message || 'No se pudo guardar el progreso'),
+            }
+          )
+        }
+      }
 
       toast({
         title: 'Respuesta guardada',
@@ -515,6 +633,10 @@ export default function TestCMTPage() {
     return <LoadingScreen message="Cargando prueba CMT..." showProgress={true} />
   }
 
+  if (loadingEstadoCmt) {
+    return <LoadingScreen message="Sincronizando sesi\u00f3n..." showProgress={true} />
+  }
+
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
@@ -546,6 +668,30 @@ export default function TestCMTPage() {
     )
   }
 
+  if (estadoCmt?.bloqueada || estadoCmt?.estado === 'EXPIRADA') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <Card className="max-w-md w-full">
+          <CardHeader>
+            <CardTitle className="text-amber-700 flex items-center gap-2">
+              <AlertCircle className="h-5 w-5" />
+              Prueba no disponible
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-gray-700 mb-4">
+              {estadoCmt?.motivoBloqueo ||
+                'El tiempo disponible para diligenciar esta prueba se agotó o la fecha límite venció.'}
+            </p>
+            <Button onClick={() => navigate(`/candidato/${token}`)} className="w-full">
+              Volver al inicio
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   const preguntas = preguntasData.data
   const pregunta = preguntas[preguntaActual]
   const progreso = (respuestas.size / 15) * 100
@@ -555,13 +701,13 @@ export default function TestCMTPage() {
   // Obtener color según el valor del ranking
   const getColorPorValor = (valor: number): string => {
     const colores = {
-      5: 'bg-blue-600 border-blue-600 text-white',
-      4: 'bg-blue-500 border-blue-500 text-white',
-      3: 'bg-blue-400 border-blue-400 text-white',
-      2: 'bg-blue-300 border-blue-300 text-gray-700',
-      1: 'bg-blue-200 border-blue-200 text-gray-700',
+      5: '!bg-blue-700 border-blue-800 !text-white',
+      4: '!bg-blue-600 border-blue-700 !text-white',
+      3: '!bg-blue-500 border-blue-600 !text-white',
+      2: '!bg-blue-300 border-blue-400 !text-slate-900',
+      1: '!bg-blue-200 border-blue-300 !text-slate-900',
     }
-    return colores[valor as keyof typeof colores] || 'bg-gray-100 border-gray-300 text-gray-500'
+    return colores[valor as keyof typeof colores] || '!bg-gray-100 border-gray-300 !text-gray-600'
   }
 
   return (
@@ -595,7 +741,19 @@ export default function TestCMTPage() {
               <h1 className="text-base font-bold text-gray-900">Cuestionario de Motivación para el Trabajo (CMT)</h1>
               <div className="flex items-center gap-2 text-xs text-gray-600">
                 <Clock className="h-3 w-3" />
-                {sesionLabel}
+                <span className={sesionExpirada ? 'text-red-600 font-semibold' : 'font-semibold tabular-nums'}>
+                  {sesionLabel}
+                </span>
+                <span className="hidden sm:inline text-gray-300">•</span>
+                <span className="hidden sm:inline">
+                  {autosave.isPending
+                    ? 'Guardando…'
+                    : autosaveError
+                      ? 'Sin sincronizar'
+                      : lastAutosaveAt
+                        ? 'Guardado'
+                        : 'Sin guardar'}
+                </span>
               </div>
             </div>
 
@@ -687,12 +845,12 @@ export default function TestCMTPage() {
                                   whileTap={!estaUsado ? { scale: 0.95 } : {}}
                                   animate={estaSeleccionado ? { scale: 1.08 } : {}}
                                   transition={{ type: 'tween', duration: 0.18, ease: 'easeOut' }}
-                                  className={`w-10 h-10 rounded-full border font-bold text-sm transition-all flex-shrink-0 ${
+                                  className={`w-10 h-10 rounded-full border-2 font-bold text-sm transition-all flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 disabled:opacity-100 ${
                                     estaSeleccionado
-                                      ? getColorPorValor(valor) + ' shadow-sm ring-1 ring-blue-300'
+                                      ? `${getColorPorValor(valor)} shadow-md ring-2 ring-blue-300`
                                       : estaUsado
-                                      ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-40'
-                                      : 'bg-white border-gray-300 text-gray-700 hover:border-blue-400 hover:bg-blue-50'
+                                      ? '!bg-slate-100 border-slate-200 !text-slate-500 cursor-not-allowed'
+                                      : '!bg-white border-slate-300 !text-slate-800 hover:border-blue-500 hover:!bg-blue-50'
                                   }`}
                                 >
                                   {valor}
@@ -819,12 +977,12 @@ export default function TestCMTPage() {
                   key={num}
                   type="button"
                   onClick={() => cambiarPregunta(num - 1)}
-                  className={`h-8 rounded-md font-semibold text-xs transition-all ${
+                  className={`h-9 rounded-lg font-semibold text-xs transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 tabular-nums ${
                     actual
-                      ? 'bg-blue-500 text-white shadow-md scale-105'
+                      ? '!bg-blue-700 !text-white shadow-md scale-[1.02] ring-2 ring-blue-700/20'
                       : respondida
-                      ? 'bg-green-100 text-green-700 border border-green-300 hover:bg-green-200'
-                      : 'bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200'
+                        ? '!bg-emerald-100 !text-emerald-900 border border-emerald-300 hover:!bg-emerald-200'
+                        : '!bg-white !text-slate-700 border border-slate-300 hover:!bg-slate-50 hover:border-slate-400'
                   }`}
                 >
                   {num}

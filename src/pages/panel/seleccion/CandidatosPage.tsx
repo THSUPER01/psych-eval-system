@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useCandidatos, useAsignaciones } from '@/lib/hooks/useSelection'
+import { useCandidatos, useRegistrarResultado } from '@/lib/hooks/useSelection'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -12,30 +12,48 @@ import {
   UserPlus,
   Filter,
   CheckCircle2,
+  XCircle,
   Clock,
   Brain,
   BarChart3,
   ClipboardList,
 } from 'lucide-react'
 import { CrearCandidatoDialog } from '@/components/selection/CrearCandidatoDialog'
+import { useModernToast } from '@/lib/toast'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
 
 export default function CandidatosPage() {
   const navigate = useNavigate()
-  const { data: candidatos, isLoading } = useCandidatos()
-  const { data: asignaciones } = useAsignaciones()
+  const [filtroEstado, setFiltroEstado] = useState<'activos' | 'completados' | 'todos'>('todos')
+  const { data: candidatos, isLoading } = useCandidatos(undefined, filtroEstado)
   const [search, setSearch] = useState('')
   const [soloPublicos, setSoloPublicos] = useState(false)
   const [showCrearDialog, setShowCrearDialog] = useState(false)
+  const registrarResultado = useRegistrarResultado()
+  const toast = useModernToast()
+  const [rechazoOpen, setRechazoOpen] = useState(false)
+  const [rechazoMotivo, setRechazoMotivo] = useState('')
+  const [candidatoRechazoId, setCandidatoRechazoId] = useState<number | null>(null)
 
   const stats = useMemo(() => {
     const total = candidatos?.length || 0
     const publicos = candidatos?.filter((c) => c.requerimientoId === null).length || 0
     const conFormulario = candidatos?.filter((c) => c.formularioCompletado).length || 0
     const cmtCompletado = candidatos?.filter((c) => c.asignacionCmt?.pruebaCompletada).length || 0
-    const asign16pf = asignaciones?.filter((a) => a.nombrePrueba?.toLowerCase().includes('16pf')) || []
-    const seisTeenPfCompletado = asign16pf.filter((a) => a.completado).length
-    return { total, publicos, conFormulario, cmtCompletado, seisTeenPfCompletado }
-  }, [candidatos, asignaciones])
+    const seisTeenPfCompletado = candidatos?.filter((c) => c.asignacion16pf?.pruebaCompletada).length || 0
+    const aprobados = candidatos?.filter((c) => c.estado?.estCodigo === 'CAND_APROBADO').length || 0
+    const rechazados = candidatos?.filter((c) => c.estado?.estCodigo === 'CAND_RECHAZADO').length || 0
+    const pendientesDecision = candidatos?.filter((c) => c.formularioCompletado && c.resultadoSeleccion === null).length || 0
+    return { total, publicos, conFormulario, cmtCompletado, seisTeenPfCompletado, aprobados, rechazados, pendientesDecision }
+  }, [candidatos])
 
   const filtrados = useMemo(() => {
     return (candidatos || [])
@@ -120,6 +138,34 @@ export default function CandidatosPage() {
         </Card>
       </div>
 
+      {/* Estado del proceso */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader className="py-3">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-green-600" /> Aprobados
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0"><div className="text-2xl font-bold">{stats.aprobados}</div></CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="py-3">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <XCircle className="h-4 w-4 text-red-600" /> Rechazados
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0"><div className="text-2xl font-bold">{stats.rechazados}</div></CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="py-3">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <ClipboardList className="h-4 w-4 text-amber-600" /> Pendientes de decisión
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0"><div className="text-2xl font-bold">{stats.pendientesDecision}</div></CardContent>
+        </Card>
+      </div>
+
       {/* Búsqueda y filtro */}
       <Card>
         <CardContent className="pt-6 space-y-4">
@@ -141,6 +187,11 @@ export default function CandidatosPage() {
             >
               <Filter className="h-4 w-4" /> {soloPublicos ? 'Mostrando Públicos' : 'Solo Públicos'}
             </Button>
+            <div className="flex gap-2">
+              <Button variant={filtroEstado === 'todos' ? 'default' : 'outline'} onClick={() => setFiltroEstado('todos')}>Todos</Button>
+              <Button variant={filtroEstado === 'activos' ? 'default' : 'outline'} onClick={() => setFiltroEstado('activos')}>Activos</Button>
+              <Button variant={filtroEstado === 'completados' ? 'default' : 'outline'} onClick={() => setFiltroEstado('completados')}>Completados</Button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -168,9 +219,7 @@ export default function CandidatosPage() {
           </Card>
         ) : (
           filtrados.map((c) => {
-            const asign16pf = asignaciones?.find(
-              (a) => a.candidatoId === c.canId && a.nombrePrueba?.toLowerCase().includes('16pf')
-            )
+            const asign16pf = c.asignacion16pf
             return (
               <div
                 key={c.canId}
@@ -222,11 +271,11 @@ export default function CandidatosPage() {
                       )}
                       {/* 16PF */}
                       {asign16pf ? (
-                        asign16pf.completado ? (
+                        asign16pf.pruebaCompletada ? (
                           <Badge className="gap-1 px-2 py-0 h-5">
                             <BarChart3 className="h-3 w-3" /> 16PF
                           </Badge>
-                        ) : asign16pf.iniciado ? (
+                        ) : asign16pf.estadoAsignacion === 'INICIADA' || asign16pf.estadoAsignacion === 'EN_PROGRESO' ? (
                           <Badge variant="secondary" className="gap-1 px-2 py-0 h-5">
                             <Clock className="h-3 w-3" /> 16PF
                           </Badge>
@@ -241,6 +290,43 @@ export default function CandidatosPage() {
                         </Badge>
                       )}
                     </div>
+                    {/* Acciones rápidas: aprobar/rechazar cuando está pendiente */}
+                    {c.formularioCompletado && c.resultadoSeleccion === null && (
+                      <div className="flex gap-2 pt-2">
+                        <Button
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            if (!window.confirm('¿Confirmar aprobación de este candidato?')) return
+                            registrarResultado.mutate(
+                              { candidatoId: c.canId, dto: { resultadoSeleccion: true } },
+                              {
+                                onSuccess: () => {
+                                  toast.success({ title: 'Candidato aprobado', description: 'Se registró el resultado exitosamente.' })
+                                },
+                                onError: (err: any) => {
+                                  toast.error({ title: 'Error al aprobar', description: err?.message || 'No se pudo registrar el resultado.' })
+                                },
+                              }
+                            )
+                          }}
+                        >
+                          ✓ Aprobar
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setCandidatoRechazoId(c.canId)
+                            setRechazoMotivo('')
+                            setRechazoOpen(true)
+                          }}
+                        >
+                          ✗ Rechazar
+                        </Button>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </div>
@@ -250,6 +336,49 @@ export default function CandidatosPage() {
       </div>
 
       <CrearCandidatoDialog open={showCrearDialog} onOpenChange={setShowCrearDialog} />
+
+      {/* Modal Rechazo */}
+      <Dialog open={rechazoOpen} onOpenChange={setRechazoOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Rechazar Candidato</DialogTitle>
+            <DialogDescription>Indica el motivo del rechazo. Este campo es obligatorio.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Motivo *</label>
+            <Textarea
+              value={rechazoMotivo}
+              onChange={(e) => setRechazoMotivo(e.target.value)}
+              rows={4}
+              placeholder="Especifique la razón del rechazo..."
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRechazoOpen(false)} disabled={registrarResultado.isPending}>Cancelar</Button>
+            <Button
+              variant="destructive"
+              disabled={!rechazoMotivo.trim() || registrarResultado.isPending}
+              onClick={() => {
+                if (!candidatoRechazoId) return
+                registrarResultado.mutate(
+                  { candidatoId: candidatoRechazoId, dto: { resultadoSeleccion: false, motivoRechazo: rechazoMotivo.trim() } },
+                  {
+                    onSuccess: () => {
+                      toast.info({ title: 'Candidato rechazado', description: 'Se registró el resultado y se actualizó la lista.' })
+                      setRechazoOpen(false)
+                    },
+                    onError: (err: any) => {
+                      toast.error({ title: 'Error al rechazar', description: err?.message || 'No se pudo registrar el rechazo.' })
+                    },
+                  }
+                )
+              }}
+            >
+              Confirmar Rechazo
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -21,12 +21,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const response = await rolesService.getRolById(Number(user.RolApp))
           if (response.success && response.data) {
             setUserRole(response.data)
+            authService.setRoleName(response.data.rolRol)
           }
         } catch (error) {
           console.error('Error fetching role:', error)
         }
       } else {
         setUserRole(null)
+        authService.removeRoleName()
       }
     }
     fetchRole()
@@ -55,7 +57,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (authService.isAuthenticated()) {
         const decoded = authService.decodeToken()
-        setUser((decoded || null) as User)
+        const documento = authService.getDocumento()
+        if (documento) authService.setDocumento(documento)
+        setUser((decoded ? { ...(decoded as any), documento } : null) as User)
         setPermissions(authService.decodePermissions())
       } else {
         setUser(null)
@@ -66,10 +70,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
-  const login = useCallback((token: string, permisos: Permiso[]) => {
+  const login = useCallback((token: string, permisos: Permiso[], documento?: string) => {
     authService.login(token, permisos)
     const decoded = authService.decodeToken()
-    setUser((decoded || null) as User)
+    if (documento) authService.setDocumento(documento)
+    const normalizedDocumento = authService.getDocumento()
+    setUser((decoded ? { ...(decoded as any), documento: normalizedDocumento } : null) as User)
     setPermissions(authService.decodePermissions())
   }, [])
 

@@ -37,6 +37,7 @@ import {
   Calendar
 } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
+import { parseUtcDate } from "@/lib/date"
 import { es } from "date-fns/locale"
 import { CandidatosList } from "@/components/selection/CandidatosList"
 import { AgregarCandidatoDialog } from "@/components/selection/AgregarCandidatoDialog"
@@ -215,10 +216,13 @@ export default function RequerimientoDetallePage() {
                   Estado: {requerimiento.estado?.estDescripcion || "Desconocido"}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Creado {requerimiento.fechaCreacion ? formatDistanceToNow(new Date(requerimiento.fechaCreacion), {
-                    addSuffix: true,
-                    locale: es,
-                  }) : "recientemente"}
+                  Creado {(() => {
+                    const createdAt = parseUtcDate(requerimiento.fechaCreacion)
+                    return createdAt ? formatDistanceToNow(createdAt, {
+                      addSuffix: true,
+                      locale: es,
+                    }) : "Fecha invalida"
+                  })()}
                 </p>
               </div>
             </div>
@@ -300,11 +304,14 @@ export default function RequerimientoDetallePage() {
               </dt>
               <dd className="text-base flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
-                {requerimiento.fechaCreacion ? new Date(requerimiento.fechaCreacion).toLocaleDateString('es-CO', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                }) : "No especificada"}
+                {(() => {
+                  const createdAt = parseUtcDate(requerimiento.fechaCreacion)
+                  return createdAt ? createdAt.toLocaleDateString('es-CO', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  }) : "Fecha invalida"
+                })()}
               </dd>
             </div>
           </CardContent>

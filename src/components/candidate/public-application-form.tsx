@@ -33,7 +33,6 @@ interface FormData {
   nombre_completo: string
   correo_electronico: string
   telefono: string
-  
   // Información demográfica
   CLB_EstadoCivil: string
   CLB_Genero: string
@@ -49,9 +48,6 @@ interface FormData {
   Hijos: string
   numero_hijos: string
   edades_de_hijos: string[]
-  talla_camisa: string
-  talla_pantalon: string
-  talla_zapatos: string
   habilidades: string
 }
 
@@ -79,9 +75,6 @@ export function PublicApplicationForm() {
     Hijos: "",
     numero_hijos: "",
     edades_de_hijos: [],
-    talla_camisa: "",
-    talla_pantalon: "",
-    talla_zapatos: "",
     habilidades: "",
     titulo_academico: "",
   })
@@ -244,39 +237,7 @@ export function PublicApplicationForm() {
       }
     }
 
-    // Validar tallas si se completaron
-    if (formData.talla_camisa) {
-      const tallaCamisaValidation = validateTalla(formData.talla_camisa, 'camisa')
-      if (!tallaCamisaValidation.isValid) {
-        toast.error({
-          title: "Error de validación",
-          description: tallaCamisaValidation.message,
-        })
-        return
-      }
-    }
 
-    if (formData.talla_pantalon) {
-      const tallaPantalonValidation = validateTalla(formData.talla_pantalon, 'pantalon')
-      if (!tallaPantalonValidation.isValid) {
-        toast.error({
-          title: "Error de validación",
-          description: tallaPantalonValidation.message,
-        })
-        return
-      }
-    }
-
-    if (formData.talla_zapatos) {
-      const tallaZapatosValidation = validateTalla(formData.talla_zapatos, 'zapatos')
-      if (!tallaZapatosValidation.isValid) {
-        toast.error({
-          title: "Error de validación",
-          description: tallaZapatosValidation.message,
-        })
-        return
-      }
-    }
 
     setIsLoading(true)
     try {
@@ -317,9 +278,7 @@ export function PublicApplicationForm() {
         })
       }
       
-      if (formData.talla_camisa) formDataToSend.append('TallaCamisa', formData.talla_camisa)
-      if (formData.talla_pantalon) formDataToSend.append('TallaPantalon', formData.talla_pantalon)
-      if (formData.talla_zapatos) formDataToSend.append('TallaZapato', formData.talla_zapatos)
+      // Tallas eliminadas del formulario
       if (formData.titulo_academico) formDataToSend.append('TituloAcademico', formData.titulo_academico)
       if (formData.habilidades) formDataToSend.append('Habilidades', formData.habilidades)
       
@@ -916,76 +875,7 @@ export function PublicApplicationForm() {
               </div>
             </div>
 
-            {/* Sección: Tallas */}
-            <div className="space-y-4">
-              <div className="border-b pb-2">
-                <h3 className="text-lg font-semibold text-primary">Tallas de uniforme</h3>
-                <p className="text-sm text-muted-foreground">información para dotación laboral</p>
-              </div>
 
-              <div className="grid gap-4 md:grid-cols-3">
-                <div className="space-y-2">
-                  <Label htmlFor="talla_camisa">Talla de camisa</Label>
-                  <Select
-                    value={formData.talla_camisa}
-                    onValueChange={(value) => updateFormData("talla_camisa", value)}
-                  >
-                    <SelectTrigger id="talla_camisa">
-                      <SelectValue placeholder="selecciona talla" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="XS">XS</SelectItem>
-                      <SelectItem value="S">S</SelectItem>
-                      <SelectItem value="M">M</SelectItem>
-                      <SelectItem value="L">L</SelectItem>
-                      <SelectItem value="XL">XL</SelectItem>
-                      <SelectItem value="XXL">XXL</SelectItem>
-                      <SelectItem value="XXXL">XXXL</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="talla_pantalon">Talla de pantalón</Label>
-                  <Select
-                    value={formData.talla_pantalon}
-                    onValueChange={(value) => updateFormData("talla_pantalon", value)}
-                  >
-                    <SelectTrigger id="talla_pantalon">
-                      <SelectValue placeholder="selecciona talla" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="XS">XS</SelectItem>
-                      <SelectItem value="S">S</SelectItem>
-                      <SelectItem value="M">M</SelectItem>
-                      <SelectItem value="L">L</SelectItem>
-                      <SelectItem value="XL">XL</SelectItem>
-                      <SelectItem value="XXL">XXL</SelectItem>    
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="talla_zapatos">Talla de zapatos</Label>
-                  <Select
-                    value={formData.talla_zapatos}
-                    onValueChange={(value) => updateFormData("talla_zapatos", value)}
-                  >
-                    <SelectTrigger id="talla_zapatos">
-                      <SelectValue placeholder="selecciona talla" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {/* Tallas desde 34 hasta 51 */}
-                      {Array.from({ length: 18 }, (_, i) => i + 34).map((size) => (
-                        <SelectItem key={size} value={size.toString()}>
-                          {size}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
 
             {/* Nota de privacidad - Política Completa */}
             <div className="bg-gradient-to-r from-[#E6F2FF] to-[#F0FFE6] rounded-2xl p-6 border-2 border-[#00AEEF]/20 space-y-4 max-h-96 overflow-y-auto">

@@ -1,3 +1,5 @@
+import { parseUtcDate } from "@/lib/date"
+
 export type SesionCmt = {
   estado: 'PENDIENTE' | 'INICIADA' | 'COMPLETADA' | 'EXPIRADA'
   serverNowUtc: string
@@ -6,8 +8,9 @@ export type SesionCmt = {
 }
 
 export function crearRelojSesion(sesion: SesionCmt) {
-  const serverNow = new Date(sesion.serverNowUtc).getTime()
-  const deadline = sesion.fechaLimiteUtc ? new Date(sesion.fechaLimiteUtc).getTime() : 0
+  const serverNowDate = parseUtcDate(sesion.serverNowUtc)
+  const serverNow = serverNowDate ? serverNowDate.getTime() : Date.now()
+  const deadline = sesion.fechaLimiteUtc ? (parseUtcDate(sesion.fechaLimiteUtc)?.getTime() ?? 0) : 0
   const offset = Date.now() - serverNow // corrige deriva del cliente
 
   return () => {

@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query"
 import { selectionApiService } from "@/lib/services/selectionApiService"
 import { ArrowLeft, Calendar, FileText, Code, CheckCircle2, XCircle } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
+import { parseUtcDate } from "@/lib/date"
 import { es } from "date-fns/locale"
 
 export default function PruebaDetallePage() {
@@ -97,10 +98,13 @@ export default function PruebaDetallePage() {
               <dt className="text-sm font-medium text-muted-foreground">Fecha de Creación</dt>
               <dd className="text-base mt-1 flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
-                {formatDistanceToNow(new Date(prueba.fechaCreacion), { 
-                  addSuffix: true, 
-                  locale: es 
-                })}
+                {(() => {
+                  const createdAt = parseUtcDate(prueba.fechaCreacion)
+                  return createdAt ? formatDistanceToNow(createdAt, {
+                    addSuffix: true,
+                    locale: es
+                  }) : "Fecha invalida"
+                })()}
               </dd>
             </div>
           </div>
@@ -151,10 +155,13 @@ export default function PruebaDetallePage() {
                         {version.descripcion}
                       </p>
                       <p className="text-xs text-muted-foreground mt-2">
-                        Creada {formatDistanceToNow(new Date(version.fechaCreacion), {
-                          addSuffix: true,
-                          locale: es
-                        })}
+                        Creada {(() => {
+                          const createdAt = parseUtcDate(version.fechaCreacion)
+                          return createdAt ? formatDistanceToNow(createdAt, {
+                            addSuffix: true,
+                            locale: es
+                          }) : "Fecha invalida"
+                        })()}
                       </p>
                     </div>
                     <div className="flex gap-2 ml-4">

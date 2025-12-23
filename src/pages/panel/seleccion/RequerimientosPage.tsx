@@ -25,21 +25,13 @@ import { useAuth } from '@/lib/hooks/useAuth'
 import { useToast } from '@/hooks/use-toast'
 import { Plus, Search, MoreVertical, Eye, Trash2, FileText, AlertCircle, Filter } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
-import { formatDistanceToNow, parseISO, format, subHours } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { formatUtcToLocal } from '@/lib/date'
 import { CrearRequerimientoDialog } from '@/components/selection/CrearRequerimientoDialog'
 
-// Función helper para formatear fechas UTC a hora de Bogotá (UTC-5)
-const formatearFecha = (fechaUTC: string): string => {
-  try {
-    const fechaUTCParsed = parseISO(fechaUTC)
-    const fechaBogota = subHours(fechaUTCParsed, 5)
-    return format(fechaBogota, "d 'de' MMM, yyyy 'a las' HH:mm", { locale: es })
-  } catch (error) {
-    console.error('Error formateando fecha:', error)
-    return 'Fecha inválida'
-  }
-}
+// Helper para formatear fechas UTC a hora local
+const formatearFecha = (fechaUTC: string): string =>
+  formatUtcToLocal(fechaUTC, "d 'de' MMM, yyyy 'a las' HH:mm", { locale: es })
 
 export default function RequerimientosPage() {
   const { user } = useAuth()

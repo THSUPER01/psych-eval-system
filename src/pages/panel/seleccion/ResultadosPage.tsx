@@ -10,6 +10,7 @@ import { Search, BarChart3, TrendingUp, Award, FileText, Eye, Brain, CheckCircle
 import { formatDistanceToNow, subDays } from "date-fns"
 import { es } from "date-fns/locale"
 import { Link } from "react-router-dom"
+import { parseUtcDate } from "@/lib/date"
 
 export default function ResultadosPage() {
   const { data: candidatos, isLoading: loadingCandidatos } = useCandidatos()
@@ -33,8 +34,8 @@ export default function ResultadosPage() {
     const haceUnaSemana = subDays(new Date(), 7)
     const candidatosEstaSemana = candidatosConFormulario.filter(c => {
       try {
-        const fechaCreacion = new Date(c.fechaCreacion)
-        return fechaCreacion >= haceUnaSemana
+        const fechaCreacion = parseUtcDate(c.fechaCreacion)
+        return fechaCreacion ? fechaCreacion >= haceUnaSemana : false
       } catch {
         return false
       }
@@ -189,8 +190,10 @@ export default function ResultadosPage() {
             </div>
           ) : filtered.length > 0 ? (
             <div className="space-y-3">
-              {filtered.map((candidato) => (
-                <div key={candidato.canId} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+              {filtered.map((candidato) => {
+                const createdAt = parseUtcDate(candidato.fechaCreacion)
+                return (
+                  <div key={candidato.canId} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
@@ -212,10 +215,12 @@ export default function ResultadosPage() {
                         </div>
                         <Badge variant="outline">{candidato.estado.estDescripcion}</Badge>
                         <span>
-                          Registrado {formatDistanceToNow(new Date(candidato.fechaCreacion), {
-                            addSuffix: true,
-                            locale: es
-                          })}
+                          Registrado {createdAt
+                            ? formatDistanceToNow(createdAt, {
+                              addSuffix: true,
+                              locale: es
+                            })
+                            : "Fecha invalida"}
                         </span>
                       </div>
 
@@ -252,8 +257,9 @@ export default function ResultadosPage() {
                       </Button>
                     </Link>
                   </div>
-                </div>
-              ))}
+                  </div>
+                )
+              })}
             </div>
           ) : (
             <div className="text-center py-12">

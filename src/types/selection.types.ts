@@ -185,6 +185,12 @@ export interface Candidato {
   fechaCreacion: string
   fechaActualizacion?: string
   
+  // ⭐ Predicción de permanencia (calculada por el backend)
+  prediccionPermanencia: number | null // 0=No permanece (<3 meses), 1=Sí permanece (≥3 meses)
+  probabilidadPermanencia: number | null // Probabilidad entre 0 y 1
+  fechaPrediccion: string | null
+  versionModelo: number | null // Versión del modelo ML utilizado
+  
   formulario: FormularioCandidatoDto | null
   documentos?: Documento[]
   asignacionCmt?: AsignacionCmtDto // ⭐ Asignación automática de prueba CMT

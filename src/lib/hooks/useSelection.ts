@@ -8,8 +8,6 @@ import type {
   ActualizarRequerimientoDto,
   Candidato,
   CrearCandidatoDto,
-  AsignacionPrueba,
-  CrearAsignacionDto,
   TipoNormativa,
 } from '@/types/selection.types'
 
@@ -22,9 +20,6 @@ export function useAsignarCmtManual() {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['candidatos'] })
       queryClient.invalidateQueries({ queryKey: ['candidato', variables.candidatoId] })
-      // Podrías invalidar asignaciones si es necesario
-      queryClient.invalidateQueries({ queryKey: ['asignaciones'] })
-      queryClient.invalidateQueries({ queryKey: ['asignaciones', 'candidato', variables.candidatoId] })
     },
   })
 }
@@ -36,8 +31,6 @@ export function useAsignar16pf() {
     onSuccess: (_data, candidatoId) => {
       queryClient.invalidateQueries({ queryKey: ['candidatos'] })
       queryClient.invalidateQueries({ queryKey: ['candidato', candidatoId] })
-      queryClient.invalidateQueries({ queryKey: ['asignaciones'] })
-      queryClient.invalidateQueries({ queryKey: ['asignaciones', 'candidato', candidatoId] })
       // Si ya existiera algún resultado cacheado por token relacionado se podría invalidar aquí
     },
   })
@@ -46,7 +39,7 @@ export function useAsignar16pf() {
 // ==================== REQUERIMIENTOS ====================
 
 export function useRequerimientos() {
-  const { user, userRole, isLoading: authLoading } = useAuth()
+  const { user, isLoading: authLoading } = useAuth()
 
   return useQuery<Requerimiento[]>({
     queryKey: ['requerimientos', user?.documento],
@@ -56,15 +49,7 @@ export function useRequerimientos() {
 
       // Lógica de roles: Si es Admin/Jefe ve todo, si no, filtra por su documento
       // Ajusta los nombres de roles según tu base de datos
-      const esAdmin = userRole?.rolRol?.toUpperCase().includes('ADMIN') || 
-                      userRole?.rolRol?.toUpperCase().includes('JEFE') ||
-                      userRole?.rolRol?.toUpperCase().includes('GERENTE')
-
-      if (esAdmin || !user?.documento) {
-        return selectionApiService.getRequerimientos()
-      }
-
-      return selectionApiService.getRequerimientosPorPsicologo(user.documento)
+      return selectionApiService.getRequerimientos()
     },
     enabled: !authLoading && !!user, // Solo ejecutar cuando hay usuario autenticado
   })
@@ -123,33 +108,39 @@ export function useEliminarRequerimiento() {
 
 // ==================== CANDIDATOS ====================
 
-export function useCandidatos(requerimientoId?: number) {
-  const { user, userRole, isLoading: authLoading } = useAuth()
+export function useCandidatos(
+  requerimientoId?: number,
+  filtroEstado: 'activos' | 'completados' | 'todos' = 'todos'
+) {
+  const { user, isLoading: authLoading } = useAuth()
 
   return useQuery<Candidato[]>({
     queryKey: requerimientoId 
-      ? ['candidatos', 'requerimiento', requerimientoId] 
-      : ['candidatos', 'general', user?.documento],
+      ? ['candidatos', 'requerimiento', requerimientoId, filtroEstado] 
+      : ['candidatos', 'general', user?.documento, filtroEstado],
     queryFn: async () => {
       // 1. Si hay requerimiento específico, tiene prioridad
       if (requerimientoId) {
-        return selectionApiService.getCandidatosPorRequerimiento(requerimientoId)
+        const lista = await selectionApiService.getCandidatosPorRequerimiento(requerimientoId)
+        return aplicarFiltroEstado(lista, filtroEstado)
       }
 
       // 2. Si es Admin o no hay usuario, traer todo (comportamiento default)
-      const esAdmin = userRole?.rolRol?.toUpperCase().includes('ADMIN') || 
-                      userRole?.rolRol?.toUpperCase().includes('JEFE') ||
-                      userRole?.rolRol?.toUpperCase().includes('GERENTE')
+      // El backend filtra automǭticamente por psicólogo según headers (X-Documento / X-Roles).
 
-      if (esAdmin || !user?.documento) {
-        return selectionApiService.getCandidatos()
-      }
 
       // 3. Si es Psicólogo, usar endpoint específico
-      return selectionApiService.getCandidatosPorPsicologo(user.documento)
+      const lista = await selectionApiService.getCandidatos()
+      return aplicarFiltroEstado(lista, filtroEstado)
     },
     enabled: !authLoading && !!user,
   })
+}
+
+function aplicarFiltroEstado(lista: Candidato[], filtro: 'activos' | 'completados' | 'todos'): Candidato[] {
+  if (filtro === 'todos') return lista
+  const esCompletado = (c: Candidato) => c.estado?.estCodigo === 'CAND_APROBADO' || c.estado?.estCodigo === 'CAND_RECHAZADO'
+  return filtro === 'completados' ? lista.filter(esCompletado) : lista.filter((c) => !esCompletado(c))
 }
 
 export function useCandidato(id: number) {
@@ -226,7 +217,7 @@ export function useRegistrarResultado() {
   })
 }
 
-// ==================== PRUEBAS Y ASIGNACIONES ====================
+// ==================== PRUEBAS ====================
 
 export function usePruebasPsicotecnicas() {
   return useQuery({
@@ -239,39 +230,6 @@ export function usePublicacionesActivas() {
   return useQuery({
     queryKey: ['publicaciones-activas'],
     queryFn: () => selectionApiService.getPublicacionesActivas(),
-  })
-}
-
-export function useAsignaciones(candidatoId?: number) {
-  return useQuery<AsignacionPrueba[]>({
-    queryKey: candidatoId ? ['asignaciones', 'candidato', candidatoId] : ['asignaciones'],
-    queryFn: () =>
-      candidatoId
-        ? selectionApiService.getAsignacionesPorCandidato(candidatoId)
-        : selectionApiService.getAsignaciones(),
-  })
-}
-
-export function useCrearAsignacion() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: (dto: CrearAsignacionDto) => selectionApiService.crearAsignacion(dto),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['asignaciones'] })
-      queryClient.invalidateQueries({ queryKey: ['asignaciones', 'candidato', data.candidatoId] })
-    },
-  })
-}
-
-export function useEliminarAsignacion() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: (id: number) => selectionApiService.eliminarAsignacion(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['asignaciones'] })
-    },
   })
 }
 

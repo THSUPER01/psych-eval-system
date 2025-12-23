@@ -29,11 +29,9 @@ const RequerimientosPage = lazy(() => import('@/pages/panel/seleccion/Requerimie
 const RequerimientoDetallePage = lazy(() => import('@/pages/panel/seleccion/RequerimientoDetallePage'))
 const CandidatosPage = lazy(() => import('@/pages/panel/seleccion/CandidatosPage'))
 const CandidatoDetallePage = lazy(() => import('@/pages/panel/seleccion/CandidatoDetallePage'))
-const PruebasPage = lazy(() => import('@/pages/panel/seleccion/PruebasPage'))
-const PruebaDetallePage = lazy(() => import('@/pages/panel/seleccion/PruebaDetallePage'))
-const PruebaVersionesItemsPage = lazy(() => import('@/pages/panel/seleccion/PruebaVersionesItemsPage'))
 const ResultadosPage = lazy(() => import('@/pages/panel/seleccion/ResultadosPage'))
 const ResultadoDetallePage = lazy(() => import('@/pages/panel/seleccion/ResultadoDetallePage'))
+const UtilidadesPage = lazy(() => import('@/pages/panel/seleccion/UtilidadesPage'))
 const ConfiguracionPage = lazy(() => import('@/pages/panel/seleccion/ConfiguracionPage'))
 const AdminUsuariosPage = lazy(() => import('@/pages/panel/seleccion/AdminUsuariosPage'))
 
@@ -74,11 +72,9 @@ function AppRoutes() {
           <Route path="requerimientos/:id" element={<RequerimientoDetallePage />} />
           <Route path="candidatos" element={<CandidatosPage />} />
           <Route path="candidatos/:id" element={<CandidatoDetallePage />} />
-          <Route path="pruebas" element={<PruebasPage />} />
-          <Route path="pruebas/:id" element={<PruebaDetallePage />} />
-          <Route path="pruebas/:id/versiones/:versionId/items" element={<PruebaVersionesItemsPage />} />
           <Route path="resultados" element={<ResultadosPage />} />
           <Route path="resultados/:id" element={<ResultadoDetallePage />} />
+          <Route path="utilidades" element={<UtilidadesPage />} />
           <Route path="configuracion" element={<ConfiguracionPage />} />
           <Route path="admin/usuarios" element={<AdminUsuariosPage />} />
         </Route>

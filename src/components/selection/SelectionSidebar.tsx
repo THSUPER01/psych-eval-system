@@ -11,7 +11,7 @@ import {
   X,
   FolderKanban,
   Shield,
-  FileText,
+  Wrench,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -19,8 +19,8 @@ const navigation = [
   { name: "Dashboard", href: "/panel/seleccion", icon: LayoutDashboard },
   { name: "Requerimientos", href: "/panel/seleccion/requerimientos", icon: FolderKanban },
   { name: "Candidatos", href: "/panel/seleccion/candidatos", icon: Users },
-  { name: "Pruebas", href: "/panel/seleccion/pruebas", icon: FileText },
   { name: "Resultados", href: "/panel/seleccion/resultados", icon: BarChart3 },
+  { name: "Utilidades", href: "/panel/seleccion/utilidades", icon: Wrench },
 ]
 
 const adminNavigation = [

@@ -18,21 +18,13 @@ import {
   BarChart3
 } from "lucide-react"
 import { Link } from "react-router-dom"
-import { formatDistanceToNow, parseISO, format, subHours } from "date-fns"
 import { es } from "date-fns/locale"
+import { formatUtcToLocal, parseUtcDate } from "@/lib/date"
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 
-// Función helper para formatear fechas UTC a hora de Bogotá (UTC-5)
-const formatearFecha = (fechaUTC: string): string => {
-  try {
-    const fechaUTCParsed = parseISO(fechaUTC)
-    const fechaBogota = subHours(fechaUTCParsed, 5)
-    return format(fechaBogota, "d 'de' MMM, yyyy 'a las' HH:mm", { locale: es })
-  } catch (error) {
-    console.error("Error formateando fecha:", error)
-    return "Fecha inválida"
-  }
-}
+// Helper para formatear fechas UTC a hora local
+const formatearFecha = (fechaUTC: string): string =>
+  formatUtcToLocal(fechaUTC, "d 'de' MMM, yyyy 'a las' HH:mm", { locale: es })
 
 export default function SelectionDashboardPage() {
   const { user } = useAuth()
@@ -79,13 +71,15 @@ export default function SelectionDashboardPage() {
 
       const reqCount = requerimientos?.filter(r => {
         if (!r?.fechaCreacion) return false
-        const created = new Date(r.fechaCreacion)
+        const created = parseUtcDate(r.fechaCreacion)
+        if (!created) return false
         return created >= date && created < nextDay
       }).length || 0
 
       const candCount = candidatos?.filter(c => {
         if (!c?.fechaCreacion) return false
-        const created = new Date(c.fechaCreacion)
+        const created = parseUtcDate(c.fechaCreacion)
+        if (!created) return false
         return created >= date && created < nextDay
       }).length || 0
 
@@ -389,8 +383,8 @@ export default function SelectionDashboardPage() {
               <div className="space-y-2 max-h-96 overflow-y-auto">
                 {requerimientos
                   .sort((a, b) => 
-                    new Date(b.fechaCreacion).getTime() - 
-                    new Date(a.fechaCreacion).getTime()
+                    (parseUtcDate(b.fechaCreacion)?.getTime() ?? 0) - 
+                    (parseUtcDate(a.fechaCreacion)?.getTime() ?? 0)
                   )
                   .slice(0, 5)
                   .map((req) => (

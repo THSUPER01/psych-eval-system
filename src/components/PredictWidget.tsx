@@ -1,109 +1,161 @@
 import { useMemo } from 'react'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Skeleton } from '@/components/ui/skeleton'
-import { usePredictCandidate } from '@/hooks/usePredictCandidate'
-import type { PredictRequest } from '@/types/predict'
+import { Badge } from '@/components/ui/badge'
+import { TrendingUp, Zap } from 'lucide-react'
+import type { Candidato } from '@/types/selection.types'
+import { parseUtcDate } from '@/lib/date'
 
 type Props = {
-  values: {
-    CLB_EstadoCivil?: string
-    CLB_Genero?: string
-    edad_al_ingresar?: number
-    Barrio?: string
-    Comuna?: string
-    Estrato?: number
-    hijos?: number
-    titulo_obtenido?: string // mapped to "titulo obtenido"
-    direccion?: string
-  }
+  candidato: Candidato
 }
 
-export function PredictWidget({ values }: Props) {
-  const { data, loading, error, runPrediction } = usePredictCandidate()
+export function PredictWidget({ candidato }: Props) {
+  const hasPrediction = useMemo(() => {
+    return (
+      candidato.prediccionPermanencia !== null &&
+      candidato.probabilidadPermanencia !== null &&
+      candidato.fechaPrediccion !== null
+    )
+  }, [candidato])
 
-  const missing = useMemo(() => {
-    const req: Array<[keyof Props['values'], string]> = [
-      ['CLB_EstadoCivil', 'Estado civil'],
-      ['CLB_Genero', 'Género'],
-      ['edad_al_ingresar', 'Edad al ingresar'],
-      ['Barrio', 'Barrio'],
-      ['Comuna', 'Comuna'],
-      ['Estrato', 'Estrato'],
-      ['hijos', 'Hijos'],
-      ['titulo_obtenido', 'Título obtenido'],
-      ['direccion', 'Dirección'],
-    ]
-    return req
-      .filter(([k]) => values[k] === undefined || values[k] === null || values[k] === '')
-      .map(([, label]) => label)
-  }, [values])
+  const normalizedProb = useMemo(() => {
+    const raw = candidato.probabilidadPermanencia ?? 0
+    return Math.min(1, Math.max(0, raw))
+  }, [candidato.probabilidadPermanencia])
 
-  const canRun = missing.length === 0
+  const probPct = normalizedProb * 100
 
-  const handleRun = async () => {
-    if (!canRun) return
-    const payload: PredictRequest = {
-      CLB_EstadoCivil: String(values.CLB_EstadoCivil),
-      CLB_Genero: String(values.CLB_Genero),
-      edad_al_ingresar: Number(values.edad_al_ingresar),
-      Barrio: String(values.Barrio),
-      Comuna: String(values.Comuna),
-      Estrato: Number(values.Estrato),
-      hijos: Number(values.hijos),
-      // clave literal con espacio
-      "titulo obtenido": String(values.titulo_obtenido),
-      direccion: String(values.direccion),
-    }
-    await runPrediction(payload)
+  const getAccent = (p: number) => {
+    if (p >= 0.75) return { color: '#0ea5e9', badge: 'default' as const, label: 'Alta' }
+    if (p >= 0.5) return { color: '#eab308', badge: 'secondary' as const, label: 'Media' }
+    return { color: '#ef4444', badge: 'destructive' as const, label: 'Baja' }
   }
 
-  const formatPct = (n: number) => `${(n * 100).toFixed(2)}%`
-  const claseLabel = (c: 0 | 1) =>
-    c === 1 ? 'Predice permanencia (≥ 3 meses)' : 'Predice no permanencia (< 3 meses)'
+  const accent = getAccent(normalizedProb)
+  const ringStyle = {
+    background: `conic-gradient(${accent.color} ${probPct}%, #e5e7eb ${probPct}%)`,
+  }
 
-  return (
-    <Card className="rounded-3xl shadow-xl border-none">
-      <CardHeader>
-        <CardTitle>Predicción de permanencia</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {!canRun && (
+  const formatDate = (dateStr: string | null) => {
+    if (!dateStr) return '—'
+    try {
+      const date = parseUtcDate(dateStr)
+      if (!date) return '-'
+      return date.toLocaleDateString('es-CO', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    } catch {
+      return '—'
+    }
+  }
+
+  const getPredictionLabel = (prediction: number | null) => {
+    if (prediction === null) return 'Sin predicción'
+    return prediction === 1 ? 'Permanencia (≥ 3 meses)' : 'No permanencia (< 3 meses)'
+  }
+
+  const getPredictionColor = (prediction: number | null) => {
+    if (prediction === null) return 'secondary'
+    return prediction === 1 ? 'default' : 'destructive'
+  }
+
+  if (!hasPrediction) {
+    return (
+      <Card className="rounded-3xl shadow-xl border-none">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Zap className="h-5 w-5 text-yellow-600" />
+            Predicción de permanencia
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
           <Alert>
             <AlertDescription>
-              Completa los campos requeridos antes de ejecutar la predicción: {missing.join(', ')}
+              La predicción aún no está disponible. Los datos se analizarán cuando el candidato
+              complete el formulario demográfico.
             </AlertDescription>
           </Alert>
-        )}
+        </CardContent>
+      </Card>
+    )
+  }
 
-        <div className="flex items-center gap-3">
-          <Button onClick={handleRun} disabled={!canRun || loading}>
-            {loading ? 'Calculando…' : 'Calcular probabilidad'}
-          </Button>
+  return (
+    <Card className="rounded-2xl shadow-lg border-slate-200">
+      <CardHeader>
+        <CardTitle className="text-lg flex items-center gap-2">
+          <TrendingUp className="h-5 w-5 text-blue-600" />
+          Predicción de permanencia
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4 p-4">
+        {/* Predicción Principal */}
+        <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
+          {/* Anillo Animado Responsivo */}
+          <div className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 flex-shrink-0 mx-auto sm:mx-0">
+            <div
+              className="absolute inset-0 rounded-full animate-[spin_20s_linear_infinite] opacity-15"
+              style={{ background: 'conic-gradient(#c7d2fe 0%, #e0f2fe 40%, #c7d2fe 100%)' }}
+            />
+            <div className="relative w-full h-full rounded-full p-1.5 bg-white shadow-md border border-slate-100">
+              <div
+                className="w-full h-full rounded-full flex items-center justify-center"
+                style={ringStyle}
+              >
+                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full bg-white flex flex-col items-center justify-center shadow-sm gap-0.5">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Prob.</span>
+                  <span 
+                    className="text-xl sm:text-2xl md:text-3xl font-extrabold font-mono" 
+                    style={{ color: accent.color }}
+                    aria-live="polite"
+                    role="status"
+                  >
+                    {probPct.toFixed(0)}%
+                  </span>
+                  <Badge 
+                    variant="outline" 
+                    className="text-xs px-1.5 py-0 h-4" 
+                    style={{ borderColor: accent.color, color: accent.color }}
+                    aria-label={`Nivel de permanencia: ${accent.label}`}
+                  >
+                    {accent.label}
+                  </Badge>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Información y Predicción */}
+          <div className="flex-1 flex flex-col items-center sm:items-start gap-3">
+            <Badge 
+              variant={getPredictionColor(candidato.prediccionPermanencia)} 
+              className="text-xs sm:text-sm px-3 py-1"
+              aria-label={getPredictionLabel(candidato.prediccionPermanencia)}
+            >
+              {getPredictionLabel(candidato.prediccionPermanencia)}
+            </Badge>
+            <p className="text-xs text-slate-600 text-center sm:text-left">
+              Probabilidad de permanecer más de 3 meses en la posición
+            </p>
+          </div>
         </div>
 
-        {loading && (
-          <div className="space-y-2">
-            <Skeleton className="h-6 w-64" />
-            <Skeleton className="h-6 w-48" />
+        {/* Metadatos Compactos */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-3 sm:pt-4 border-t border-slate-100 text-xs">
+          <div>
+            <p className="text-slate-500 font-semibold mb-1">Fecha predicción</p>
+            <p className="text-slate-700 text-xs">{formatDate(candidato.fechaPrediccion)}</p>
           </div>
-        )}
-
-        {error && (
-          <Alert variant="destructive">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-
-        {data && (
-          <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200">
-            <p className="text-slate-800 font-medium">
-              Probabilidad de permanencia 3 meses: {formatPct(data.probabilidad_permanencia_3_meses)}
-            </p>
-            <p className="text-slate-700 mt-1">Clase predicha: {claseLabel(data.clase_predicha)}</p>
+          <div>
+            <p className="text-slate-500 font-semibold mb-1">Modelo</p>
+            <p className="text-slate-700 text-xs font-mono">{candidato.versionModelo !== null ? `v${candidato.versionModelo}` : '—'}</p>
           </div>
-        )}
+        </div>
       </CardContent>
     </Card>
   )

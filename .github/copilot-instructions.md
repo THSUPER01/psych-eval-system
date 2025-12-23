@@ -1,175 +1,50 @@
-﻿# Copilot Instructions - Sistema de Evaluación Psicológica
+# AI agent guide for this repo
 
-## Project Overview
-This is a Next.js 15 (App Router) psychological evaluation system for recruiting candidates at "Super de Alimentos S.A." The system has two distinct user portals:
-1. **Psychologist Portal** - Create requirements, track candidates, upload test results
-2. **Candidate Portal** - Fill evaluation forms via unique token-based links
+Goal: Help agents make correct, fast changes without rediscovering project context.
 
-**Status**: Frontend MVP with mock data. Backend API integration is pending implementation (see TODOs).
+## Architecture & routing
+- SPA built with Vite + React + TypeScript. No SSR; all client-side.
+- Router is code-based (React Router v6). Entry stack: `src/main.tsx` → `src/App.tsx` → `src/routes/index.tsx`.
+- Protected sections live under `/panel/seleccion` and are guarded by `components/auth/ProtectedRoute.tsx`, which relies on `AuthProvider` from `lib/context/AuthContext.tsx`.
+- Nested layout: `layouts/SelectionLayout.tsx` provides sidebar/header and renders children via `<Outlet/>`.
 
-## Architecture
+## State, data and APIs
+- TanStack Query v5 is the server-state layer. A preconfigured `QueryClient` in `App.tsx` sets: `retry: 1`, `refetchOnWindowFocus: false`, `staleTime: 5min`. Prefer `useQuery`/`useMutation` over ad‑hoc fetch.
+- Do NOT hand-roll fetches; use service modules under `src/lib/services/*` and `src/services/*`:
+  - Selection domain: `lib/services/selectionApiService.ts` (candidatos, requerimientos, asignaciones, documentos, resultados, públicos, etc.). It injects `App-Token` and unwraps `{ success, data }` automatically via a local `http` helper.
+  - Auth/2FA: `lib/services/loginApiService.ts` and roles: `lib/services/rolesService.ts`.
+  - 16PF test: `lib/services/test16pfService.ts` (185 preguntas, guardar respuestas, escalas, resultado).
+  
+- Env vars (Vite) live in `.env` with VITE_ prefix. Keys in use: `VITE_API_SELECCION_URL`, `VITE_MS_LOGIN_URL`, `VITE_MS_ROLES_URL`, `VITE_APP_TOKEN`, optional `VITE_PREDICT_API_BASE_URL`. See `.env.example`.
+- Typical query pattern example (see `pages/prueba/Test16PFPage.tsx`):
+  - `useQuery({ queryKey: ['test16pf-preguntas', token], queryFn: () => test16pfService.getPreguntas(token!) })`.
 
-### Two-Portal Structure
-- **Psychologist flow**: `/psicologo/login` → `/psicologo/verify` → `/panel/seleccion` → `/panel/seleccion/requerimientos/[id]`
-- **Candidate flow**: `/candidato/[token]` (tokenized access, no authentication)
-- Routes are organized in `app/` using Next.js 15 App Router conventions
+## Auth model
+- JWT stored in `localStorage` under `authToken`, decoded in `lib/services/authService.ts` (base64url + TextDecoder). Permissions cached in `appPermisos`.
+- `AuthProvider` boots by bridging SSO cookies → localStorage if present, then sets `user`, `permissions`, and `userRole` via `rolesService.getRolById`.
+- Use `lib/hooks/useAuth.ts` inside protected routes/components; `ProtectedRoute` optionally checks `requirePermission` against decoded IDs.
 
-### Component Organization
-```
-components/
-├── candidate/          # Candidate-facing components
-│   ├── candidate-form.tsx             # Token-based evaluation form
-│   └── public-application-form.tsx    # Public job application form
-├── psychologist/       # Psychologist-facing components (Auth only)
-│   └── login-form.tsx                 # Auth with 2FA flow
-├── selection/          # Selection dashboard components (NEW)
-│   ├── SelectionSidebar.tsx           # Dashboard navigation sidebar
-│   ├── SelectionHeader.tsx            # Dashboard header with user menu
-│   ├── CrearRequerimientoDialog.tsx   # Create requirement dialog
-│   ├── CandidatosList.tsx             # Candidates table component
-│   ├── AgregarCandidatoDialog.tsx     # Add candidate dialog
-│   └── EnviarLinkDialog.tsx           # Send candidate link dialog
-├── auth/               # Authentication components
-│   └── ProtectedRoute.tsx             # Client-side route guard
-└── ui/                 # shadcn/ui components (do not modify manually)
-```
+## UI, styles, and patterns
+- Tailwind CSS 4 + shadcn/ui components under `components/ui/*`; compose class names with `lib/utils.ts (cn)`.
+- Icons: `lucide-react`. Global toasts via `hooks/use-toast` and enhanced helpers `lib/toast.ts` (`useModernToast()` provides success/error/warning/info/loading with consistent styling).
+- Loading UX: `components/ui/loading-screen.tsx` and `NavigationLoadingSpinner` overlay; lazy routes use `<Suspense fallback={...}>`.
 
-### Key Data Structures
-**Candidate Form Fields** (see `candidate-form.tsx`):
-- `CLB_EstadoCivil`, `CLB_Genero`, `edad_al_ingresar`, `Barrio`, `Comuna`, `Estrato`, `Hijos`, `edades_de_hijos`, `tallas`
+## Conventions that matter
+- Use the path alias `@` (configured in `vite.config.ts` and `tsconfig.app.json`) for all intra-src imports.
+- Service helpers unwrap API envelopes; errors throw with best-effort messages from backend (`message`/`mensaje`). Reuse the provided `http` wrappers instead of duplicating headers.
+- The selection API expects an `App-Token` header on every call; it’s injected by the services—don’t add it again in callers.
+- 16PF flows assume exactly 185 answers; UI persists progress to `localStorage` using key `16pf_respuestas_${token}` (see `pages/prueba/Test16PFPage.tsx`).
 
-**Public Application Form Fields** (see `public-application-form.tsx`):
-- Contact: `nombre_completo`, `correo_electronico`, `telefono`
-- Same demographic fields as candidate form
+## Run, build, lint
+- Node ≥ 18. Dev server: `npm run dev` (port 3000, opens browser). Build: `npm run build`. Preview: `npm run preview`. Lint: `npm run lint`.
+- SPA deploys to any static host; ensure all routes fall back to `index.html` (see README for Nginx example).
 
-**Requirement Model** (see `requirements-list.tsx`):
-- `candidateName`, `candidateEmail`, `candidatePhone`, `status` (pending/completed), `createdAt`, `submittedAt`
+## Adding features quickly (examples)
+- New API call in selection domain: add a method to `lib/services/selectionApiService.ts` and consume it via `useQuery(['key', args], () => service.method(args))`.
+- New protected page under the panel: create `pages/panel/seleccion/FooPage.tsx`, add a lazy import and `<Route path="foo" element={<FooPage/>} />` inside the nested route in `routes/index.tsx`.
+- Prediction widget usage: Pass candidato object to `components/PredictWidget.tsx`; widget displays `prediccionPermanencia`, `probabilidadPermanencia`, `fechaPrediccion`, `versionModelo` already computed by backend. No client-side ML calls needed.
 
-**Geographic Data** (see `lib/manizales-data.ts`):
-- Manizales neighborhoods and communes from official GeoJSON data
-- Helper functions: `getComunas()`, `getBarriosByComuna()`, `searchBarrios()`
-
-## Tech Stack & Patterns
-
-### UI Framework: shadcn/ui + Radix UI
-- **ALL UI components** are shadcn-generated in `components/ui/`
-- **Never manually edit** these files - use shadcn CLI to update
-- Uses `class-variance-authority` for button variants (see `button.tsx`)
-- Utility function: `cn()` from `lib/utils.ts` for className merging
-
-### Styling Conventions
-- **Tailwind CSS v4** with inline `@theme` directive in `globals.css`
-- **OKLCH color space** for professional theme (primary: `oklch(0.42 0.19 264)`)
-- **Geist fonts** (Sans + Mono) from Vercel
-- Gradient backgrounds: `bg-gradient-to-br from-background via-secondary/20 to-background`
-
-### Form Handling Pattern
-```tsx
-// Standard pattern across all forms
-const [formData, setFormData] = useState<FormDataType>({ ... })
-const updateFormData = (field: keyof FormDataType, value: string) => {
-  setFormData((prev) => ({ ...prev, [field]: value }))
-}
-// Used with shadcn Select: onValueChange={(value) => updateFormData("field", value)}
-```
-
-### Icons
-- **lucide-react** for all icons (Brain, ClipboardList, Shield, etc.)
-- Consistent pattern: Icon in colored background circle/square for headers
-
-## Critical Workflows
-
-### Development
-```bash
-npm run dev    # Start dev server (port 3000)
-npm run build  # Production build (TypeScript/ESLint errors ignored in config)
-npm run lint   # ESLint check
-```
-
-### Adding shadcn Components
-```bash
-npx shadcn@latest add <component-name>  # Adds to components/ui/
-```
-Configuration is in `components.json` (aliases: `@/*`, style: "new-york")
-
-## Backend Integration Points (TODO)
-
-**Authentication**: 
-- `components/psicologo/login-form.tsx` line 26 - Replace mock login with actual auth
-- `components/psicologo/dashboard-header.tsx` line 20 - Implement real logout
-
-**Data Persistence**:
-- `components/candidato/candidate-form.tsx` line 48 - API call to save candidate responses
-- `components/psicologo/create-requirement-dialog.tsx` line 34 - API to create requirement + send email with token
-- `components/psicologo/requirement-details.tsx` line 56 - File upload to storage (S3/similar)
-
-**Data Fetching**:
-- Replace `mockRequirements` in `requirements-list.tsx` with API call
-- Replace `mockResponse` in `requirement-details.tsx` with API fetch by requirementId
-
-## Data Structure
-
-### Static Data Organization
-```
-data/
-└── manizales-barrios-comunas.geojson  # Official Manizales geographic data
-
-lib/
-├── utils.ts            # Tailwind cn() utility
-└── manizales-data.ts   # Geographic data helpers (getComunas, getBarriosByComuna, etc.)
-```
-
-## Project-Specific Conventions
-
-### Spanish Localization
-- All UI text is in **Spanish** (Colombian context)
-- Field names maintain database format (e.g., `CLB_EstadoCivil`) but display formatted
-- Toast notifications use Spanish messages
-- Geographic data for Manizales neighborhoods and communes
-
-### TypeScript Strictness
-- `strict: true` in tsconfig, but **build errors are ignored** in `next.config.mjs`
-- Use `type` for React component props: `type FormData = { ... }`
-- Prefer `interface` for complex object shapes
-
-### File Naming
-- React components: `kebab-case.tsx` (e.g., `candidate-form.tsx`)
-- Pages: Next.js conventions (`page.tsx`, `[token]/page.tsx`)
-- No `index.tsx` files - use `page.tsx` for routes
-
-### State Management Pattern
-- Client components use local `useState` (no global state library)
-- Mark interactive components with `"use client"` directive
-- Use `useToast()` hook for feedback (from `hooks/use-toast.ts`)
-
-## Quick Reference
-
-**Path alias**: `@/` maps to project root (see `tsconfig.json`)
-
-**Toast pattern**: 
-```tsx
-const { toast } = useToast()
-toast({ title: "Success", description: "Message" })
-```
-
-**shadcn component imports**: 
-```tsx
-import { Button } from "@/components/ui/button"  // Never use relative paths
-```
-
-**Dynamic route params**: 
-```tsx
-export default function Page({ params }: { params: { token: string } }) { ... }
-```
-
-## What NOT to Do
-- Don't manually edit files in `components/ui/` - use shadcn CLI
-- Don't add global state (Zustand/Redux) without discussing architecture
-- Don't use CSS modules or styled-components - Tailwind only
-- Don't implement auth without clarifying token strategy (JWT/session/etc.)
-- Don't change the color scheme without updating OKLCH values consistently
-
-## External Dependencies
-- **Vercel Analytics** integrated in root layout
-- **react-hook-form** + **zod** available but not yet used (consider for form validation)
-- **date-fns** for date formatting (see `requirements-list.tsx` for usage pattern)
+## Troubleshooting (fast checks)
+- Env not loaded? Ensure `VITE_*` prefix and restart dev server. APIs default to sensible localhost/production fallbacks.
+- 401s to .NET APIs? Confirm `VITE_APP_TOKEN` and backend availability; never send tokens from components—services handle headers.
+- Route 404 after deploy? Configure static host to rewrite to `index.html`.

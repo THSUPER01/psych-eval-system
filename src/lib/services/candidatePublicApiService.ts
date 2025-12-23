@@ -18,8 +18,23 @@ import type {
   CmtEnviarRespuestasResponseDto,
   CmtResultadoResponseDto,
 } from '@/types/selection.types'
+import type { PruebaEstadoDto } from '@/types/pruebasEstado.types'
 
 const API_URL = import.meta.env.VITE_API_SELECCION_URL || 'http://localhost:5208/api'
+
+function normalizeEstado(raw: any): PruebaEstadoDto {
+  return {
+    estado: raw?.Estado ?? raw?.estado,
+    fechaLimiteUtc: raw?.FechaLimiteUtc ?? raw?.fechaLimiteUtc ?? null,
+    tiempoLimiteMinutos: raw?.TiempoLimiteMinutos ?? raw?.tiempoLimiteMinutos ?? null,
+    segundosConsumidos: raw?.SegundosConsumidos ?? raw?.segundosConsumidos ?? 0,
+    segundosRestantes: raw?.SegundosRestantes ?? raw?.segundosRestantes ?? 0,
+    bloqueada: raw?.Bloqueada ?? raw?.bloqueada ?? false,
+    motivoBloqueo: raw?.MotivoBloqueo ?? raw?.motivoBloqueo ?? null,
+    totalPreguntas: raw?.TotalPreguntas ?? raw?.totalPreguntas,
+    preguntasRespondidas: raw?.PreguntasRespondidas ?? raw?.preguntasRespondidas,
+  }
+}
 
 /**
  * Helper para realizar peticiones HTTP a la API pblica
@@ -296,5 +311,21 @@ export const candidatePublicApiService = {
     return httpPublic<any>(`/publico/candidato/${token}/cmt/resultado${queryParam}`, {
       method: 'GET',
     }) as Promise<CmtResultadoResponseDto>
+  },
+
+  async obtenerEstadoCMT(token: string): Promise<ApiResponse<PruebaEstadoDto>> {
+    const res = await httpPublic<any>(`/publico/candidato/${token}/cmt/estado`, { method: 'GET' })
+    if (!res.success || !res.data) return res as ApiResponse<PruebaEstadoDto>
+    return { ...res, data: normalizeEstado(res.data) }
+  },
+
+  async autosaveCMT(
+    token: string,
+    data: { respuesta: any; segundosConsumidosCliente: number }
+  ): Promise<ApiResponse<void>> {
+    return httpPublic<void>(`/publico/candidato/${token}/cmt/autosave`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
   },
 }

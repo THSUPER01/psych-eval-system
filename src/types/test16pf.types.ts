@@ -23,6 +23,15 @@ export interface Escala16PF {
   interpretacion: string
 }
 
+export interface Dimension16PF {
+  codigoDimension: string
+  nombreDimension: string
+  sumaPositiva: number
+  sumaNegativa: number
+  puntuacionBruta: number
+  decatipoDimension: number
+}
+
 export interface Resultado16PFDto {
   candidatoId: number
   nombreCandidato: string
@@ -31,6 +40,7 @@ export interface Resultado16PFDto {
   totalRespuestas: number
   fechaAplicacion: string
   escalas: Escala16PF[]
+  dimensiones?: Dimension16PF[]
 }
 
 export interface Respuesta16PFItem {

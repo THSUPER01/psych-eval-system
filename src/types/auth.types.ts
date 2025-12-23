@@ -116,7 +116,7 @@ export interface AuthContextType {
   userRole: Rol | null
   isAuthenticated: boolean
   isLoading: boolean
-  login: (token: string, permisos: Permiso[]) => void
+  login: (token: string, permisos: Permiso[], documento?: string) => void
   logout: () => void
   hasPermission: (permisoId: number) => boolean
 }

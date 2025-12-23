@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Brain, FileCheck2, Clock, CheckCircle2, PlayCircle, ExternalLink } from 'lucide-react'
 import type { Asignacion16pfDto, AsignacionCmtDto } from '@/types/selection.types'
+import { parseUtcDate } from '@/lib/date'
 
 type Props = {
   token: string
@@ -104,7 +105,7 @@ export function PruebasAsignadas({ token, asignacionCmt, asignacion16pf }: Props
                 {fechaLimite && (
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4" />
-                    <span>Fecha límite: {new Date(fechaLimite).toLocaleString()}</span>
+                    <span>Fecha límite: {parseUtcDate(fechaLimite)?.toLocaleString() || 'Fecha invalida'}</span>
                   </div>
                 )}
               </div>

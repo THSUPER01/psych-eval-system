@@ -4,6 +4,10 @@ import type { DecodedToken, Permiso } from '@/types/auth.types'
 
 const TOKEN_KEY = 'authToken'
 const PERMISOS_KEY = 'appPermisos'
+const DOCUMENTO_KEY = 'authDocumento'
+const ROLE_NAME_KEY = 'authRoleName'
+
+const ADMIN_ROLAPP_ID = 66
 
 function base64UrlDecode(input: string): string {
   try {
@@ -40,6 +44,38 @@ function decodeJwt(token: string): DecodedToken | null {
   }
 }
 
+function normalizeDocumentoFromDecoded(decoded: DecodedToken | null): string | null {
+  if (!decoded) return null
+
+  const direct =
+    (decoded as any).documento ??
+    (decoded as any).Documento ??
+    (decoded as any).DocumentoColaborador ??
+    (decoded as any).documentoColaborador ??
+    (decoded as any).numeroDocumento ??
+    (decoded as any).NumeroDocumento
+
+  if (typeof direct === 'string' && direct.trim()) return direct.trim()
+  if (typeof direct === 'number' && Number.isFinite(direct)) return String(direct)
+
+  return null
+}
+
+function normalizeRolesFromDecoded(decoded: DecodedToken | null): string[] {
+  if (!decoded) return []
+
+  const raw =
+    (decoded as any).roles ??
+    (decoded as any).Roles ??
+    (decoded as any).role ??
+    (decoded as any).Role
+
+  if (Array.isArray(raw)) return raw.map(String).filter(Boolean)
+  if (typeof raw === 'string') return raw.split(',').map((s) => s.trim()).filter(Boolean)
+
+  return []
+}
+
 export const authService = {
   // Token management
   getToken(): string | null {
@@ -61,6 +97,59 @@ export const authService = {
     const token = this.getToken()
     if (!token) return null
     return decodeJwt(token)
+  },
+
+  // User info helpers (for backend filtering)
+  getDocumento(): string | null {
+    if (typeof window === 'undefined') return null
+
+    const stored = localStorage.getItem(DOCUMENTO_KEY)
+    if (stored?.trim()) return stored.trim()
+
+    const decoded = this.decodeToken()
+    return normalizeDocumentoFromDecoded(decoded)
+  },
+
+  setDocumento(documento: string): void {
+    if (typeof window === 'undefined') return
+    const trimmed = String(documento || '').trim()
+    if (!trimmed) return
+    localStorage.setItem(DOCUMENTO_KEY, trimmed)
+  },
+
+  removeDocumento(): void {
+    if (typeof window === 'undefined') return
+    localStorage.removeItem(DOCUMENTO_KEY)
+  },
+
+  getRoleName(): string | null {
+    if (typeof window === 'undefined') return null
+    const stored = localStorage.getItem(ROLE_NAME_KEY)
+    return stored?.trim() ? stored.trim() : null
+  },
+
+  setRoleName(roleName: string): void {
+    if (typeof window === 'undefined') return
+    const trimmed = String(roleName || '').trim()
+    if (!trimmed) return
+    localStorage.setItem(ROLE_NAME_KEY, trimmed)
+  },
+
+  removeRoleName(): void {
+    if (typeof window === 'undefined') return
+    localStorage.removeItem(ROLE_NAME_KEY)
+  },
+
+  isAdmin(): boolean {
+    const decoded = this.decodeToken()
+    const rolApp = (decoded as any)?.RolApp ?? (decoded as any)?.rolApp
+    if (rolApp === ADMIN_ROLAPP_ID || rolApp === String(ADMIN_ROLAPP_ID)) return true
+
+    const roleName = this.getRoleName()
+    if (roleName && roleName.toUpperCase().includes('ADMIN')) return true
+
+    const roles = normalizeRolesFromDecoded(decoded)
+    return roles.some((r) => r.toUpperCase() === 'ADMIN' || r.toUpperCase().includes('ADMIN'))
   },
 
   isTokenExpired(): boolean {
@@ -113,5 +202,7 @@ export const authService = {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(PERMISOS_KEY)
     }
+    this.removeDocumento()
+    this.removeRoleName()
   },
 }

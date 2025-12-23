@@ -22,7 +22,6 @@ import type {
   VersionPrueba,
   PublicacionPrueba,
   AsignacionPrueba,
-  CrearAsignacionDto,
   ResultadoPrueba,
   RespuestaItem,
   Documento,
@@ -30,18 +29,56 @@ import type {
   CmtResultadoDto,
   CmtResultadoResponseDto,
 } from '@/types/selection.types'
+import { authService } from '@/lib/services/authService'
 
 const API_URL = import.meta.env.VITE_API_SELECCION_URL || 'http://localhost:5208/api'
 const APP_TOKEN = import.meta.env.VITE_APP_TOKEN ||
   'B5935F96448CE865F31F7F9C6D4A914FB90EE07461AEEA615B9618B32DB18438'
 
+function headersToRecord(headers?: HeadersInit): Record<string, string> {
+  if (!headers) return {}
+  if (headers instanceof Headers) {
+    const out: Record<string, string> = {}
+    headers.forEach((value, key) => {
+      out[key] = value
+    })
+    return out
+  }
+  if (Array.isArray(headers)) {
+    return Object.fromEntries(headers.map(([k, v]) => [k, String(v)]))
+  }
+  return Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, String(v)]))
+}
+
+function withSelectionAuthHeaders(initHeaders?: HeadersInit, includeJsonContentType = true): Record<string, string> {
+  const merged: Record<string, string> = {
+    'App-Token': APP_TOKEN,
+    ...(includeJsonContentType ? { 'Content-Type': 'application/json' } : {}),
+    ...headersToRecord(initHeaders),
+  }
+
+  const token = authService.getToken()
+  if (token && !merged.Authorization) {
+    merged.Authorization = `Bearer ${token}`
+  }
+
+  const documento = authService.getDocumento()
+  if (documento && !('X-Documento' in merged) && !('x-documento' in merged)) {
+    merged['X-Documento'] = documento
+  }
+
+  if (authService.isAdmin() && !('X-Roles' in merged) && !('x-roles' in merged)) {
+    merged['X-Roles'] = 'ADMIN'
+  }
+
+  return merged
+}
+
 async function http<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
     ...init,
     headers: {
-      'App-Token': APP_TOKEN,
-      'Content-Type': 'application/json',
-      ...(init?.headers || {}),
+      ...withSelectionAuthHeaders(init?.headers, true),
     },
   })
   if (!res.ok) {
@@ -176,27 +213,6 @@ export const selectionApiService = {
     return http<PublicacionPrueba[]>('/PruebasPsicotecnicas/publicaciones/activas', { method: 'GET' })
   },
 
-  // ==================== ASIGNACIONES ====================
-
-  async getAsignaciones(): Promise<AsignacionPrueba[]> {
-    return http<AsignacionPrueba[]>('/Asignaciones', { method: 'GET' })
-  },
-
-  async getAsignacionesPorCandidato(candidatoId: number): Promise<AsignacionPrueba[]> {
-    return http<AsignacionPrueba[]>(`/Asignaciones/candidato/${candidatoId}`, { method: 'GET' })
-  },
-
-  async crearAsignacion(dto: CrearAsignacionDto): Promise<AsignacionPrueba> {
-    return http<AsignacionPrueba>('/Asignaciones', {
-      method: 'POST',
-      body: JSON.stringify(dto),
-    })
-  },
-
-  async eliminarAsignacion(id: number): Promise<void> {
-    return http<void>(`/Asignaciones/${id}`, { method: 'DELETE' })
-  },
-
   // ==================== RESULTADOS ====================
 
   async getResultadosPorCandidato(candidatoId: number): Promise<ResultadoPrueba[]> {
@@ -218,6 +234,7 @@ export const selectionApiService = {
       method: 'POST',
       headers: {
         'App-Token': APP_TOKEN,
+        ...withSelectionAuthHeaders(undefined, false),
         // No establecer Content-Type para que el navegador lo haga automáticamente con boundary
       },
       body: formData,
